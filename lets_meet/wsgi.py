@@ -1,5 +1,5 @@
 """
-WSGI config for meeting_room project.
+WSGI config for lets_meet project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'meeting_room.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lets_meet.settings')
 
 application = get_wsgi_application()
