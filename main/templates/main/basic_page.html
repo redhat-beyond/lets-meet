@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title> Lets Meet </title>
+
+        {% load static %}
+        <link href="{% static 'main/basic_page_style.css' %}" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.2.2/css/flat-ui.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    </head>
+    <body>
+        <nav role="navigation">
+          <div id="menuToggle">
+            <input type="checkbox" />
+            <span></span>
+            <span></span>
+            <span></span>
+            <ul id="menu">
+              <a href="#"><li><i class="fa fa-home" aria-hidden="true" style="font-size:24px;"></i>  Home</li></a>
+              <a href="#"><li><i class="fa fa-id-card" aria-hidden="true" style="font-size:24px;"></i>  Contact</li></a>
+              <a href="#"><li><i class="fa fa-sign-out" aria-hidden="true" style="font-size:24px;"></i>  Logout</li></a>
+            </ul>
+          </div>
+        </nav>
+
+        <h1 class="center"> Lets Meet </h1>
+        <br><br>
+
+        <div style="color:white; display: flex; flex-direction: column; align-items: center; padding-bottom: 2%;">
+            <h4> There is a difficulty setting up meeting between people, teams and etc do to busy schedule that very between person to person. </h4>
+            <h4> As a result we want to present you our new platform that will help with the process of scheduling meetings. </h4>
+            <h4> Our platform is meant for <u>everyone</u>: students, work teams, friends who want to meet and more. </h4>
+        </div>
+
+        <div style="color:white; padding-left: 20%; padding-right: 20%; font-size: 25px;">
+
+            <ul>
+                <li>Every registered user can create a new <b> meeting </b> and set its character <br>
+                    e.g. work meeting (preferred for student and work teams) or for Recreation and leisure (preferred for meeting with friends)</li>
+                <li>In work meetings <b> files can be uploaded </b> that will be linked to the event (at the end of the meeting or after it has ended) </li>
+                <li>Every user can create a <b> meeting with other users. </b> <br>
+                    He will define a range of dates that he prefers for the meeting to be set, how long the meeting will take and a list of wanted participants. <br>
+                    Our algorithm will return a range of dates that the meeting can be set, with all the participants involved, <br>
+                    or it will return that there is no such date in the relevant case. </li>
+                <li>Every user can set <b> reminders </b> for upcoming events</li>
+                <li>Every user can incorporate there <b> external calendar </b> into our calendar for e.g. google calendar </li>
+            </ul>
+        </div> 
+
+        <div class="footer" id="footer">
+          <div style="color:#fff; background-color:#282E34; text-align:center; padding:20px 60px;text-align: justify;">
+            <p style="text-align:center; text-transform: capitalize; font-size:20px;"><a href="#facebook"><i style="font-size:20px; padding:8px;" class="fa">&#xf09a;</i></a> <a href="#twitter"><i style="font-size:20px; padding:8px;" class="fa">&#xf099;</i></a> <a href="#instegram"><i style="font-size:20px; padding:8px;" class="fa">&#xf16d;</i></a> <a href="#linkedin"><i style="font-size:20px; padding:8px;" class="fa">&#xf08c;</i></a>
+            <a href="#nav"></a>
+          </div>
+        </div>
+    </body>
+</html>
