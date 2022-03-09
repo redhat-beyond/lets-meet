@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/4.20.0/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         
@@ -16,6 +17,130 @@
         <link href="{% static 'main/index_style.css' %}" rel="stylesheet">
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.2/js/foundation.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            $( document ).ready(function() {
+                
+              $('.date-time').dateTimePicker();
+              $('.date-time-2').dateTimePicker();
+            });
+            
+            function eventCreation() {
+                Swal.fire({
+                    heightAuto: false,
+                    title: '<strong style="color: white; text-decoration: underline;">Add New Event:</strong>',
+                    background: "url(https://images.unsplash.com/photo-1565061326832-cd738486b695?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80) center, center",
+                    html:
+                        '<label style="color: white;"> Event Title:</label><input type="text" id="swal-input1" name="companyName" class="swal2-input" style="color: white;" required>' +
+                        '<label style="color: white;"> Date and Time:</label>' +
+                        '<div class="md-form mx-5 my-5">' +
+                          '<input placeholder="Date and Time" type="text" data-open="picker3" class="form-control date-time-2 picker-opener">' +
+                          '<input placeholder="Selected date" type="text" id="picker3"  class="form-control time-date-ghost">' +
+                          '<input placeholder="Selected time" data-open="picker3" type="text" class="form-control timepicker time-date-ghost">' +
+                        '</div>' +
+                        '<label style="color: white;"> location:</label><input type="text" id="swal-input3" name="quantity" style="color: white; min-width: 100%;" class="swal2-input" required>' +
+                        '<label style="color: white;"> Description:</label><input type="text" id="swal-input4" name="totalValue" style="color: white; min-width: 100%;" class="swal2-input" required>',
+                    showCloseButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                    confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentTamir() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1515825838458-f2a94b20105a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80)",
+                  title: '<strong style="color: white"><u>Tamir Sror</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student <br> and a software developer</h2>" + 
+                        "<ul style='font-size: 1.4em; color: white;'>" +    
+                            "<li> I did a few projects similer to what is required in our course, </li>" + 
+                            "<li> I did a few other courses that required team work. </li>" + 
+                        "</ul>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentYael() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80) center, center",
+                  title: '<strong style="color: white"><u>Yael Davidov</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 4rd year Computer Science Student </h2>" + 
+                        "<ul style='font-size: 1.2em; color: white'>" +    
+                            "<li> I did a few courses that are relavent to the work we are going to do such as" +
+                                 "java script and computer comunications. </li>" + 
+                            "<li> I have worked in a few teams in other courses </li>" +
+                        "</ul>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentRon() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1635924010446-c2a9851859af?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)",
+                  title: '<strong style="color: white"><u>Ron Hachmon</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student</h2>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentRavid() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1627661020066-166c2350cf94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)",
+                  title: '<strong style="color: white"><u>Ravid Yael</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentYoav() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1642414392606-d6415f5a9088?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80) center, center",
+                  title: '<strong style="color: white"><u>Yoav Balikov</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student </h2>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+            
+            function presentDan() {
+                Swal.fire({
+                  heightAuto: false,
+                  background: "url(https://images.unsplash.com/photo-1638368012876-5812dd95d7cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=782&q=80) center, center",
+                  title: '<strong style="color: white"><u>Dan Inon</u></strong>',
+                  width: 800,
+                  html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
+                  showCloseButton: true,
+                  focusConfirm: false,
+                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+            }
+        </script>
         
 	</head>
 	<body>
@@ -75,7 +200,7 @@
         <div class="leftBoxText">
             <div class="row" style="color: white">
               <div class="column columnBox">
-                  <h2 style="font-size: 4em;"><u>Set Events</u></h2>
+                  <h2 style="font-size: 4em;" onclick="eventCreation()"><u>Set Events</u></h2>
                 <p style="font-size: 3em;">
                     Events are the user way to create an action with that will happen <br> 
                     in the future, or that happend in the past and wanted to be rememberd. <br>
@@ -89,28 +214,6 @@
                     <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: black;">
                         Set Events
                     </span>
-                  </div>
-              </div>
-            </div>
-        </div>
-        
-<!--        <hr>-->
-        <div class="leftBoxText">
-            <div class="row" style="color: white">
-              <div class="column columnBox" style="height: 60vh;">
-                  <h2 style="font-size: 4em;"><u>Upload Files</u></h2>
-                <p style="font-size: 2.5em; text-align: left; padding-left: 2%;">
-                    Users can upload and download files that they linked to an event created. <br>
-                    Usefull examples for uploading a file are: <br>
-                    1. when you want to remember something that happend on the event by summerizing it and upload the file created, <br>
-                    2. can be the direction to the meeting place for meeting with friends, <br>
-                    there are a lot of reasunese to upload files aspesialy if the event is with other people. <br>
-                    We support files like: word, pdf, pictures and more
-                </p>
-              </div>
-              <div class="column bgimg-2" id = "files">
-                  <div class="caption">
-                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: black;">Upload Files</span>
                   </div>
               </div>
             </div>
@@ -133,6 +236,28 @@
               <div class="column bgimg-2" id = "meetings">
                   <div class="caption">
                     <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: white;">Joined Meetings</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 60vh;">
+                  <h2 style="font-size: 4em;"><u>Upload Files</u></h2>
+                <p style="font-size: 2.5em; text-align: left; padding-left: 2%;">
+                    Users can upload and download files that they linked to an event created. <br>
+                    Usefull examples for uploading a file are: <br>
+                    1. when you want to remember something that happend on the event by summerizing it and upload the file created, <br>
+                    2. can be the direction to the meeting place for meeting with friends, <br>
+                    there are a lot of reasunese to upload files aspesialy if the event is with other people. <br>
+                    We support files like: word, pdf, pictures and more
+                </p>
+              </div>
+              <div class="column bgimg-2" id = "files">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: black;">Upload Files</span>
                   </div>
               </div>
             </div>
@@ -219,8 +344,52 @@
               </div>
             </div>
         </div>
+		
+        <div class="bgimg-4" id="meetTeam">
+		  <div class="caption">
+			<span class="border" id="wallpaperCaption" style="color: white;">Meet The Team:</span>
+		  </div>
+		</div>
+        
+        <div style="background-image: url(https://images.unsplash.com/photo-1534313240698-2384ede3b065?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80); background-size: cover">
+            <div class="teamWrapper">
+                <h3 style="color: white;">Ron</h3>
+                <div class="item one" onclick="presentRon()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/ron.jpg' %}" alt="alternative text" title="one">
+                </div>
+                <h3 style="color: white;">Tamir</h3>
+                <div class="item two" onclick="presentTamir()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/tamir.jpg' %}" style="padding-top: 100px;"  alt="alternative text" title="two">
+                </div>
+                <h3 style="color: white;" >Yael</h3>
+                <div class="item three" onclick="presentYael()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/yael.jpg' %}" style="padding-top: 100px;" alt="alternative text" title="three">
+                </div>
+            </div>
 
-		<div class="bgimg-3">
+            <div class="teamWrapper" style="margin-top: -5%;"> 
+                <h3 style="color: white;">Ravid</h3>
+                <div class="item four" onclick="presentRavid()">
+                     {% load static %}
+                    <img src="{% static 'main/teamPictures/ravid.jpg' %}" alt="alternative text" title="four">
+                </div>
+                <h3 style="color: white;">Dan</h3>
+                <div class="item five" onclick="presentDan()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/dan.jpg' %}" alt="alternative text" title="six">
+                </div>
+                <h3 style="color: white;">Yoav</h3>
+                <div class="item six" onclick="presentYoav()">
+                    {% load static %}
+                    <img onclick="yoav()" src="{% static 'main/teamPictures/yoav.jpg' %}" alt="alternative text" title="five">
+                </div>
+            </div>
+        </div>
+        
+        <div class="bgimg-3">
 		  <div class="caption">
 			<span class="border" id="wallpaperCaption" style="color: black;">CONTACT US</span>
 		  </div>
@@ -250,32 +419,6 @@
 			</table>
 		  </div>
 		</div>
-		
-        <div class="bgimg-4">
-		  <div class="caption">
-			<span class="border" id="wallpaperCaption" style="color: white;">Meet The Team:</span>
-		  </div>
-		</div>
-        
-        <div style="background-image: url(https://images.unsplash.com/photo-1534313240698-2384ede3b065?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80); background-size: cover">
-            <div class="teamWrapper">
-                <h3 style="color: white;">Ron</h3>
-                <div class="item one"><img src="https://images.unsplash.com/photo-1646061633551-6e8a1e09b72b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80" alt="alternative text" title="one"></div>
-                <h3 style="color: white;">Tamir</h3>
-                <div class="item two"><img src="https://images.unsplash.com/photo-1645301188542-6e42abab843c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="alternative text" title="two"></div>
-                <h3 style="color: white;">Yael</h3>
-                <div class="item three"><img src="https://images.unsplash.com/photo-1644442146822-97c05b44e45d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=770&q=80" alt="alternative text" title="three"></div>
-            </div>
-
-            <div class="teamWrapper" style="margin-top: -5%;"> 
-                <h3 style="color: white;">Ravid</h3>
-                <div class="item four"><img src="https://images.unsplash.com/photo-1643930755935-77a44d031a41?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=770&q=80" alt="alternative text" title="four"></div>
-                <h3 style="color: white;">Yoav</h3>
-                <div class="item five"><img src="https://images.unsplash.com/photo-1642615719525-dad0f0cc47df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="alternative text" title="five"></div>
-                <h3 style="color: white;">Dan</h3>
-                <div class="item six"><img src="https://images.unsplash.com/photo-1640746598070-8143cfb76f92?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="alternative text" title="six"></div>
-            </div>
-        </div>
         
 		<div style="position:relative;" class="footer" id="footer">
 		  <div style="color:#fff;background-color:#282E34;text-align:center;padding:20px 80px;text-align: justify;">
