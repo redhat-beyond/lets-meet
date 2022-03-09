@@ -3,7 +3,6 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/4.20.0/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         
@@ -19,128 +18,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.2/js/foundation.min.js"></script>
         
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-        <script>
-            $( document ).ready(function() {
-                
-              $('.date-time').dateTimePicker();
-              $('.date-time-2').dateTimePicker();
-            });
-            
-            function eventCreation() {
-                Swal.fire({
-                    heightAuto: false,
-                    title: '<strong style="color: white; text-decoration: underline;">Add New Event:</strong>',
-                    background: "url(https://images.unsplash.com/photo-1565061326832-cd738486b695?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80) center, center",
-                    html:
-                        '<label style="color: white;"> Event Title:</label><input type="text" id="swal-input1" name="companyName" class="swal2-input" style="color: white;" required>' +
-                        '<label style="color: white;"> Date and Time:</label>' +
-                        '<div class="md-form mx-5 my-5">' +
-                          '<input placeholder="Date and Time" type="text" data-open="picker3" class="form-control date-time-2 picker-opener">' +
-                          '<input placeholder="Selected date" type="text" id="picker3"  class="form-control time-date-ghost">' +
-                          '<input placeholder="Selected time" data-open="picker3" type="text" class="form-control timepicker time-date-ghost">' +
-                        '</div>' +
-                        '<label style="color: white;"> location:</label><input type="text" id="swal-input3" name="quantity" style="color: white; min-width: 100%;" class="swal2-input" required>' +
-                        '<label style="color: white;"> Description:</label><input type="text" id="swal-input4" name="totalValue" style="color: white; min-width: 100%;" class="swal2-input" required>',
-                    showCloseButton: true,
-                    focusConfirm: false,
-                    confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                    confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentTamir() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1515825838458-f2a94b20105a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80)",
-                  title: '<strong style="color: white"><u>Tamir Sror</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student <br> and a software developer</h2>" + 
-                        "<ul style='font-size: 1.4em; color: white;'>" +    
-                            "<li> I did a few projects similer to what is required in our course, </li>" + 
-                            "<li> I did a few other courses that required team work. </li>" + 
-                        "</ul>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentYael() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80) center, center",
-                  title: '<strong style="color: white"><u>Yael Davidov</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 4rd year Computer Science Student </h2>" + 
-                        "<ul style='font-size: 1.2em; color: white'>" +    
-                            "<li> I did a few courses that are relavent to the work we are going to do such as" +
-                                 "java script and computer comunications. </li>" + 
-                            "<li> I have worked in a few teams in other courses </li>" +
-                        "</ul>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentRon() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1635924010446-c2a9851859af?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)",
-                  title: '<strong style="color: white"><u>Ron Hachmon</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student</h2>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentRavid() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1627661020066-166c2350cf94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)",
-                  title: '<strong style="color: white"><u>Ravid Yael</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentYoav() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1642414392606-d6415f5a9088?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80) center, center",
-                  title: '<strong style="color: white"><u>Yoav Balikov</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student </h2>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-            
-            function presentDan() {
-                Swal.fire({
-                  heightAuto: false,
-                  background: "url(https://images.unsplash.com/photo-1638368012876-5812dd95d7cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=782&q=80) center, center",
-                  title: '<strong style="color: white"><u>Dan Inon</u></strong>',
-                  width: 800,
-                  html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
-                  showCloseButton: true,
-                  focusConfirm: false,
-                  confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-                  confirmButtonAriaLabel: 'Thumbs up, great!',
-                })
-            }
-        </script>
+
+        {% load static %}
+        <script src="{% static 'main/index_js.js' %}"></script>
         
 	</head>
 	<body>
@@ -177,17 +57,16 @@
 		  </div>
 		</div>
 
-        <div class="bgimg-1 drop-shadow">
-            <div class="glass"></div>
-            <span id="glassText">
-              There is a difficulty coordinating meetings between different people, whether it’s a meeting between teammates, <br>
+        <div class="bgimg-1" style="min-height: 40%; maring: 0;">
+            <p id="description"> 
+                There is a difficulty coordinating meetings between different people, whether it’s a meeting between teammates, <br>
                 meeting between a few students, catching up with friends or family and more, due to a busy schedule <br>
                 that varies between person to person. <br>
                 Therefore, in order to solve this problem we would like to develop a platform named “Lets Meet”. <br>
                 The platform is meant to help the users to manage meetings of different types <br>
                 and centralize related information that links to those meetings such as files, chat and links to the meetings. <br>
                 Our site is meant to be used by everyone. 
-            </span>
+            </p>
         </div>
 
 
@@ -199,11 +78,11 @@
   
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox">
+              <div class="column columnBox" style="height: 60vh;">
                   <h2 style="font-size: 4em;" onclick="eventCreation()"><u>Set Events</u></h2>
-                <p style="font-size: 3em;">
-                    Events are the user way to create an action with that will happen <br> 
-                    in the future, or that happend in the past and wanted to be rememberd. <br>
+                <p style="font-size: 250%;">
+                    Events are the user way to create an action that will happen in the <br> 
+                    future, or that happend in the past and wanted to be rememberd. <br>
                     An Event is composed of a title, data and time, location and a description. <br>
                     Every event is linked to the user who created it.
                 </p>
@@ -222,9 +101,9 @@
 <!--        <hr>-->
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox">
+              <div class="column columnBox" style="height: 90vh;">
                   <h2 style="font-size: 4em;"><u>Joined Meetings</u></h2>
-                <p style="font-size: 2.5em;">
+                <p style="font-size: 230%; margin-top: -10%;">
                     Every user can create a meeting with other users. <br>
                     He will define a range of dates that he prefers for the meeting to be set, <br> 
                     how long the meeting will take and a list of wanted participants. <br> <br>
@@ -244,14 +123,14 @@
 <!--        <hr>-->
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox" style="height: 60vh;">
+                <div class="column columnBox" style="height: 90vh;">
                   <h2 style="font-size: 4em;"><u>Upload Files</u></h2>
-                <p style="font-size: 2.5em; text-align: left; padding-left: 2%;">
+                <p style="font-size: 230%; text-align: left; padding-left: 2%;">
                     Users can upload and download files that they linked to an event created. <br>
                     Usefull examples for uploading a file are: <br>
                     1. when you want to remember something that happend on the event by summerizing it and upload the file created, <br>
                     2. can be the direction to the meeting place for meeting with friends, <br>
-                    there are a lot of reasunese to upload files aspesialy if the event is with other people. <br>
+                    there are a lot of reasons to upload files especially if the event is with other people. <br>
                     We support files like: word, pdf, pictures and more
                 </p>
               </div>
@@ -266,7 +145,7 @@
 <!--        <hr>-->
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox">
+              <div class="column columnBox" style="height: 60vh;">
                   <h2 style="font-size: 4em;"><u>Set Reminders</u></h2>
                 <p style="font-size: 250%;">
                     For each event created by the user there is an option to set a remainder to the event. <br>
@@ -290,9 +169,9 @@
         
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox" style="height: 60vh;">
+              <div class="column columnBox" style="height: 80vh;">
                   <h2 style="font-size: 4em;"><u>Set Groups</u></h2>
-                <p style="font-size: 2.8em;">
+                <p style="font-size: 250%;">
                     Groups are for the ease of use. <br>
                     When a user is creating a joind meeting adding other users each time <br> 
                     can be tidies and annoying when it is repeted multiple times <br>
@@ -312,9 +191,9 @@
 <!--        <hr>-->
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox">
+              <div class="column columnBox" style="height: 50vh;">
                   <h2 style="font-size: 4em;"><u>chat</u></h2>
-                <p style="font-size: 3em;">
+                <p style="font-size: 280%;">
                     Users will be able to comunicate with each other using our site within groups and within joined meeting. 
                 </p>
               </div>
@@ -329,7 +208,7 @@
 <!--        <hr>-->
         <div class="leftBoxText">
             <div class="row" style="color: white">
-              <div class="column columnBox">
+              <div class="column columnBox" style="height: 50vh;">
                   <h2 style="font-size: 4em;"><u>External Calendar</u></h2>
                 <p style="font-size: 280%;">
                     Users will be able to bring there own calander provider and import events <br>
@@ -353,17 +232,17 @@
         
         <div style="background-image: url(https://images.unsplash.com/photo-1534313240698-2384ede3b065?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80); background-size: cover">
             <div class="teamWrapper">
-                <h3 style="color: white;">Ron</h3>
+                <h3 style="color: white; font-weight: bold;">Ron</h3>
                 <div class="item one" onclick="presentRon()">
                     {% load static %}
                     <img src="{% static 'main/teamPictures/ron.jpg' %}" alt="alternative text" title="one">
                 </div>
-                <h3 style="color: white;">Tamir</h3>
+                <h3 style="color: white; font-weight: bold;">Tamir</h3>
                 <div class="item two" onclick="presentTamir()">
                     {% load static %}
                     <img src="{% static 'main/teamPictures/tamir.jpg' %}" style="padding-top: 100px;"  alt="alternative text" title="two">
                 </div>
-                <h3 style="color: white;" >Yael</h3>
+                <h3 style="color: white; font-weight: bold;" >Yael</h3>
                 <div class="item three" onclick="presentYael()">
                     {% load static %}
                     <img src="{% static 'main/teamPictures/yael.jpg' %}" style="padding-top: 100px;" alt="alternative text" title="three">
@@ -371,17 +250,17 @@
             </div>
 
             <div class="teamWrapper" style="margin-top: -5%;"> 
-                <h3 style="color: white;">Ravid</h3>
+                <h3 style="color: white; font-weight: bold;">Ravid</h3>
                 <div class="item four" onclick="presentRavid()">
                      {% load static %}
                     <img src="{% static 'main/teamPictures/ravid.jpg' %}" alt="alternative text" title="four">
                 </div>
-                <h3 style="color: white;">Dan</h3>
+                <h3 style="color: white; font-weight: bold;">Dan</h3>
                 <div class="item five" onclick="presentDan()">
                     {% load static %}
                     <img src="{% static 'main/teamPictures/dan.jpg' %}" alt="alternative text" title="six">
                 </div>
-                <h3 style="color: white;">Yoav</h3>
+                <h3 style="color: white; font-weight: bold;">Yoav</h3>
                 <div class="item six" onclick="presentYoav()">
                     {% load static %}
                     <img onclick="yoav()" src="{% static 'main/teamPictures/yoav.jpg' %}" alt="alternative text" title="five">
