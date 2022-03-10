@@ -50,7 +50,7 @@ function presentTamir() {
 function presentYael() {
     present("Yael Davidov", "https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80", 
            "I'm a 4rd year Computer Science Student", ["I did a few courses that are relavent to the work we are going to do such as" +
-                     "java script and computer comunications", "I have worked in a few teams in other courses."])
+                     "java script and computer comunications"])
 }
 
 function presentRon() {
@@ -65,7 +65,7 @@ function presentRavid() {
 
 function presentYoav() {
     present("Yoav Balikov", "https://images.unsplash.com/photo-1642414392606-d6415f5a9088?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80", 
-           "I'm a 3rd year Computer Science Student", ["Age: 25", "Skills: C, C++, Java, Java script, HTML, CSS and SQL "])
+           "I'm a 3rd year Computer Science Student", [])
 }
 
 function presentDan() {
