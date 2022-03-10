@@ -20,99 +20,55 @@ function eventCreation() {
     })
 }
 
-function presentTamir() {
+function present(name, image_url, title, attributes) {
+    list_text = ""
+    
+    attributes.forEach(item => {
+        list_text += "<li> " + item + " </li>";
+    })
+        
+    
     Swal.fire({
       heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1515825838458-f2a94b20105a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80)",
-      title: '<strong style="color: white"><u>Tamir Sror</u></strong>',
+      background: "url(" + image_url + ")",
+      title: '<strong style="color: white;"><u>' + name + '</u></strong>',
       width: 800,
-      html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student <br> and a software developer</h2>" + 
-            "<ul style='font-size: 1.4em; color: white;'>" +    
-                "<li> I did a few projects similer to what is required in our course, </li>" + 
-                "<li> I did a few other courses that required team work. </li>" + 
-            "</ul>",
+      html: "<h2 style='color: white'>" + title + "</h2>" +
+            "<ul style='font-size: 1.4em; color: white;'>" + list_text + "</ul>", 
       showCloseButton: true,
       focusConfirm: false,
       confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
       confirmButtonAriaLabel: 'Thumbs up, great!',
     })
+}
+
+function presentTamir() {
+    present("Tamir Sror", "https://images.unsplash.com/photo-1515825838458-f2a94b20105a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80", 
+           "I'm a 3rd year Computer Science Student <br> and a software developer", ["I did a few projects similer to what is required in our course", "I did a few other courses that required team work."])
 }
 
 function presentYael() {
-    Swal.fire({
-      heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80) center, center",
-      title: '<strong style="color: white"><u>Yael Davidov</u></strong>',
-      width: 800,
-      html: "<h2 style='color: white'>I'm a 4rd year Computer Science Student </h2>" + 
-            "<ul style='font-size: 1.2em; color: white'>" +    
-                "<li> I did a few courses that are relavent to the work we are going to do such as" +
-                     "java script and computer comunications. </li>" + 
-                "<li> I have worked in a few teams in other courses </li>" +
-            "</ul>",
-      showCloseButton: true,
-      focusConfirm: false,
-      confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-      confirmButtonAriaLabel: 'Thumbs up, great!',
-    })
+    present("Yael Davidov", "https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80", 
+           "I'm a 4rd year Computer Science Student", ["I did a few courses that are relavent to the work we are going to do such as" +
+                     "java script and computer comunications", "I have worked in a few teams in other courses."])
 }
 
 function presentRon() {
-    Swal.fire({
-      heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1635924010446-c2a9851859af?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)",
-      title: '<strong style="color: white"><u>Ron Hachmon</u></strong>',
-      width: 800,
-      html: "<h2 style='color: white'>I'm a 3rd year Computer Science Student</h2>",
-      showCloseButton: true,
-      focusConfirm: false,
-      confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-      confirmButtonAriaLabel: 'Thumbs up, great!',
-    })
+    present("Ron Hachmon", "https://images.unsplash.com/photo-1635924010446-c2a9851859af?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80", 
+           "I'm a 3rd year Computer Science Student", [])
 }
 
 function presentRavid() {
-    Swal.fire({
-      heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1627661020066-166c2350cf94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)",
-      title: '<strong style="color: white"><u>Ravid Yael</u></strong>',
-      width: 800,
-      html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
-      showCloseButton: true,
-      focusConfirm: false,
-      confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-      confirmButtonAriaLabel: 'Thumbs up, great!',
-    })
+    present("Ravid Yael", "https://images.unsplash.com/photo-1627661020066-166c2350cf94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80", 
+           "I'm a 2rd year Computer Science Student", [])
 }
 
 function presentYoav() {
-    Swal.fire({
-      heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1642414392606-d6415f5a9088?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80) center, center",
-      title: '<strong style="color: white"><u>Yoav Balikov</u></strong>',
-      width: 800,
-      html: "<h2 style='color: white;'>I'm a 3rd year Computer Science Student </h2>" +
-            "<ul style='font-size: 1.2em; color: white;'>" +
-                "<li> Age: 25 </li>" + 
-                "<li> Skills: C, C++, Java, Java script, HTML, CSS and SQL </li>" +
-            "</ul>",
-      showCloseButton: true,
-      focusConfirm: false,
-      confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-      confirmButtonAriaLabel: 'Thumbs up, great!',
-    })
+    present("Yoav Balikov", "https://images.unsplash.com/photo-1642414392606-d6415f5a9088?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80", 
+           "I'm a 3rd year Computer Science Student", ["Age: 25", "Skills: C, C++, Java, Java script, HTML, CSS and SQL "])
 }
 
 function presentDan() {
-    Swal.fire({
-      heightAuto: false,
-      background: "url(https://images.unsplash.com/photo-1638368012876-5812dd95d7cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=782&q=80) center, center",
-      title: '<strong style="color: white"><u>Dan Inon</u></strong>',
-      width: 800,
-      html: "<h2 style='color: white'>I'm a 2rd year Computer Science Student</h2>",
-      showCloseButton: true,
-      focusConfirm: false,
-      confirmButtonText: '<i class="fa fa-thumbs-up""></i> Great!',
-      confirmButtonAriaLabel: 'Thumbs up, great!',
-    })
+    present("Dan Inon", "https://images.unsplash.com/photo-1638368012876-5812dd95d7cc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=782&q=80", 
+           "I'm a 3rd year Computer Science Student", [])
 }
