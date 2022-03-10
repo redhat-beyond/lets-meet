@@ -1,5 +1,5 @@
 from django.shortcuts import render
 
 
-def board(request):
+def welcome_page(request):
     return render(request, 'main/index.html')
