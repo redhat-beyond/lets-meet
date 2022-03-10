@@ -1,5 +1,5 @@
 """
-ASGI config for meeting_room project.
+ASGI config for lets_meet project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'meeting_room.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lets_meet.settings')
 
 application = get_asgi_application()

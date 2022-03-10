@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+        
+        {% load static %}
+        <link href="{% static 'main/index_style.css' %}" rel="stylesheet">
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.2/js/foundation.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+        {% load static %}
+        <script src="{% static 'main/index_js.js' %}"></script>
+        
+	</head>
+	<body>
+        <nav role="navigation">
+          <div id="menuToggle">
+            <input type="checkbox" />
+            <span></span>
+            <span></span>
+            <span></span>
+            <ul id="menu">
+              <a href="#"><li><i class="fa fa-home" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Home</li></a>
+              <a href="#"><li><i class="fa fa-id-card" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Contact</li></a>
+              <a href="#"><li><i class="fa fa-user-plus" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Register</li></a>
+                <a href="#"><li><i class="fa fa-sign-in" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Log In</li></a>
+            </ul>
+          </div>
+        </nav>
+        
+		<div class="bgimg-1">
+		  <div class="header" id="nav">
+			  <a href="#index" class="logo" style="font-family: 'Kaushan Script', cursive;">
+                  <span style="font-weight: normal; font-family: 'Kaushan Script', cursive;">Lets</span> Meet
+              </a>
+			  <div class="header-right">
+				<a class="active" href="#home">Home</a>
+				<a href="#second">Contact</a>
+				<a href="#footer">About</a>
+                <a href="#log in">Log In</a>
+                <a href="#register">Register</a>
+			  </div>
+		  </div>
+		  <div class="caption">
+              <span class="text" style="font-family: 'Kaushan Script', cursive;">Lets Meet</span>
+		  </div>
+		</div>
+
+        <div class="bgimg-1" style="min-height: 40%; maring: 0;">
+            <p id="description"> 
+                There is a difficulty coordinating meetings between different people, whether it’s a meeting between teammates, <br>
+                meeting between a few students, catching up with friends or family and more, due to a busy schedule <br>
+                that varies between person to person. <br>
+                Therefore, in order to solve this problem we would like to develop a platform named “Lets Meet”. <br>
+                The platform is meant to help the users to manage meetings of different types <br>
+                and centralize related information that links to those meetings such as files, chat and links to the meetings. <br>
+                Our site is meant to be used by everyone. 
+            </p>
+        </div>
+
+
+        <div class="bgimg-2">
+		  <div class="caption">
+			<span class="border" id="wallpaperCaption" style="color: #f7f7f7;">What We Offer</span>
+		  </div>
+		</div>
+  
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 60vh;">
+                  <h2 style="font-size: 4em;" onclick="eventCreation()"><u>Set Events</u></h2>
+                <p style="font-size: 250%;">
+                    Events are the user way to create an action that will happen in the <br> 
+                    future, or that happend in the past and wanted to be rememberd. <br>
+                    An Event is composed of a title, data and time, location and a description. <br>
+                    Every event is linked to the user who created it.
+                </p>
+              </div>
+                
+              <div class="column bgimg-2" id="events">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: black;">
+                        Set Events
+                    </span>
+                  </div>
+              </div>
+            </div>
+        </div>
+
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 90vh;">
+                  <h2 style="font-size: 4em;"><u>Joined Meetings</u></h2>
+                <p style="font-size: 230%; margin-top: -10%;">
+                    Every user can create a meeting with other users. <br>
+                    He will define a range of dates that he prefers for the meeting to be set, <br> 
+                    how long the meeting will take and a list of wanted participants. <br> <br>
+                    Our algorithm will return a range of dates that the meeting can be set, <br>
+                    with all the participants involved, <br>
+                    or it will return that there is no such date in the relevant case.  
+                </p>
+              </div>
+              <div class="column bgimg-2" id = "meetings">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: white;">Joined Meetings</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+                <div class="column columnBox" style="height: 90vh;">
+                  <h2 style="font-size: 4em;"><u>Upload Files</u></h2>
+                <p style="font-size: 230%; text-align: left; padding-left: 2%;">
+                    Users can upload and download files that they linked to an event created. <br>
+                    Usefull examples for uploading a file are: <br>
+                    1. when you want to remember something that happend on the event by summerizing it and upload the file created, <br>
+                    2. can be the direction to the meeting place for meeting with friends, <br>
+                    there are a lot of reasons to upload files especially if the event is with other people. <br>
+                    We support files like: word, pdf, pictures and more
+                </p>
+              </div>
+              <div class="column bgimg-2" id = "files">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: black;">Upload Files</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+       
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 60vh;">
+                  <h2 style="font-size: 4em;"><u>Set Reminders</u></h2>
+                <p style="font-size: 250%;">
+                    For each event created by the user there is an option to set a remainder to the event. <br>
+                    A remainder is an alert that can pop out on our site or sent to the user by email. <br>
+                    In a joined meeting the creator can set remainders to all the participants if needed.
+                </p>
+              </div>
+              <div class="column bgimg-2" id = "remainder">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 4em; color: white;">Set Reminders</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+        <div class="bgimg-3">
+		  <div class="caption">
+			<span class="border" id="wallpaperCaption" style="color: black;">UPCOMING FEATURES</span>
+		  </div>
+		</div>
+        
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 80vh;">
+                  <h2 style="font-size: 4em;"><u>Set Groups</u></h2>
+                <p style="font-size: 250%;">
+                    Groups are for the ease of use. <br>
+                    When a user is creating a joind meeting adding other users each time <br> 
+                    can be tidies and annoying when it is repeted multiple times <br>
+                    with the same group of people. <br>
+                    Our soultion is creating a group that the user will define ones and can be changed over time to remove the discomfort of searching <br>
+                    the right users for the meeting each time.
+                </p>
+              </div>
+              <div class="column bgimg-2" id="groups">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 5em; color: dimgrey;">Set Groups</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 50vh;">
+                  <h2 style="font-size: 4em;"><u>chat</u></h2>
+                <p style="font-size: 280%;">
+                    Users will be able to comunicate with each other using our site within groups and within joined meeting. 
+                </p>
+              </div>
+              <div class="column bgimg-2" id="chat">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 5em; color: black;">chat</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+<!--        <hr>-->
+        <div class="leftBoxText">
+            <div class="row" style="color: white">
+              <div class="column columnBox" style="height: 50vh;">
+                  <h2 style="font-size: 4em;"><u>External Calendar</u></h2>
+                <p style="font-size: 280%;">
+                    Users will be able to bring there own calander provider and import events <br>
+                    from it to our site to unify the calendars into one. <br>
+                    At this point of time we will be supporting google calendar.
+                </p>
+              </div>
+              <div class="column bgimg-2" id="calndars">
+                  <div class="caption">
+                    <span class="border" id = "wallpaperCaption" style="font-size: 5em; color: black;">External Calendar</span>
+                  </div>
+              </div>
+            </div>
+        </div>
+		
+        <div class="bgimg-4" id="meetTeam">
+		  <div class="caption">
+			<span class="border" id="wallpaperCaption" style="color: white;">Meet The Team:</span>
+		  </div>
+		</div>
+        
+        <div style="background-image: url(https://images.unsplash.com/photo-1534313240698-2384ede3b065?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80); background-size: cover">
+            <div class="teamWrapper">
+                <h3 style="color: white; font-weight: bold;">Ron</h3>
+                <div class="item one" onclick="presentRon()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/ron.jpg' %}" alt="alternative text" title="one">
+                </div>
+                <h3 style="color: white; font-weight: bold;">Tamir</h3>
+                <div class="item two" onclick="presentTamir()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/tamir.jpg' %}" style="padding-top: 100px;"  alt="alternative text" title="two">
+                </div>
+                <h3 style="color: white; font-weight: bold;" >Yael</h3>
+                <div class="item three" onclick="presentYael()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/yael.jpg' %}" style="padding-top: 100px;" alt="alternative text" title="three">
+                </div>
+            </div>
+
+            <div class="teamWrapper" style="margin-top: -5%;"> 
+                <h3 style="color: white; font-weight: bold;">Ravid</h3>
+                <div class="item four" onclick="presentRavid()">
+                     {% load static %}
+                    <img src="{% static 'main/teamPictures/ravid.jpg' %}" alt="alternative text" title="four">
+                </div>
+                <h3 style="color: white; font-weight: bold;">Dan</h3>
+                <div class="item five" onclick="presentDan()">
+                    {% load static %}
+                    <img src="{% static 'main/teamPictures/dan.jpg' %}" alt="alternative text" title="six">
+                </div>
+                <h3 style="color: white; font-weight: bold;">Yoav</h3>
+                <div class="item six" onclick="presentYoav()">
+                    {% load static %}
+                    <img onclick="yoav()" src="{% static 'main/teamPictures/yoav.jpg' %}" alt="alternative text" title="five">
+                </div>
+            </div>
+        </div>
+        
+        <div class="bgimg-3">
+		  <div class="caption">
+			<span class="border" id="wallpaperCaption" style="color: black;">CONTACT US</span>
+		  </div>
+		</div>
+
+		<div style="position: relative;">
+		  <div style="color: #ddd; background-color: #282E34; text-align: center; padding:50px 80px; text-align: justify;">
+			<table style="width: 100%; text-align: center;">
+				<form action="/action_page.php"> <!-- change the action to python -->
+				  <tr>
+					<th style="font-size: 2em; padding-bottom: 10px; text-align: center; border-right: 1px solid white;">LetsMeet Team:</th>
+					<th style="font-size: 2em; padding-bottom: 10px; text-align: center;">Email Us:</th> 
+				  </tr>
+				  <tr>
+					<td style=" border-right: 1px solid white; font-size: 1.5em;"><i style="font-size: 25px; padding:8px;" class="material-icons">&#xe0be;</i> letsMeetTeam@gmail.com</td>
+					<td style="color: #000;"><input type="text" name="email" placeholder="Email" required></td>
+				  </tr>
+				  <tr>
+					<td style=" border-right: 1px solid white; font-size: 1.5em;"><i style="font-size: 40px; padding:8px;" class="fa">&#xf10b;</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +972-50-123-456</td> 
+					<td style="color: #000;"><input type="text" name="subject" placeholder="Subject" required></td>
+				  </tr>
+				  <tr>
+					<td style=" border-right: 1px solid white;"> </td>
+					<td style="color: #000;"><input type="submit" value="Send"></td>
+				  </tr>
+				</form>
+			</table>
+		  </div>
+		</div>
+        
+		<div style="position:relative;" class="footer" id="footer">
+		  <div style="color:#fff;background-color:#282E34;text-align:center;padding:20px 80px;text-align: justify;">
+			<p style="text-align:center; text-transform: capitalize; font-size:20px;">contact us in: <a href="#facebook"><i style="font-size:24px; padding:8px;" class="fa">&#xf09a;</i></a> <a href="#twitter"><i style="font-size:24px; padding:8px;" class="fa">&#xf099;</i></a> <a href="#instegram"><i style="font-size:24px; padding:8px;" class="fa">&#xf16d;</i></a> <a href="#linkedin"><i style="font-size:24px; padding:8px;" class="fa">&#xf08c;</i></a>
+			<a href="#nav"><span class="glyphicon" style="float:right; font-size:24px; padding:8px;">&#xe133;</span></a><span style="float:right; font-size:20px;">Back Up</span></p>
+		  </div>
+		</div>
+	</body>
+</html>
