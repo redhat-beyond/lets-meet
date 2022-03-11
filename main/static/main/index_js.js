@@ -44,13 +44,12 @@ function present(name, image_url, title, attributes) {
 
 function presentTamir() {
     present("Tamir Sror", "https://images.unsplash.com/photo-1515825838458-f2a94b20105a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80", 
-           "I'm a 3rd year Computer Science Student <br> and a software developer", ["I did a few projects similer to what is required in our course", "I did a few other courses that required team work."])
+           "I'm a 3rd year Computer Science Student <br> and a software developer", ["I did a few projects similar to what is required in our course.", "I did a few other courses that required teamwork."])
 }
 
 function presentYael() {
     present("Yael Davidov", "https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80", 
-           "I'm a 4rd year Computer Science Student", ["I did a few courses that are relavent to the work we are going to do such as" +
-                     "java script and computer comunications"])
+           "I'm a 4rd year Computer Science Student", ["I did a few courses that are relevant to the work we are going to do such as javascript and computer communications"])
 }
 
 function presentRon() {
