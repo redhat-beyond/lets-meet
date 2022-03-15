@@ -17,14 +17,14 @@ After the installations are complete successfully, by typing 'vagrant up' in the
 
 1. Create an issue, address the Assignees and the Label.
 
-2. Clone the repository and make contribution, commit change\s.
+2. Clone the repository and make a contribution, commit change\s.
 
 3. Make sure the PR has been checked thoroughly before creating the new PR.
 todo
 
-4. flake8 will test relevant python's code.
+4. flake8 will test relevant python code.
 
-5. if the PR gets enough support by the maintainers, it will be approved and merged.
+5. if the PR gets enough support from the maintainers, it will be approved and merged.
 
 * note that conflicts within the PR may cause the PR to be disapproved.
 
@@ -33,14 +33,14 @@ todo
 ### Testing with Flake8
 
 1. Every PR is tested by Flake8.
-2. An updated manual can be found in the following  link: [link](https://flake8.pycqa.org/en/latest/)
+2. An updated manual can be found in the following link: [link](https://flake8.pycqa.org/en/latest/)
 
 ## Code of Conduct
 
 ### Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
+contributors and maintainers pledge to make participation in our project and
 our community a harassment-free experience for everyone, regardless of age, body
 size, disability, ethnicity, gender identity and expression, level of experience,
 nationality, personal appearance, race, religion, or sexual identity and
@@ -85,17 +85,17 @@ threatening, offensive, or harmful.
 This Code of Conduct applies both within project spaces and in public spaces
 when an individual is representing the project or its community. Examples of
 representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
+address, posting via an official social media account or acting as an appointed
 representative at an online or offline event. Representation of a project may be
 further defined and clarified by project maintainers.
 
 ### Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [INSERT EMAIL ADDRESS]. All
+Instances of abusive, harassing, or otherwise, unacceptable behavior may be
+reported by contacting the project team at LetsMeetSquad@gmail.com . All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
+obligated to maintain confidentiality about the reporter of an incident.
 Further details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good
