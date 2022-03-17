@@ -11,7 +11,7 @@ To contribute to our community project, download and install the following:
 
   2. VirtualBox(or other VM that works with "Vagrant")
   
-After the installations are complete successfully, by typing 'vagrant up' in the directory of the repository, the development environment will automatically be set up.
+After the installations are complete successfully, by typing 'vagrant up' in the directory of the repository, the development environment will set automatically up.
 
 ## Pull Request Process
 
