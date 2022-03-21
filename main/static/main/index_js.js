@@ -49,7 +49,7 @@ function presentTamir() {
 
 function presentYael() {
     present("Yael Davidov", "https://images.unsplash.com/photo-1608534430161-593a93055096?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=874&q=80", 
-           "I'm a 4rd year Computer Science Student", ["I did a few courses that are relevant to the work we are going to do such as javascript and computer communications"])
+           "I'm a 4th year Computer Science Student", ["I did a few courses that are relevant to the work we are going to do such as javascript and computer communications"])
 }
 
 function presentRon() {
