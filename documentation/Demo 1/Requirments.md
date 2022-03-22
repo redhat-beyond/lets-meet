@@ -71,7 +71,7 @@ the demo, we require that you divide the work between you in the following way:
    required
 9. Designate a primary speaker for your team. Other members are encouraged to
    speak as well, but if so, plan who talks on what so you can all finish within
-   the allotted time (15m).
+   the allocated time (15m).
 10. It is recommended to pre-record technical demos to prevent technical issues
     from disturbing your demo
 11. Please make sure all your teammates can successfully use Git to clone the
