@@ -1,1 +1,1 @@
-[Demo 1 link](https://github.com/redhat-beyond/documents/blob/main/Beyond07-SOW.md#demo-2-april-3rd-data-model-and-business-logic)
+[Demo 2 link](https://github.com/redhat-beyond/documents/blob/main/Beyond07-SOW.md#demo-2-april-3rd-data-model-and-business-logic)

@@ -1,1 +1,1 @@
-[Demo 1 link](https://github.com/redhat-beyond/documents/blob/main/Beyond07-SOW.md#demo-3-may-1st-control-logic-and-ui)
+[Demo 3 link](https://github.com/redhat-beyond/documents/blob/main/Beyond07-SOW.md#demo-3-may-1st-control-logic-and-ui)
