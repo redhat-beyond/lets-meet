@@ -14,7 +14,7 @@ def validate_email_addr(value):
 
 
 def validate_phone_number(value):
-    if value != None:
+    if value is not None:
         if not value.isnumeric():
             raise ValidationError(
                 _(f'{value} has at least one character'),
