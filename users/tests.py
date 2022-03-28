@@ -46,7 +46,7 @@ def create_user(email, phone_number, password, name):
     (create_user("user@", PHONE_NUM, PASSWORD, NAME), "Email is not valid"),
     (create_user("user@com", PHONE_NUM, PASSWORD, NAME), "Email is not valid")
 ])
-def test_invalid_phone_number(users, excpected_error):
+def test_invalidation(users, excpected_error):
     try:
         users.save()
     except ValidationError as error:
