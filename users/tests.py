@@ -30,7 +30,7 @@ def create_user(email, phone_number, password, name):
 
 @pytest.mark.parametrize("users, excpected_error", [
     (create_user(EMAIL, "090398", PASSWORD, NAME),
-     "090398 is not a valid phone number.The number should start with 05"),
+     "090398 is not a valid phone number. The number should start with 05"),
     (create_user(EMAIL, "05987983", PASSWORD, NAME),
      "05987983 is not a valid phone number. The number should have 10 digits"),
     (create_user(EMAIL, "05111111111", PASSWORD, NAME),
