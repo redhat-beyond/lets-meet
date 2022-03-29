@@ -1,14 +1,21 @@
-# from django.test import TestCase
-# from asyncio import FastChildWatcher
 import pytest
 from django.core.exceptions import ValidationError
+
 from . import models
 
 
 PHONE_NUM = "0528883333"
 EMAIL = "user@gmail.com"
-PASSWORD = "password"
+PASSWORD = "AdminU$er123"
 NAME = "user"
+
+VALID_PREFIX_ERROR = "{} is not a valid phone number. The number should start with 05"
+NOT_VALID_PREFIX_ENDING_ERROR = "{} is not a valid phone number. " + \
+                                "The number should start with 05 and a number that is not 7"
+NOT_SUPPORTED_ERROR = "{} is not supported"
+PHONE_NUMBER_LENGTH = "{} is not a valid phone number. The number should have {} digits"
+CHERECTERS_ERROR = "{} has at least one character"
+EMAIL_ERROR = "Email is not valid"
 
 
 @pytest.fixture
@@ -29,22 +36,17 @@ def create_user(email, phone_number, password, name):
 
 
 @pytest.mark.parametrize("users, excpected_error", [
-    (create_user(EMAIL, "090398", PASSWORD, NAME),
-     "090398 is not a valid phone number. The number should start with 05"),
-    (create_user(EMAIL, "05987983", PASSWORD, NAME),
-     "05987983 is not a valid phone number. The number should have 10 digits"),
-    (create_user(EMAIL, "05111111111", PASSWORD, NAME),
-     "05111111111 is not a valid phone number. The number should have 10 digits"),
-    (create_user(EMAIL, "++97255347", PASSWORD, NAME),
-     "++97255347 is not supported"),
-    (create_user(EMAIL, "+978509154161", PASSWORD, NAME),
-     "+978509154161 is not supported"),
-    (create_user(EMAIL, "+9725091541614", PASSWORD, NAME),
-     "+9725091541614 is not a valid phone number. The number should have 13 digits"),
-    (create_user(EMAIL, "05hbjhbwfh", PASSWORD, NAME), "05hbjhbwfh has at least one character"),
-    (create_user("jnkjn;lk", PHONE_NUM, PASSWORD, NAME), "Email is not valid"),
-    (create_user("user@", PHONE_NUM, PASSWORD, NAME), "Email is not valid"),
-    (create_user("user@com", PHONE_NUM, PASSWORD, NAME), "Email is not valid")
+    (create_user(EMAIL, "090398", PASSWORD, NAME), VALID_PREFIX_ERROR.format("090398")),
+    (create_user(EMAIL, "05987983", PASSWORD, NAME), PHONE_NUMBER_LENGTH.format("05987983", "10")),
+    (create_user(EMAIL, "0574601223", PASSWORD, NAME), NOT_VALID_PREFIX_ENDING_ERROR.format("0574601223")),
+    (create_user(EMAIL, "05111111111", PASSWORD, NAME), PHONE_NUMBER_LENGTH.format("05111111111", "10")),
+    (create_user(EMAIL, "++97255347", PASSWORD, NAME), NOT_SUPPORTED_ERROR.format("++97255347")),
+    (create_user(EMAIL, "+978509154161", PASSWORD, NAME), NOT_SUPPORTED_ERROR.format("+978509154161")),
+    (create_user(EMAIL, "+9725091541614", PASSWORD, NAME), PHONE_NUMBER_LENGTH.format("+9725091541614", "13")),
+    (create_user(EMAIL, "05hbjhbwfh", PASSWORD, NAME), CHERECTERS_ERROR.format("05hbjhbwfh")),
+    (create_user("jnkjn;lk", PHONE_NUM, PASSWORD, NAME), EMAIL_ERROR),
+    (create_user("user@", PHONE_NUM, PASSWORD, NAME), EMAIL_ERROR),
+    (create_user("user@com", PHONE_NUM, PASSWORD, NAME), EMAIL_ERROR)
 ])
 def test_invalidation(users, excpected_error):
     try:
@@ -69,4 +71,3 @@ def test_persist_user(persist_user):
 @pytest.mark.django_db()
 def test_delete_user(persist_user):
     persist_user.delete()
-    assert persist_user not in models.User.objects.all()
