@@ -71,4 +71,3 @@ def test_persist_user(persist_user):
 @pytest.mark.django_db()
 def test_delete_user(persist_user):
     persist_user.delete()
-    assert persist_user not in models.User.objects.all()
