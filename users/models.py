@@ -74,7 +74,6 @@ class User(AbstractUser):
         return self.email
 
 
-def user_fields_validation(sender, instance, **kwargs):
     validate_password(instance.password)
     validate_email_addr(instance.email)
     validate_phone_number(instance.phone_number)
