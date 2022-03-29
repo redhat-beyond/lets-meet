@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
         from users.models import User
 
         users_test_data = [
-            ('testUser1', 'testUser1@mta.ac.il', 'Password123', '0501111111'),
-            ('testUser2', 'testUser2@mta.ac.il', 'Password456', '0524444888'),
-            ('testUser3', 'testUser3@mta.ac.il', 'Password789', '0524444887')
+            ('testUser1', 'testUser1@mta.ac.il', 'PasswordU$er123', '0501111111'),
+            ('testUser2', 'testUser2@mta.ac.il', 'PasswordU$er456', '0524444888'),
+            ('testUser3', 'testUser3@mta.ac.il', 'PasswordU$er789', '0524444887')
         ]
 
         with transaction.atomic():
