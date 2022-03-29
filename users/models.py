@@ -31,7 +31,6 @@ def validate_phone_number(phone_number):
             phone_number = "0" + phone_number[4:]
 
         if phone_number[:2] != '05':
-
             raise ValidationError(
                 _(f'{get_phone_number()} is not a valid phone number. The number should start with 05'),
                 params={'phone_number': get_phone_number()},
