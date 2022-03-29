@@ -2,26 +2,8 @@
 
 # Create your tests here.
 import pytest
-from datetime import datetime
-from django.utils import timezone
 from django.core.exceptions import ValidationError
 from . import models
-
-USERNAME = "ed"
-TITLE = "title"
-DATE_TIME_EARLY = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-DATE_TIME_LATER = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
-
-
-@pytest.fixture
-def event0():
-    return models.Event(title=TITLE, location='new_location', description='new_description',
-                        date_time_start=DATE_TIME_EARLY, date_time_end=DATE_TIME_LATER)
-
-
-@pytest.fixture
-def user0():
-    return models.User(username=USERNAME)
 
 
 @pytest.fixture
@@ -46,14 +28,6 @@ def persist_event_participant(event_participant_creator0):
     event_participant_creator0.user_id.save()
     event_participant_creator0.save()
     return event_participant_creator0
-
-
-@pytest.fixture
-def persist_possible_meeting0(persist_event_participant):
-    possible_meeting = models.PossibleMeeting(participant_id=persist_event_participant,
-                                              date_time_start=DATE_TIME_EARLY, date_time_end=DATE_TIME_LATER)
-    possible_meeting.save()
-    return possible_meeting
 
 
 class TestEventParticipantModel:
