@@ -6,15 +6,19 @@ from datetime import datetime
 import pytest
 
 
-DATE_TIME_EARLY = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-DATE_TIME_LATER = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
+DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
 TITLE = 'new_title'
+LOCATION = 'new_location'
+DESCRIPTION = 'new_description'
 
 
 @pytest.fixture
 def new_event():
-    return Event(title='new_title', location='new_location', description='new_description',
-                 date_time_start=DATE_TIME_EARLY, date_time_end=DATE_TIME_LATER)
+    return Event(
+        title=TITLE, location=LOCATION, description=DESCRIPTION,
+        date_time_start=DATE_TIME_START, date_time_end=DATE_TIME_END
+    )
 
 
 @pytest.fixture
@@ -24,7 +28,7 @@ def persist_event(db, new_event):
 
 
 @pytest.mark.django_db
-def test_persist_event(persist_event):
+def test_add_event(persist_event):
     assert persist_event in Event.objects.all()
 
 
@@ -34,22 +38,29 @@ def test_delete_event(persist_event):
     assert persist_event not in Event.objects.all()
 
 
+@pytest.mark.django_db
+def test_exist_event():
+    assert Event.objects.get(title='title1')
+    assert Event.objects.get(title='title2')
+    assert Event.objects.get(title='title3')
+
+
 def create_event(title, date_time_start, date_time_end):
     return Event(title=title, date_time_start=date_time_start, date_time_end=date_time_end)
 
 
-@pytest.mark.parametrize('events, excpected_error', [
-    (create_event(None, DATE_TIME_EARLY, DATE_TIME_LATER), 'title cannot be blank'),
-    (create_event(TITLE, None, DATE_TIME_LATER), 'Starting date cannot be blank'),
-    (create_event(TITLE, DATE_TIME_EARLY, None), 'Ending date cannot be blank'),
-    (create_event(TITLE, DATE_TIME_EARLY, DATE_TIME_EARLY),
-     f'{DATE_TIME_EARLY} must be smaller than {DATE_TIME_EARLY}'),
-    (create_event(TITLE, DATE_TIME_LATER, DATE_TIME_EARLY), f'{DATE_TIME_LATER} must be smaller than {DATE_TIME_EARLY}')
+@pytest.mark.parametrize('title, date_time_start, date_time_end, expected_error', [
+    (None, DATE_TIME_START, DATE_TIME_END, 'Title cannot be blank'),
+    ('', DATE_TIME_START, DATE_TIME_END, 'Title cannot be blank'),
+    (TITLE, None, DATE_TIME_END, 'Starting date cannot be blank'),
+    (TITLE, DATE_TIME_START, None, 'Ending date cannot be blank'),
+    (TITLE, DATE_TIME_START, DATE_TIME_START, f'{DATE_TIME_START} must be smaller than {DATE_TIME_START}'),
+    (TITLE, DATE_TIME_END, DATE_TIME_START, f'{DATE_TIME_END} must be smaller than {DATE_TIME_START}')
 ])
-def test_invalidation(events, excpected_error):
+def test_invalidation(title, date_time_start, date_time_end, expected_error):
+    current_error = ''
     try:
-        events.save()
+        create_event(title, date_time_start, date_time_end).save()
     except ValidationError as error:
-        assert excpected_error in error  # The event was not created successfully
-    else:
-        assert False  # The event was created successfully
+        current_error = error.messages[0]
+    assert expected_error == current_error
