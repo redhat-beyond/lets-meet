@@ -1,5 +1,4 @@
 import pytest
-from random import randint as rand
 from phonenumber_field.phonenumber import PhoneNumber
 
 from . import models
@@ -51,31 +50,8 @@ def create_user(email, phone_number, password, username):
     return models.User(email=email, phone_number=phone_number, password=password, username=username)
 
 
-def get_long_string(length=31, lower=True, upper=True, special=True, digits=True):
-    from random import choice
-    from string import ascii_lowercase, ascii_uppercase, digits
-
-    special_cherectes = "!@#$%^&*()_+-=[]|"
-
-    dictionary = ""
-
-    if lower:
-        dictionary += ascii_lowercase
-    if upper:
-        dictionary += ascii_uppercase
-    if special:
-        dictionary += special_cherectes
-    if digits:
-        dictionary += digits
-
-    return "".join([choice(dictionary) for _ in range(length)])
-
-
 @pytest.mark.django_db()
 @pytest.mark.parametrize("email, phone_num, password, username, excpected_error", [
-    (EMAIL, "0544601142", PASSWORD, NAME, MISSING_REGION),
-    (EMAIL, "05987983", PASSWORD, NAME, MISSING_REGION),
-    (EMAIL, "0574601223", PASSWORD, NAME, MISSING_REGION),
     (EMAIL, "05111111111", PASSWORD, NAME, MISSING_REGION),
     (EMAIL, "++97255347", PASSWORD, NAME, NOT_VALID_PHONE),
     (EMAIL, "+978509154161", PASSWORD, NAME, NOT_INTERPRETED),
@@ -84,9 +60,8 @@ def get_long_string(length=31, lower=True, upper=True, special=True, digits=True
     ("jnkjn;lk", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
     ("user@", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
     ("user@com", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
-    (EMAIL, PHONE_NUM, PASSWORD, get_long_string(length=rand(31, 100)), NAME_LENGTH_ERROR),
-    (EMAIL, PHONE_NUM, PASSWORD, get_long_string(length=rand(31, 100)), NAME_LENGTH_ERROR),
-    (EMAIL, PHONE_NUM, PASSWORD, get_long_string(length=rand(31, 100)), NAME_LENGTH_ERROR)
+    (EMAIL, PHONE_NUM, PASSWORD, "agyT02!@9#"*15, NAME_LENGTH_ERROR),
+    (EMAIL, PHONE_NUM, PASSWORD, "16%$-7jkd@!?"*15, NAME_LENGTH_ERROR)
 ])
 def test_invalid_user_values(email, phone_num, password, username, excpected_error):
     with pytest.raises(Exception, match=excpected_error):
