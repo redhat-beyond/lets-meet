@@ -23,8 +23,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='phone_number',
-            field=models.CharField(blank=True, max_length=10, null=True, unique=True,
-                                   validators=[users.models.validate_phone_number]),
+            field=models.CharField(blank=True, max_length=10, null=True, unique=True),
         ),
         migrations.AddField(
             model_name='user',
@@ -34,7 +33,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='email',
-            field=models.EmailField(max_length=254, unique=True,
-                                    validators=[users.models.validate_email_addr]),
+            field=models.EmailField(
+                max_length=254, unique=True, validators=[users.models.validate_email_addr]
+             ),
         ),
     ]
