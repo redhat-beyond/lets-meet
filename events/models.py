@@ -32,12 +32,7 @@ class Event(models.Model):
     def clean(self):
         if not self.title:
             raise ValidationError('Title cannot be blank')
-        if not self.date_time_start:
-            raise ValidationError('Starting date cannot be blank')
-        if not self.date_time_end:
-            raise ValidationError('Ending date cannot be blank')
-        if self.date_time_start >= self.date_time_end:
-            raise ValidationError(f'{self.date_time_start} must be smaller than {self.date_time_end}')
+        validate_date_time(self.date_time_start, self.date_time_end)
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -57,6 +52,28 @@ class EventParticipant(models.Model):
 
     def clean(self) -> None:
         validate_unique_user(self.event_id, self.user_id)
+    
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super().save(*args, **kwargs)
+    
+
+
+def validate_unique_user(event, user):
+    if EventParticipant.objects.filter(event_id=event, user_id=user):
+        raise ValidationError('user already exist in meeting')
+
+
+class PossibleMeeting(models.Model):
+    participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
+    date_time_start = models.DateTimeField()
+    date_time_end = models.DateTimeField()
+
+    def __str__(self) -> str:
+        return f"{self.prticipant_id} - {self.date_time_start}"
+
+    def clean(self) -> None:
+        validate_date_time(self.date_time_start, self.date_time_end)
         return super().clean()
 
     def save(self, *args, **kwargs):
@@ -64,6 +81,10 @@ class EventParticipant(models.Model):
         return super().save(*args, **kwargs)
 
 
-def validate_unique_user(event, user):
-    if EventParticipant.objects.filter(event_id=event, user_id=user):
-        raise ValidationError('user already exist in meeting')
+def validate_date_time(starting_date, ending_date):
+    if not starting_date:
+        raise ValidationError('Starting date cannot be blank')
+    if not ending_date:
+        raise ValidationError('Ending date cannot be blank')
+    if starting_date >= ending_date:
+        raise ValidationError(f'{starting_date} must be smaller than {ending_date}')
