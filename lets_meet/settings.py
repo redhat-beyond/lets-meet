@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'events.apps.EventsConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'phonenumber_field',
 ]
 
 AUTH_USER_MODEL = "users.User"
