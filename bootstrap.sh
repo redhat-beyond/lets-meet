@@ -10,9 +10,8 @@ cd /vagrant
 # Install dependencies with Pipenv
 pipenv sync --dev
 
-# Run database migrations
+# run database migrations
 pipenv run python manage.py migrate
 
-# run our app. Nohup and "&" are used to let the setup script finish
-# while our app stays up. The app logs will be collected in nohup.output
+# run our app on localhost port
 setsid pipenv run python manage.py runserver 0.0.0.0:8000 > runserver.log 2>&1 &
