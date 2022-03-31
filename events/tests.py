@@ -1,7 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from .models import Event
+from .models import EventParticipant
 from datetime import datetime
+from users.models import User
+# from users.tests import user0  # noqa: F401; pylint: disable=unused-variable
+
 
 import pytest
 
@@ -11,6 +15,10 @@ DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
 TITLE = 'new_title'
 LOCATION = 'new_location'
 DESCRIPTION = 'new_description'
+NAME = "user"
+EMAIL = "user@gmail.com"
+PASSWORD = "AdminU$er123"
+PHONE_NUM = "+972544651892"
 
 
 @pytest.fixture
@@ -19,6 +27,11 @@ def new_event():
         title=TITLE, location=LOCATION, description=DESCRIPTION,
         date_time_start=DATE_TIME_START, date_time_end=DATE_TIME_END
     )
+
+
+@pytest.fixture
+def user0():
+    return User(email=EMAIL, phone_number=PHONE_NUM, password=PASSWORD, username=NAME)
 
 
 @pytest.fixture
@@ -64,3 +77,50 @@ def test_invalidation(title, date_time_start, date_time_end, expected_error):
     except ValidationError as error:
         current_error = error.messages[0]
     assert expected_error == current_error
+
+
+def create_event_participant(event, user, is_creator):
+    return EventParticipant(event_id=event, user_id=user, is_creator=is_creator)
+
+
+@pytest.fixture
+@pytest.mark.usefixtures("user0")
+def event_participant_creator(new_event, user0):  # noqa: F401; pylint: disable=unused-variable
+    return create_event_participant(new_event, user0, True)
+
+
+@pytest.fixture
+@pytest.mark.usefixtures("user0")
+def event_participant_not_creator(new_event, user0):  # noqa: F401; pylint: disable=unused-variable
+    return create_event_participant(new_event, user0, False)
+
+
+@pytest.fixture
+def persist_event_participant(event_participant_creator):
+    event_participant_creator.event_id.save()
+    event_participant_creator.user_id.save()
+    event_participant_creator.save()
+    return event_participant_creator
+
+
+@pytest.mark.django_db
+def test_persist_event_participant(persist_event_participant):
+    assert persist_event_participant in EventParticipant.objects.all()
+
+
+@pytest.mark.django_db
+def test_delete_event_participant(persist_event_participant):
+    persist_event_participant.delete()
+    assert persist_event_participant not in EventParticipant.objects.all()
+
+
+@pytest.mark.django_db
+def test_delete_user_deletes_participant(persist_event_participant):
+    persist_event_participant.user_id.delete()
+    assert persist_event_participant not in EventParticipant.objects.all()
+
+
+@pytest.mark.django_db
+def test_exist_event_participant():
+    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title1'))
+    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title2'))
