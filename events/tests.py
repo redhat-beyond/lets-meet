@@ -121,3 +121,9 @@ def test_delete_user_deletes_participant(persist_event_participant):
 def test_exist_event_participant():
     assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title1'))
     assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title2'))
+
+
+@pytest.mark.django_db
+def test_invalid_register_user_twice(persist_event_participant):
+    with pytest.raises(Exception, match='user already exist in meeting'):
+        persist_event_participant.save()

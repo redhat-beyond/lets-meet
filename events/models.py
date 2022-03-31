@@ -54,3 +54,16 @@ class EventParticipant(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user_id} - {self.event_id}"
+
+    def clean(self) -> None:
+        validate_unique_user(self.event_id, self.user_id)
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super().save(*args, **kwargs)
+
+
+def validate_unique_user(event, user):
+    if EventParticipant.objects.filter(event_id=event, user_id=user):
+        raise ValidationError('user already exist in meeting')
