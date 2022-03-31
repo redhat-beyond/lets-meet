@@ -4,7 +4,6 @@ from .models import Event
 from .models import EventParticipant
 from datetime import datetime
 from users.models import User
-# from users.tests import user0  # noqa: F401; pylint: disable=unused-variable
 
 
 import pytest
@@ -84,14 +83,12 @@ def create_event_participant(event, user, is_creator):
 
 
 @pytest.fixture
-@pytest.mark.usefixtures("user0")
-def event_participant_creator(new_event, user0):  # noqa: F401; pylint: disable=unused-variable
+def event_participant_creator(new_event, user0):
     return create_event_participant(new_event, user0, True)
 
 
 @pytest.fixture
-@pytest.mark.usefixtures("user0")
-def event_participant_not_creator(new_event, user0):  # noqa: F401; pylint: disable=unused-variable
+def event_participant_not_creator(new_event, user0):
     return create_event_participant(new_event, user0, False)
 
 
