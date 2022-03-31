@@ -4,7 +4,7 @@ from django.db import migrations, transaction
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_remove_user_username_user_name_user_phone_number_and_more'),
+        ('users', '0001_initial'),
     ]
 
     def generate_user_test_data(apps, schema_editor):
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
 
         with transaction.atomic():
             for user_name, user_email, user_password, user_phone in users_test_data:
-                user = User(name=user_name, email=user_email, password=user_password, phone_number=user_phone)
+                user = User(username=user_name, email=user_email, password=user_password, phone_number=user_phone)
                 user.save()
 
     operations = [

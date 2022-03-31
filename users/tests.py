@@ -20,7 +20,7 @@ EMAIL_ERROR = "Email is not valid"
 
 @pytest.fixture
 def user0():
-    return models.User(email=EMAIL, phone_number=PHONE_NUM, password=PASSWORD, name=NAME)
+    return models.User(email=EMAIL, phone_number=PHONE_NUM, password=PASSWORD, username=NAME)
 
 
 @pytest.fixture
@@ -42,13 +42,13 @@ def test_delete_user(persist_user):
 def test_new_user(user0):
     assert user0.email == EMAIL
     assert user0.phone_number.as_e164 == PHONE_NUM
-    assert user0.name == NAME
+    assert user0.username == NAME
     assert user0.profile_pic == 'profile_pic.svg'
     assert user0.password == PASSWORD
 
 
-def create_user(email, phone_number, password, name):
-    return models.User(email=email, phone_number=phone_number, password=password, name=name)
+def create_user(email, phone_number, password, username):
+    return models.User(email=email, phone_number=phone_number, password=password, username=username)
 
 
 def get_long_string(length=31, lower=True, upper=True, special=True, digits=True):
@@ -72,7 +72,7 @@ def get_long_string(length=31, lower=True, upper=True, special=True, digits=True
 
 
 @pytest.mark.django_db()
-@pytest.mark.parametrize("email, phone_num, password, name, excpected_error", [
+@pytest.mark.parametrize("email, phone_num, password, username, excpected_error", [
     (EMAIL, "0544601142", PASSWORD, NAME, MISSING_REGION),
     (EMAIL, "05987983", PASSWORD, NAME, MISSING_REGION),
     (EMAIL, "0574601223", PASSWORD, NAME, MISSING_REGION),
@@ -88,15 +88,15 @@ def get_long_string(length=31, lower=True, upper=True, special=True, digits=True
     (EMAIL, PHONE_NUM, PASSWORD, get_long_string(length=rand(31, 100)), NAME_LENGTH_ERROR),
     (EMAIL, PHONE_NUM, PASSWORD, get_long_string(length=rand(31, 100)), NAME_LENGTH_ERROR)
 ])
-def test_invalid_user_values(email, phone_num, password, name, excpected_error):
+def test_invalid_user_values(email, phone_num, password, username, excpected_error):
     with pytest.raises(Exception, match=excpected_error):
         phone_number = PhoneNumber.from_string(phone_number=phone_num)
-        user = create_user(email, phone_number, password, name)
+        user = create_user(email, phone_number, password, username)
         user.save()
 
 
 @pytest.mark.django_db
 def test_user_existence():
-    assert models.User.objects.get(name="testUser1")
-    assert models.User.objects.get(name="testUser2")
-    assert models.User.objects.get(name="testUser3")
+    assert models.User.objects.get(username="testUser1")
+    assert models.User.objects.get(username="testUser2")
+    assert models.User.objects.get(username="testUser3")

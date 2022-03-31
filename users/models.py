@@ -14,15 +14,14 @@ def validate_email_addr(email):
 
 
 class User(AbstractUser):
-    username = None
     email = models.EmailField(unique=True, validators=[validate_email_addr])
-    name = models.CharField(max_length=30)
+    username = models.CharField(max_length=30)
     phone_number = PhoneNumberField(max_length=13, unique=True, blank=True, null=True, region="IL")
     profile_pic = models.ImageField(default='profile_pic.svg', upload_to='profiles/')
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
