@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         from events.models import EventParticipant
 
         event_participant_data = [
-            (Event.objects.get(title='title1'), User.objects.get(username="testUser1"), True),
-            (Event.objects.get(title='title1'), User.objects.get(username="testUser2"), False),
-            (Event.objects.get(title='title2'), User.objects.get(username="testUser3"), True)
+            (Event.objects.get(title='event1'), User.objects.get(username="testUser1"), True),
+            (Event.objects.get(title='event1'), User.objects.get(username="testUser2"), False),
+            (Event.objects.get(title='event2'), User.objects.get(username="testUser3"), True)
         ]
 
         with transaction.atomic():

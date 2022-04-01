@@ -52,9 +52,9 @@ def test_delete_event(persist_event):
 
 @pytest.mark.django_db
 def test_exist_event():
-    assert Event.objects.get(title='title1')
-    assert Event.objects.get(title='title2')
-    assert Event.objects.get(title='title3')
+    assert Event.objects.get(title='event1')
+    assert Event.objects.get(title='event2')
+    assert Event.objects.get(title='event3')
 
 
 def create_event(title, date_time_start, date_time_end):
@@ -119,8 +119,8 @@ def test_delete_user_deletes_participant(persist_event_participant):
 
 @pytest.mark.django_db
 def test_exist_event_participant():
-    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title1'))
-    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='title2'))
+    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='event1'))
+    assert EventParticipant.objects.filter(event_id=Event.objects.get(title='event2'))
 
 
 @pytest.mark.django_db
