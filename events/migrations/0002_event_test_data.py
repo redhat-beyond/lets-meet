@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         from django.utils import timezone
 
         events_test_data = [
-            ('title1', datetime(2022, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
+            ('event1', datetime(2022, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
              datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)),
-            ('title2', datetime(2022, 8, 14, 13, 13, 13, 0, tzinfo=timezone.utc),
+            ('event2', datetime(2022, 8, 14, 13, 13, 13, 0, tzinfo=timezone.utc),
              datetime(2022, 8, 14, 15, 15, 15, 0, tzinfo=timezone.utc)),
-            ('title3', datetime(2023, 1, 24, 13, 13, 13, 0, tzinfo=timezone.utc),
+            ('event3', datetime(2023, 1, 24, 13, 13, 13, 0, tzinfo=timezone.utc),
              datetime(2023, 1, 24, 15, 15, 15, 0, tzinfo=timezone.utc))
         ]
 
