@@ -1,8 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import Event
-from .models import EventParticipant
-from .models import PossibleMeeting
+from .models import Event, PossibleMeeting, EventParticipant
 from datetime import datetime
 from users.models import User
 
@@ -126,7 +124,7 @@ def test_exist_event_participant():
 
 @pytest.mark.django_db
 def test_invalid_register_user_twice(persist_event_participant):
-    with pytest.raises(ValidationError, match='user already exist in meeting'):
+    with pytest.raises(Exception, match='user already exist in meeting'):
         persist_event_participant.save()
 
 
@@ -168,3 +166,12 @@ def test_persist_possible_meeting_Validation_Error(persist_possible_meeting):
         persist_possible_meeting.date_time_start = DATE_TIME_END
         persist_possible_meeting.date_time_end = DATE_TIME_START
         persist_possible_meeting.save()
+
+
+def get_event_participant_from_db():
+    return EventParticipant.objects.filter(is_creator=True)[0]
+
+
+@pytest.mark.django_db
+def test_persist_possible_meeting_in_db():
+    assert PossibleMeeting.objects.filter(participant_id=get_event_participant_from_db())

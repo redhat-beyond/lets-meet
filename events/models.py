@@ -52,11 +52,10 @@ class EventParticipant(models.Model):
 
     def clean(self) -> None:
         validate_unique_user(self.event_id, self.user_id)
-    
+
     def save(self, *args, **kwargs):
         self.clean()
         return super().save(*args, **kwargs)
-    
 
 
 def validate_unique_user(event, user):
@@ -70,7 +69,7 @@ class PossibleMeeting(models.Model):
     date_time_end = models.DateTimeField()
 
     def __str__(self) -> str:
-        return f"{self.prticipant_id} - {self.date_time_start}"
+        return f"{self.participant_id} - {self.date_time_start}"
 
     def clean(self) -> None:
         validate_date_time(self.date_time_start, self.date_time_end)
