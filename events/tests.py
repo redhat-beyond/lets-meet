@@ -2,11 +2,10 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from .models import Event, PossibleMeeting, EventParticipant
 from datetime import datetime
+from .models import time_format
 from users.models import User
 
-
 import pytest
-
 
 DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
@@ -65,8 +64,10 @@ def create_event(title, date_time_start, date_time_end):
     ('', DATE_TIME_START, DATE_TIME_END, 'Title cannot be blank'),
     (TITLE, None, DATE_TIME_END, 'Starting date cannot be blank'),
     (TITLE, DATE_TIME_START, None, 'Ending date cannot be blank'),
-    (TITLE, DATE_TIME_START, DATE_TIME_START, f'{DATE_TIME_START} must be smaller than {DATE_TIME_START}'),
-    (TITLE, DATE_TIME_END, DATE_TIME_START, f'{DATE_TIME_END} must be smaller than {DATE_TIME_START}')
+    (TITLE, DATE_TIME_START, DATE_TIME_START,
+     f'{time_format(DATE_TIME_START)} must be smaller than {time_format(DATE_TIME_START)}'),
+    (TITLE, DATE_TIME_END, DATE_TIME_START,
+     f'{time_format(DATE_TIME_END)} must be smaller than {time_format(DATE_TIME_START)}')
 ])
 def test_invalidation(title, date_time_start, date_time_end, expected_error):
     current_error = ''
@@ -175,3 +176,9 @@ def get_event_participant_from_db():
 @pytest.mark.django_db
 def test_persist_possible_meeting_in_db():
     assert PossibleMeeting.objects.filter(participant_id=get_event_participant_from_db())
+
+
+@pytest.mark.django_db
+def test_duplicate_possible_meeting(persist_possible_meeting):
+    with pytest.raises(Exception, match='meeting hours already exists'):
+        persist_possible_meeting.save()
