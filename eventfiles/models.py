@@ -26,5 +26,5 @@ class EventFile(models.Model):
         return super().clean()
 
     def save(self, *args, **kwargs):
-        self.clean()
+        self.clean()    
         return super().save(*args, **kwargs)
