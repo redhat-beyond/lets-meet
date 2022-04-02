@@ -3,7 +3,6 @@ from phonenumber_field.phonenumber import PhoneNumber
 
 from . import models
 
-
 NAME = "user"
 EMAIL = "user@gmail.com"
 PASSWORD = "AdminU$er123"
@@ -36,6 +35,7 @@ def test_persist_user(persist_user):
 @pytest.mark.django_db()
 def test_delete_user(persist_user):
     persist_user.delete()
+    assert persist_user not in models.User.objects.all()
 
 
 def test_new_user(user0):
@@ -60,8 +60,8 @@ def create_user(email, phone_number, password, username):
     ("jnkjn;lk", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
     ("user@", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
     ("user@com", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
-    (EMAIL, PHONE_NUM, PASSWORD, "agyT02!@9#"*15, NAME_LENGTH_ERROR),
-    (EMAIL, PHONE_NUM, PASSWORD, "16%$-7jkd@!?"*15, NAME_LENGTH_ERROR)
+    (EMAIL, PHONE_NUM, PASSWORD, "agyT02!@9#" * 15, NAME_LENGTH_ERROR),
+    (EMAIL, PHONE_NUM, PASSWORD, "16%$-7jkd@!?" * 15, NAME_LENGTH_ERROR)
 ])
 def test_invalid_user_values(email, phone_num, password, username, excpected_error):
     with pytest.raises(Exception, match=excpected_error):
