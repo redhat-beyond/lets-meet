@@ -1,5 +1,4 @@
 import os
-
 from django.db import models
 from events.models import EventParticipant
 from django.core.exceptions import ValidationError
@@ -26,5 +25,5 @@ class EventFile(models.Model):
         return super().clean()
 
     def save(self, *args, **kwargs):
-        self.clean()    
+        self.clean()
         return super().save(*args, **kwargs)
