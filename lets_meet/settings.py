@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'events.apps.EventsConfig',
     'users.apps.UsersConfig',
+    'reminders.apps.RemindersConfig',
     'phonenumber_field',
 ]
 
