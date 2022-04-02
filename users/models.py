@@ -17,7 +17,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, validators=[validate_email_addr])
     username = models.CharField(max_length=30)
     phone_number = PhoneNumberField(max_length=13, unique=True, blank=True, null=True, region="IL")
-    profile_pic = models.ImageField(default='profile_pic.svg', upload_to='profiles/')
+    profile_pic = models.ImageField(default='images/profile_pic.svg', upload_to='profiles/')
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
