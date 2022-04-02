@@ -1,13 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import Event
-from .models import EventParticipant
+from .models import Event, PossibleMeeting, EventParticipant
 from datetime import datetime
+from .models import time_format
 from users.models import User
 
-
 import pytest
-
 
 DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
@@ -66,8 +64,10 @@ def create_event(title, date_time_start, date_time_end):
     ('', DATE_TIME_START, DATE_TIME_END, 'Title cannot be blank'),
     (TITLE, None, DATE_TIME_END, 'Starting date cannot be blank'),
     (TITLE, DATE_TIME_START, None, 'Ending date cannot be blank'),
-    (TITLE, DATE_TIME_START, DATE_TIME_START, f'{DATE_TIME_START} must be smaller than {DATE_TIME_START}'),
-    (TITLE, DATE_TIME_END, DATE_TIME_START, f'{DATE_TIME_END} must be smaller than {DATE_TIME_START}')
+    (TITLE, DATE_TIME_START, DATE_TIME_START,
+     f'{time_format(DATE_TIME_START)} must be smaller than {time_format(DATE_TIME_START)}'),
+    (TITLE, DATE_TIME_END, DATE_TIME_START,
+     f'{time_format(DATE_TIME_END)} must be smaller than {time_format(DATE_TIME_START)}')
 ])
 def test_invalidation(title, date_time_start, date_time_end, expected_error):
     current_error = ''
@@ -127,3 +127,58 @@ def test_exist_event_participant():
 def test_invalid_register_user_twice(persist_event_participant):
     with pytest.raises(Exception, match='user already exist in meeting'):
         persist_event_participant.save()
+
+
+@pytest.fixture
+def possible_meeting0(event_participant_not_creator):
+    return PossibleMeeting(participant_id=event_participant_not_creator,
+                           date_time_start=DATE_TIME_START, date_time_end=DATE_TIME_END)
+
+
+@pytest.fixture
+def persist_possible_meeting(possible_meeting0):
+    possible_meeting0.participant_id.user_id.save()
+    possible_meeting0.participant_id.event_id.save()
+    possible_meeting0.participant_id.save()
+    possible_meeting0.save()
+    return possible_meeting0
+
+
+@pytest.mark.django_db
+def test_persist_possible_meeting(persist_possible_meeting):
+    assert persist_possible_meeting in PossibleMeeting.objects.all()
+
+
+@pytest.mark.django_db
+def test_delete_persist_possible_meeting(persist_possible_meeting):
+    persist_possible_meeting.delete()
+    assert persist_possible_meeting not in PossibleMeeting.objects.all()
+
+
+@pytest.mark.django_db
+def test_delete_participant_deletes_possible_meeting(persist_possible_meeting):
+    persist_possible_meeting.participant_id.delete()
+    assert persist_possible_meeting not in PossibleMeeting.objects.all()
+
+
+@pytest.mark.django_db
+def test_persist_possible_meeting_Validation_Error(persist_possible_meeting):
+    with pytest.raises(ValidationError):
+        persist_possible_meeting.date_time_start = DATE_TIME_END
+        persist_possible_meeting.date_time_end = DATE_TIME_START
+        persist_possible_meeting.save()
+
+
+def get_event_participant_from_db():
+    return EventParticipant.objects.filter(is_creator=True)[0]
+
+
+@pytest.mark.django_db
+def test_persist_possible_meeting_in_db():
+    assert PossibleMeeting.objects.filter(participant_id=get_event_participant_from_db())
+
+
+@pytest.mark.django_db
+def test_duplicate_possible_meeting(persist_possible_meeting):
+    with pytest.raises(Exception, match='meeting hours already exists'):
+        persist_possible_meeting.save()
