@@ -13,6 +13,7 @@ db.sqlite3
 
 
 # Distribution / packaging
+.idea
 .Python
 build/
 develop-eggs/
