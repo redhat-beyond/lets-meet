@@ -29,28 +29,22 @@ def persist_event_file(event_file0):
 
 
 @pytest.mark.django_db()
-def test_new_event_file(event_file0, file0, event_participant_not_creator):  # noqa: F811
-    assert event_file0.file == file0
-    assert event_file0.participant_id == event_participant_not_creator
+class TestEventFile:
 
+    def test_new_event_file(self, event_file0, file0, event_participant_not_creator):  # noqa: F811
+        assert event_file0.file == file0
+        assert event_file0.participant_id == event_participant_not_creator
 
-@pytest.mark.django_db()
-def test_persist_event_file(persist_event_file):
-    assert persist_event_file in EventFile.objects.all()
+    def test_persist_event_file(self, persist_event_file):
+        assert persist_event_file in EventFile.objects.all()
 
+    def test_read_event_file_in_table(self, persist_event_file, file0):
+        assert persist_event_file in EventFile.objects.filter(file=persist_event_file)
 
-@pytest.mark.django_db
-def test_read_event_file_in_table(persist_event_file, file0):
-    assert persist_event_file in EventFile.objects.filter(file=persist_event_file)
+    def test_delete_event_file_from_table(self, persist_event_file):
+        persist_event_file.delete()
+        assert persist_event_file not in EventFile.objects.all()
 
-
-@pytest.mark.django_db
-def test_delete_event_file_from_table(persist_event_file):
-    persist_event_file.delete()
-    assert persist_event_file not in EventFile.objects.all()
-
-
-@pytest.mark.django_db
-def test_not_unique_event_file(persist_event_file):
-    with pytest.raises(ValidationError, match=FILE_ALREADY_EXISTS):
-        persist_event_file.save()
+    def test_not_unique_event_file(self, persist_event_file):
+        with pytest.raises(ValidationError, match=FILE_ALREADY_EXISTS):
+          persist_event_file.save()

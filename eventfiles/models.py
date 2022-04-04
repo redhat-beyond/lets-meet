@@ -1,11 +1,11 @@
-import os
+from os import path
 from django.db import models
 from events.models import EventParticipant
 from django.core.exceptions import ValidationError
 
 
 def upload_to_function(instance, filename):
-    return os.path.join('files/%s/' % instance.participant_id.event_id.id, filename.split("/")[-1])
+    return path.join('files', instance.participant_id.event_id.id, path.basename(filename))
 
 
 class EventFile(models.Model):
@@ -18,7 +18,7 @@ class EventFile(models.Model):
             raise ValidationError('that file already exist in meeting')
 
     def __str__(self):
-        return str(self.file.name)
+        return f"{self.participant_id} - {path.basename(self.file.name)}"
 
     def clean(self) -> None:
         EventFile.validate_unique_file(self.file, self.participant_id)
