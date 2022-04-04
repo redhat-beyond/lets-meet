@@ -47,4 +47,4 @@ class TestEventFile:
 
     def test_not_unique_event_file(self, persist_event_file):
         with pytest.raises(ValidationError, match=FILE_ALREADY_EXISTS):
-          persist_event_file.save()
+            persist_event_file.save()
