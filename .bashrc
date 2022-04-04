@@ -25,11 +25,11 @@ if [ -d ~/.bashrc.d ]; then
 fi
 
 # addeing aliases
-alias manage="pipenv run manage_pip"
-alias shell="pipenv run python manage.py shell"
-alias run="pipenv run python manage.py runserver 0.0.0.0:8000"
-alias makemigrations="pipenv run python manage.py makemigrations"
-alias migrate="pipenv run python manage.py migrate"
+alias manage="pipenv run python manage.py"
+alias shell="manage shell"
+alias run="manage runserver 0.0.0.0:8000"
+alias makemigrations="manage makemigrations"
+alias migrate="manage migrate"
 alias migration="makemigrations | migrate"
 alias run_tests="pipenv run pytest"
 alias run_flake8="pipenv run flake8 --max-line-length 120"
