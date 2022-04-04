@@ -26,10 +26,10 @@ fi
 
 # addeing aliases
 alias manage="pipenv run manage_pip"
-alias shell="pipenv run shell_pip"
-alias run="pipenv run run_pip"
-alias makemigrations="pipenv run makemigrations_pip"
-alias migrate="pipenv run migrate_pip"
+alias shell="pipenv run python manage.py shell"
+alias run="pipenv run python manage.py runserver 0.0.0.0:8000"
+alias makemigrations="pipenv run python manage.py makemigrations"
+alias migrate="pipenv run python manage.py migrate"
 alias migration="makemigrations | migrate"
 alias run_tests="pipenv run pytest"
 alias run_flake8="pipenv run flake8 --max-line-length 120"

@@ -17,10 +17,3 @@ pytest = "*"
 
 [requires]
 python_version = "3.9"
-
-[scripts]
-manage_pip = "python manage.py"
-shell_pip = "python manage.py shell"
-run_pip = "python manage.py runserver 0.0.0.0:8000"
-makemigrations_pip = "python manage.py makemigrations"
-migrate = "pipenv run python manage.py migrate"
