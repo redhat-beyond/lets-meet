@@ -38,8 +38,8 @@ class TestEventFile:
     def test_persist_event_file(self, persist_event_file):
         assert persist_event_file in EventFile.objects.all()
 
-    def test_read_event_file_in_table(self, persist_event_file, file0):
-        assert persist_event_file in EventFile.objects.filter(file=persist_event_file)
+    def test_read_event_file_in_table(self, persist_event_file):
+        assert persist_event_file in EventFile.objects.filter(file=persist_event_file.file)
 
     def test_delete_event_file_from_table(self, persist_event_file):
         persist_event_file.delete()

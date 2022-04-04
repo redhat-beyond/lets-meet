@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 
 def upload_to_function(instance, filename):
-    return path.join('files', instance.participant_id.event_id.id, path.basename(filename))
+    return path.join('files', str(instance.participant_id.event_id.id), path.basename(filename))
 
 
 class EventFile(models.Model):
