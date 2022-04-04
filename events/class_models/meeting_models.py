@@ -23,6 +23,9 @@ class PossibleMeeting(models.Model):
 
 
 def validate_unique_possible_meeting(participant_id, date_time_start, date_time_end):
-    if PossibleMeeting.objects.filter(participant_id=participant_id, date_time_start=date_time_start,
-                                      date_time_end=date_time_end):
+    if PossibleMeeting.objects.filter(
+            participant_id=participant_id,
+            date_time_start=date_time_start,
+            date_time_end=date_time_end
+    ):
         raise ValidationError('meeting hours already exists')
