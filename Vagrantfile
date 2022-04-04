@@ -12,6 +12,5 @@ Vagrant.configure("2") do |config|
   )
   
   config.vm.provision "shell", path: "bootstrap.sh", privileged: false
-  config.vm.provision "shell", path: "create_alias.sh", privileged: true
 
 end
