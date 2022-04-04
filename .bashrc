@@ -31,7 +31,7 @@ alias run="manage runserver 0.0.0.0:8000"
 alias makemigrations="manage makemigrations"
 alias migrate="manage migrate"
 alias migration="makemigrations | migrate"
-alias run_tests="pipenv run pytest"
+alias run_tests="pipenv run pytest -v"
 alias run_flake8="pipenv run flake8 --max-line-length 120"
 
 alias find_program="netstat -plten | grep python"
