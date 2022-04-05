@@ -1,9 +1,8 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
-from django.contrib.auth.password_validation import validate_password
 
 
 def validate_email_addr(email):
@@ -28,7 +27,6 @@ class User(AbstractUser):
 
     def clean(self) -> None:
         validate_email(self.email)
-        validate_password(self.password)
         return super().clean()
 
     def save(self, *args, **kwargs):
