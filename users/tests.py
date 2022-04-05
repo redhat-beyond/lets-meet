@@ -43,7 +43,7 @@ def test_new_user(user0):
     assert user0.email == EMAIL
     assert user0.phone_number.as_e164 == PHONE_NUM
     assert user0.username == NAME
-    assert user0.profile_pic == 'profile_pic.svg'
+    assert user0.profile_pic == 'images/profile_pic.svg'
     assert user0.password == PASSWORD
 
 

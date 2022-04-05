@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('username', models.CharField(max_length=30)),
                 ('phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True,
                  max_length=13, null=True, region='IL', unique=True)),
-                ('profile_pic', models.ImageField(default='profile_pic.svg', upload_to='profiles/')),
+                ('profile_pic', models.ImageField(default='images/profile_pic.svg', upload_to='profiles/')),
                 ('groups', models.ManyToManyField(blank=True,
                  help_text='The groups this user belongs to. ' +
                  'A user will get all permissions granted to each of their groups.', related_name='user_set',
