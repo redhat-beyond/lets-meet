@@ -57,5 +57,5 @@ class TestMeeting():
         assert PossibleMeeting.objects.filter(participant_id=get_event_participant_from_db())
 
     def test_duplicate_possible_meeting(self, persist_possible_meeting):
-        with pytest.raises(Exception, match='meeting hours already exists'):
+        with pytest.raises(ValidationError, match='meeting hours already exists'):
             persist_possible_meeting.save()

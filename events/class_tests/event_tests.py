@@ -36,12 +36,10 @@ class TestEvent():
     def test_add_event(self, persist_event):
         assert persist_event in Event.objects.all()
 
-    @pytest.mark.django_db
     def test_delete_event(self, persist_event):
         persist_event.delete()
         assert persist_event not in Event.objects.all()
 
-    @pytest.mark.django_db
     def test_exist_event(self):
         assert Event.objects.get(title='event1')
         assert Event.objects.get(title='event2')
@@ -58,9 +56,5 @@ class TestEvent():
          f'{time_format(DATE_TIME_END)} must be smaller than {time_format(DATE_TIME_START)}')
     ])
     def test_invalidation(self, title, date_time_start, date_time_end, expected_error):
-        current_error = ''
-        try:
+        with pytest.raises(ValidationError, match=expected_error):
             create_event(title, date_time_start, date_time_end).save()
-        except ValidationError as error:
-            current_error = error.messages[0]
-        assert expected_error == current_error
