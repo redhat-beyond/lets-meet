@@ -1,0 +1,260 @@
+
+{% extends "base.html" %}
+
+{% block head-content %}
+	<title> Awesome Text Effect </title>
+
+	{% load static %}
+	<link href="{% static 'user_site/home.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body-content %}
+	<div class="container">
+		<h1>April</h1>
+		<div class="calender cal-view" data-component="calender-module">
+			<a href="#" class="toggle">toggle view</a>
+			<div class='calender__month'>
+			<div class='calender__week'>
+				<div class='calender__day--hidden'>
+				<span class="date">29</span>
+				</div>
+				<div class='calender__day--hidden'>
+				<span class="date">30</span>
+				</div>
+				<div class='calender__day--hidden'>
+				<span class="date">31</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">01</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Shadow Factory</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">02</span>
+
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">03</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">04</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Engelbert Humperdinck: Sings the old songs</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Steps: We are back, stairlift. </a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Renecks: Cottoneyejoe reunion</a>
+					</div>
+				</div>
+				</div>
+			</div>
+			<div class='calender__week'>
+				<div class='calender__day--empty'>
+				<span class="date">05</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">06</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Alpines</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">07</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Lil Peep</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">08</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">The Milkybar Kid: The Whitest White</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">S Club 7</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Small Angry Rapper</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">09</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Mumford &amp; Sons sing songs.</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Alice DJ: Better off alone</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">10</span>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">11</span>
+				</div>
+			</div>
+			<div class='calender__week'>
+				<div class='calender__day'>
+				<span class="date">12</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Ronan Keating: Life is a Rollercoaster</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Cher: If I could turn back time</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">13</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">14</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Rachael Yamagata</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">15</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Rachael Yamagata</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">16</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">R Kelly: A bit of bump N Grind?</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Gardeners Questiontime, live!</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">East 17: Blantent Leyton</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">17</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">18</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Nadine Shan</a>
+					</div>
+				</div>
+				</div>
+			</div>
+			<div class='calender__week'>
+				<div class='calender__day'>
+				<span class="date">19</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">Nick Hakim</a>
+					</div>
+					<div class="event-list__event">
+					<a href="#">Charlotte OC</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">20</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="">Oasis: Tropical Orange</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">21</span>
+				<div class="event-list__event">
+					<a href="#">Move</a>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">22</span>
+				<div class="event-list__event">
+					<a href="#">Alex Vargas</a>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">23</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">BoyZone: Ronan's off on his Rollercoaster</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">Big Apple Hotdogs</a>
+					</div>
+					<div class="event-list__event">
+					<a href="">3T: Our uncle is dead</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">24</span>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">25</span>
+				</div>
+			</div>
+			<div class='calender__week'>
+				<div class='calender__day'>
+				<span class="date">26</span>
+				<div class="event-list__event">
+					<a href="#">Gangly</a>
+				</div>
+				</div>
+				<div class='calender__day'>
+				<span class="date">27</span>
+				<div class="event-list__event">
+					<a href="#">Thomas Dybdahl</a>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">28</span>
+				</div>
+				<div class='calender__day'>
+				<span class="date">29</span>
+				<div class="event-list">
+					<div class="event-list__event">
+					<a href="#">2 Unlimited: Reach for the sky</a>
+					</div>
+				</div>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">30</span>
+				</div>
+				<div class='calender__day--empty'>
+				<span class="date">31</span>
+				</div>
+				<div class='calender__day--hidden'>
+				<span class="date">1</span>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	{% load static %}
+	<script src="{% static 'user_site/home.js' %}"></script>
+
+{% endblock %}
