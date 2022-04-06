@@ -11,6 +11,3 @@ signInBtn.addEventListener("click", () => {
 signUpBtn.addEventListener("click", () => {
 	container.classList.add("right-panel-active");
 });
-
-// firstForm.addEventListener("submit", (e) => e.preventDefault());   // function to create a new user
-// secondForm.addEventListener("submit", (e) => e.preventDefault());  // function to login with an old user
