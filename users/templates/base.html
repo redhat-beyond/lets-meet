@@ -29,15 +29,18 @@
         <span></span>
         <span></span>
         <ul id="menu">
-          <a href="/"><li><i class="fa fa-home" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Home</li></a>
+          <a href="{% url 'welcome_page' %}"><li><i class="fa fa-home" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Home</li></a>
           <a href="#"><li><i class="fa fa-id-card" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Contact</li></a>
-          <a href="/admin"><li><i class="fa fa-user-secret" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Admin</li></a>
+          <a href="{% url 'admin' %}"><li><i class="fa fa-user-secret" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Admin</li></a>
           
           {% if request.user.is_authenticated %}
-            <a href="/logout"><li><i class="fa fa-sign-in" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Logout</li></a>
+            <a href="{% url 'logout' %}"><li><i class="fa fa-sign-in" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Logout</li></a>
           {% else %}
-            <a href="/register"><li><i class="fa fa-user-plus" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Register</li></a>
-            <a href="/login"><li><i class="fa fa-sign-in" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Log In</li></a>
+            {% if page == 'login' %}
+              <a href="{% url 'register' %}"><li><i class="fa fa-user-plus" aria-hidden="true" style="font-size:24px;"></i>&nbsp; Register</li></a>
+            {% elif page == 'register' %}
+              <a href="{% url 'login' %}"><li><i class="fa fa-sign-in" aria-hidden="true" style="font-size:24px;"></i>&nbsp;&nbsp; Log In</li></a>
+            {% endif %}
           {% endif %}
 
         </ul>

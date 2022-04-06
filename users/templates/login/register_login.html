@@ -28,15 +28,15 @@
 
   {% endif %}
 
-  <div class="container right-panel-active">
+  <div class="container {% if page == 'register' %} right-panel-active {% endif %}">
 
     <!-- Sign Up -->
     <div class="container__form container--signup">
-      <form action="/register/" class="form" id="form1" method="POST">
+      <form action="{% url 'register' %}" class="form" id="form1" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <h2 class="form__title">Sign Up</h2>
-
+        
         {% for field in form %}
           <input type="{{field.field.widget.input_type}}" name="{{field.name}}" placeholder="{{field.label}}" class="input"/>
         {% endfor %}
@@ -48,7 +48,7 @@
 
     <!-- Sign In -->
     <div class="container__form container--signin">
-      <form action="/login/" class="form" id="form2" method="POST">
+      <form action="{% url 'login' %}" class="form" id="form2" method="POST">
         {% csrf_token %}
 
         <h2 class="form__title">Sign In</h2>
