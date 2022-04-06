@@ -34,24 +34,25 @@ def login_page(request):
 
     form = MyUserCreationForm()
 
-    return render(request, "login/register_login.html", {'form': form})
+    return render(request, "login/register_login.html", {'form': form, 'page': 'login'})
 
 
 def reqister_page(request):
 
     if request.method == "POST":
-        form = MyUserCreationForm(request.POST)
+        form = MyUserCreationForm(request.POST, request.FILES)
 
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
+
             login(request, user)
 
             return redirect("home")
 
         else:
             for errorKey in form.errors.keys():
-                value = str(form.errors[errorKey]).split("<li>")[1].split("</li>")[0]
+                value = form.errors[errorKey].get_context()["errors"][0]
 
                 if errorKey == "__all__":
                     messages.error(request, f"{value}")
@@ -60,7 +61,7 @@ def reqister_page(request):
 
     form = MyUserCreationForm()
 
-    return render(request, "login/register_login.html", {'form': form})
+    return render(request, "login/register_login.html", {'form': form, 'page': 'register'})
 
 
 @login_required
