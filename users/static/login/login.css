@@ -12,9 +12,6 @@
 	--max-width: 900px;
 	--max-height: 600px;
 
-	/* --url: url("https://images.unsplash.com/photo-1466854076813-4aa9ac0fc347?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2064&q=80"); */
-	/* --url: url("https://images.unsplash.com/photo-1640946756511-f5026d7614f9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80"); */
-	/* --url: url("https://images.unsplash.com/photo-1622231299877-ec8d5cfc0888?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1818&q=80"); */
 	--url: url("https://images.unsplash.com/photo-1535837436558-f4a66525fef6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80");
 
 	font-size: 16px;
