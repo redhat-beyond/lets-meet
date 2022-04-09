@@ -1,16 +1,18 @@
-from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.db import models
+from django.utils import timezone
+from main.utilities import time_format
 from events.models import EventParticipant
+from django.core.exceptions import ValidationError
+
+
+class ReminderQuerySet(models.QuerySet):
+    def get_next_reminder(self):
+        return self.order_by('date_time').first()
 
 
 def validate_date(date_time):
     if timezone.now() > date_time:
         raise ValidationError(f'{time_format(date_time)} should be bigger than current date_time')
-
-
-def time_format(date_time):
-    return date_time.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class ReminderType(models.TextChoices):
@@ -29,6 +31,8 @@ class Reminder(models.Model):
         choices=ReminderType.choices,
         default=ReminderType.WEBSITE,
     )
+
+    objects = ReminderQuerySet.as_manager()
 
     def validate_unique_reminder(self, participant, date_time):
         if Reminder.objects.filter(
