@@ -84,3 +84,10 @@ class TestReminder:
     def test_invalid_reminder_exist_twice(self, persist_reminder):
         with pytest.raises(Exception, match=EXIST_REMINDER_ERROR):
             persist_reminder.save()
+
+    def test_get_earliest_reminder(self):
+        expected_reminder = Reminder.objects.get(
+            participant_id__event_id__title="event1",
+            participant_id__user_id__username="testUser1"
+        )
+        assert expected_reminder == Reminder.objects.get_next_reminder()
