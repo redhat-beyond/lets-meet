@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from threading import Timer, Thread
 from django.dispatch import receiver
-from main.utilities import mail, notifie
+from main.utilities import reminder_email, notifie
 from reminders.models import Reminder, ReminderType
 from django.db.models.signals import pre_save, pre_delete, post_delete
 
@@ -136,7 +136,7 @@ class UserAlertScheduler():
             # modifie the timer
             UserAlertScheduler.__current_timer.cancel()
             UserAlertScheduler.__add_alert(reminder)
-    
+
     @staticmethod
     def _get_args(reminder):
         """ get the date time, message method type and user id from the reminder object """
@@ -155,7 +155,7 @@ class UserAlertScheduler():
         function_to_invoke = list()
 
         if method_type == ReminderType.EMAIL or method_type == ReminderType.WEBSITE_EMAIL:
-            function_to_invoke.append(mail)
+            function_to_invoke.append(reminder_email)
 
         if method_type == ReminderType.WEBSITE or method_type == ReminderType.WEBSITE_EMAIL:
             function_to_invoke.append(notifie)
@@ -177,7 +177,7 @@ class UserAlertScheduler():
         for method in methods:
             method(*args, **kwargs)
 
-        # Potential Send Signal 
+        # Potential Send Signal
 
         UserAlertScheduler.__logger.debug("deleting the current task from the DB.")
 
