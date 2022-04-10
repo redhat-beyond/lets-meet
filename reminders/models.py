@@ -65,3 +65,40 @@ class Reminder(models.Model):
                 raise IntegrityError("date time should be bigger than the current date_time")
             raise error
         return result
+
+
+def validate_seen_date(time_seen, time_sent):
+    if time_seen < time_sent:
+        raise ValidationError('seen time cannot be earlier than time of creation.')
+
+
+def validate_sent_date(time_sent):
+    validate_date(time_sent)
+
+
+class Notification(models.Model):
+    participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
+    seen_time = models.DateTimeField(default=timezone.now)
+    sent_time = models.DateTimeField(default=timezone.now, validators=[validate_sent_date])
+    message = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.participant_id} - {self.message}"
+
+    def clean(self):
+        self.validate_unique_notification(self.participant_id, self.sent_time)
+        validate_seen_date(self.seen_time, self.sent_time)
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super().save(*args, **kwargs)
+
+    @staticmethod
+    def validate_unique_notification(participant, seen_time):
+        if Notification.objects.filter(
+                participant_id__user_id=participant.user_id,
+                participant_id__event_id=participant.event_id,
+                seen_time=seen_time
+        ):
+            raise ValidationError('notification already exists')
