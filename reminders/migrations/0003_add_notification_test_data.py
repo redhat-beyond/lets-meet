@@ -16,10 +16,11 @@ class Migration(migrations.Migration):
         from datetime import datetime
         JOIN_MEETING = 'Joined Meeting in {} minutes'
 
+
         notification_data = [
             (EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser1"),
-             datetime(2022, 12, 25, 11, 11, 11, 0, tzinfo=timezone.utc),
-             datetime(2022, 12, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
+             datetime(2023, 4, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
+             datetime(2022, 6, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
              JOIN_MEETING.format(25),
              ),
 
