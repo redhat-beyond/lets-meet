@@ -1,22 +1,51 @@
-import sys
 import logging
+from sys import stdout
 from datetime import datetime
 from threading import Timer, Thread
 from django.dispatch import receiver
-from main.utilities import reminder_email, notifie
 from reminders.models import Reminder, ReminderType
+from main.utilities import send_reminder_email, send_site_notification
 from django.db.models.signals import pre_save, pre_delete, post_delete
 
 
 class UserAlertScheduler():
+    """
+    User Alert Scheduler is our implemintation of a reminder schdeuler when the user want to be
+    nofieied in a specific time.
+    
+    The User Alert Scheduler is dependent on the DB and registered to save and delete events,
+    - When the user add a new reminder the scheduler will add the new reminder if his time is lower
+      then the time in the current reminder.
+    - When the user delete a reminder the scheduler will change his current reminder if it was 
+      the same reminder and schedule the next reminder in line.
+    
+    ** Becuse the scheduler is only relavent when there is an action in the DB and will not be called
+       from outside the class, each method defined is private and static.
+       In addition this is a Singltone object and will be created once at the start of the reminder app.
+    
+    The current methods which the scheduler support are reminder_email and send_site_notification.
+    Other functions can be added to the _get_function method that takes an enum 
+    ReminderType defined in the Reminder model.
+    Each function needs to be as follows: function_name(message, <user>).
+    <user> is the user model defined in our User model.
 
-    __logger = None
-    __instance = None
-    __current_task = None
-    __current_timer = None
+    This scheduler also has a logger object, becuse it is a complicated implemntation there can be a lot
+    of errors and missed calls, so a logger has been placed with info and debug calls.
+    """
+    
+    __logger = None            # the logger object of the class
+    __instance = None          # the instance of the class
+    __current_timer = None     # the current reminder timer the scheduler is running
+    __current_reminder = None  # the current reminder the scheduler is working on
 
     def __new__(self):
-        if UserAlertScheduler.__instance is None:
+        """ 
+        __new__ is used becuse we want to make the scheduler a singletone
+        there is an __instance object and it is checked every time if it has been initialized
+        if so the __instnace will be returned otherwise this is the first fime and it will be initialized 
+        """
+
+        if not UserAlertScheduler.__instance:
             UserAlertScheduler.__logger = self.define_logger()
 
             UserAlertScheduler.__logger.debug("creating a new instance of UserAlertScheduler")
@@ -25,121 +54,42 @@ class UserAlertScheduler():
         return UserAlertScheduler.__instance
 
     @staticmethod
-    def define_logger():
+    def define_logger(file=stdout, error_type=logging.WARNING):
+        """ define the __logger object.
+            logger format: the type of logged message such as Info, Debug, Warnning and etc
+            file: where the logger will log all his message. default is stdout
+            logger level: define which types of logger message will show up. default Warnning """
+
         log_format = "%(levelname)s %(asctime)s - %(message)s"
-        logging.basicConfig(filemode=sys.stdout, level=logging.WARNING, format=log_format)
+        logging.basicConfig(filemode=file, level=error_type, format=log_format)
         return logging.getLogger(__name__)
 
-    def add_alert(self, reminder):
-        self.__add_alert(reminder)
+    @staticmethod
+    def __clean_up(self):
+        """ remove late reminders.
+            Each reminder that has been sceduled is deleted at the end of the action
+            if there are reminders that the scheduler didnt schedule before his initlization
+            then they are a late reminders, reminders that should have been scheduled but
+            there time has passed, in this case the schedule will delete them all """
 
-    def remove_alert(self, reminder):
-        self.__remove_alert(reminder)
-
-    def modifie_alert(self, reminder):
-        self.__modifie_alert(reminder)
-
-    def clean_up(self):
-        """ remove late reminders """
-
-        self.__logger.info("in clean up")
+        UserAlertScheduler.__logger.info("in clean up")
 
         for reminder in Reminder.objects.order_by('date_time'):
-            if reminder.date_time < 0:
+
+            # check each reminder time against the current time
+
+            if UserAlertScheduler.__get_time_diffrence(reminder.date_time) < 0:
                 Reminder.objects.get(id=reminder.id).delete()
-
+    
     @staticmethod
-    def __add_alert(reminder=None):
-        """ add a new alert
-            reminder: a reminder object,
-                      if nothing is given then the reminder will be selected as
-                      the minimum date_time of all reminders """
+    def __get_time_diffrence(date_time):
+        """ return the time diffrence between the gievn date_time to our current time """
 
-        UserAlertScheduler.__logger.info("in add alert.")
-        UserAlertScheduler.__logger.debug(f"reminder value in: {reminder}")
-
-        if reminder is None:
-            reminder = Reminder.objects.get_next_reminder()
-
-            UserAlertScheduler.__logger.debug(f"reminder value after if: {reminder}")
-
-            if reminder is None:  # the DB is empty
-                UserAlertScheduler.__logger.debug("The DB is empty, there isn't a task waiting.")
-                return None
-
-        _, message, method_type, user_id = UserAlertScheduler._get_args(reminder)
-        functions = UserAlertScheduler._get_function(method_type)
-
-        UserAlertScheduler.__current_task = reminder
-
-        Thread(target=UserAlertScheduler.__create_timer, args=(functions, message, user_id), daemon=True).start()
-
-        UserAlertScheduler.__logger.debug((
-            "new Timer has been started. ",
-            f"message: {message} - {user_id} - {UserAlertScheduler.__current_task.date_time}"
-        ))
-
-    @staticmethod
-    def __create_timer(functions, message, user_id):
-        """ create the timer object """
-
-        UserAlertScheduler.__current_timer = Timer(
-            UserAlertScheduler.__current_task.date_time.timestamp() - datetime.now().timestamp(),
-            UserAlertScheduler.__alert_user,
-            args=(functions, message, user_id)  # change to *args, **kwargs
-        )
-        UserAlertScheduler.__current_timer.start()
-
-    @staticmethod
-    def __remove_alert(reminder_id):
-        """ remove the reminder with a reminder_id from the queue if possible """
-
-        UserAlertScheduler.__logger.info("in remove alert")
-
-        if UserAlertScheduler.__current_task is not None:
-            if UserAlertScheduler.__current_task.id == reminder_id:
-                if UserAlertScheduler.__current_timer.is_alive():
-                    UserAlertScheduler.__current_timer.cancel()
-                    UserAlertScheduler.__current_task = None
-                    UserAlertScheduler.__current_timer = None
-
-                    UserAlertScheduler.__logger.debug(
-                        f"removed the current reminder. last reminer: {Reminder.objects.get(id=reminder_id)}"
-                    )
-
-    @staticmethod
-    def __modifie_alert(reminder):
-        """ modifie the reminder in the queue if possible """
-
-        UserAlertScheduler.__logger.info("in modifie alert")
-
-        if reminder != UserAlertScheduler.__current_task:
-            UserAlertScheduler.__logger.debug(
-                f"The two reminders are not the same.\n{UserAlertScheduler.__current_task} vs {reminder}"
-            )
-
-            next_reminder = None
-            UserAlertScheduler.__current_timer.cancel()
-
-            if reminder.date_time < UserAlertScheduler.__current_task.date_time:
-                next_reminder = reminder
-
-            UserAlertScheduler.__logger.debug(f"a new reminder is added: {next_reminder}")
-
-            UserAlertScheduler.__add_alert(next_reminder)
-
-        else:
-            UserAlertScheduler.__current_task = reminder
-
-            UserAlertScheduler.__logger.debug(f"the current reminder has been modified: {reminder}")
-
-            # modifie the timer
-            UserAlertScheduler.__current_timer.cancel()
-            UserAlertScheduler.__add_alert(reminder)
+        return date_time.timestamp() - datetime.now().timestamp()
 
     @staticmethod
     def _get_args(reminder):
-        """ get the date time, message method type and user id from the reminder object """
+        """ get the date time, message, method type and user id from the reminder object """
 
         message = reminder.messages
         method_type = reminder.method
@@ -155,19 +105,140 @@ class UserAlertScheduler():
         function_to_invoke = list()
 
         if method_type == ReminderType.EMAIL or method_type == ReminderType.WEBSITE_EMAIL:
-            function_to_invoke.append(reminder_email)
+            function_to_invoke.append(send_reminder_email)
 
         if method_type == ReminderType.WEBSITE or method_type == ReminderType.WEBSITE_EMAIL:
-            function_to_invoke.append(notifie)
+            function_to_invoke.append(send_site_notification)
 
         return function_to_invoke
 
     @staticmethod
+    def __add_alert(reminder=None):
+        """ add a new alert.
+            the schedule will check against his current reminder if the reminder 
+            given has a better time then his own, if so the scheduler will stop 
+            the timer and replace the current remidner with the newly given remidner.
+
+            reminder: a reminder object as defined in the Reminder model,
+                      if nothing is given as the reminder object then 
+                      the reminder will be selected as the minimum date_time of all reminders """
+
+        UserAlertScheduler.__logger.info("in add alert.")
+        UserAlertScheduler.__logger.debug(f"reminder value in: {reminder}")
+
+        # the reminder given is None, get the next reminder from the DB using the date_time field
+        if not reminder:
+            reminder = Reminder.objects.get_next_reminder()
+
+            UserAlertScheduler.__logger.debug(f"reminder value after if: {reminder}")
+
+            if not reminder:  # the DB is empty, end the function
+                UserAlertScheduler.__logger.debug("The DB is empty, there isn't a task waiting.")
+                return None
+
+        # get all the arguments from the remidner object
+        _, message, method_type, user_id = UserAlertScheduler._get_args(reminder)
+        functions = UserAlertScheduler._get_function(method_type)
+
+        UserAlertScheduler.__current_reminder = reminder
+
+        # start a new daemon thread for setting the current timer with the new reminder arguments
+        Thread(target=UserAlertScheduler.__create_timer, args=(functions, message, user_id), daemon=True).start()
+
+        UserAlertScheduler.__logger.debug((
+            "new Timer has been started. ",
+            f"message: {message} - {user_id} - {UserAlertScheduler.__current_reminder.date_time}"
+        ))
+
+    @staticmethod
+    def __create_timer(functions, message, user_id):
+        """ create the timer object.
+            The scheduler needs a timer object that will go off when a spesific time has been reached
+            "Timer" is a class defined in pythons own threading library that get a tmme and a method to invoke.
+            This function set the current timer to be a new timer object with 
+                time: the diffrence of the reminder time and the current time
+                target: the function given using the _get_function class
+                args: the argument that the function gets, a message and the user_id object
+
+            ** this function is run using a diffrent thread becuse the timer itself 
+               can cause a few problems with the migrate and the current thread running it.
+        """
+
+        UserAlertScheduler.__current_timer = Timer(
+            UserAlertScheduler.__get_time_diffrence(UserAlertScheduler.__current_reminder.date_time),
+            UserAlertScheduler.__alert_user,
+            args=(functions, message, user_id)
+        )
+        UserAlertScheduler.__current_timer.start()  # start the timer object
+
+    @staticmethod
+    def __remove_alert(reminder_id):
+        """ remove the reminder with a reminder_id from the queue.
+            The scheudler will check if the remidner given is the current remidner
+            if so the scheudler will remove it and the current timer, 
+            and will set a new remidner with its own timer according to the add_alert function
+        """
+
+        UserAlertScheduler.__logger.info("in remove alert")
+
+        if UserAlertScheduler.__current_reminder is not None:
+
+            if UserAlertScheduler.__current_reminder.id == reminder_id:
+
+                if UserAlertScheduler.__current_timer.is_alive():  # check if the timer is stil running
+                    UserAlertScheduler.__current_timer.cancel()
+                    UserAlertScheduler.__current_reminder = None
+                    UserAlertScheduler.__current_timer = None
+
+                    UserAlertScheduler.__logger.debug(
+                        f"removed the current reminder. last reminer: {Reminder.objects.get(id=reminder_id)}"
+                    )
+                else:
+                    UserAlertScheduler.__logger.warning(
+                        f"the remidner {UserAlertScheduler.__current_reminder} is the current remidner but has no timer"
+                    )
+
+    @staticmethod
+    def __modifie_alert(reminder):
+        """ modifie the reminder in the queue.
+            The scheudler will check if the given reminder is the current reminder object
+            if so the scheduler will chekc if the time has been change,
+            if the time has been incresed then the scheduler will try to add a new remidner insted
+            otherwise the reminder will be change in the scheduler to the reminder object given
+        """
+
+        UserAlertScheduler.__logger.info("in modifie alert")
+
+        if reminder != UserAlertScheduler.__current_reminder:
+            UserAlertScheduler.__logger.debug(
+                f"The two reminders are not the same.\n{UserAlertScheduler.__current_reminder} vs {reminder}"
+            )
+
+            next_reminder = None
+            UserAlertScheduler.__current_timer.cancel()
+
+            if reminder.date_time < UserAlertScheduler.__current_reminder.date_time:
+                next_reminder = reminder
+
+            UserAlertScheduler.__logger.debug(f"a new reminder is added: {next_reminder}")
+
+            UserAlertScheduler.__add_alert(next_reminder)
+
+        else:
+            UserAlertScheduler.__current_reminder = reminder
+
+            UserAlertScheduler.__logger.debug(f"the current reminder has been modified: {reminder}")
+
+            # modifie the timer
+            UserAlertScheduler.__current_timer.cancel()
+            UserAlertScheduler.__add_alert(reminder)
+
+    @staticmethod
     def __alert_user(methods, *args, **kwargs):
-        """ alert the user aboue the end of the timer
+        """ alert the user when the time of the reminder has been reached.
+
             methods: the functions to invoke
-            # other arguments: message and user_id
-            other arguments: *args, **kwargs """
+            other arguments: such as message and user_id """
 
         UserAlertScheduler.__logger.info("in alert user")
 
@@ -177,30 +248,41 @@ class UserAlertScheduler():
         for method in methods:
             method(*args, **kwargs)
 
-        # Potential Send Signal
+        # Potential Send Signal - a signal can be sent for alrting that the timer has ended
 
         UserAlertScheduler.__logger.debug("deleting the current task from the DB.")
 
         # remove the current reminder from the db
-        Reminder.objects.get(id=UserAlertScheduler.__current_task.id).delete()
+        Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id).delete()
 
     @staticmethod
     @receiver(pre_save, sender=Reminder)
     def __check_before_saving(sender, instance, **kwargs):
-        """ add a new alert if possible, otherwise continue with the current alert """
+        """ add a new alert.
+            The scheudler will check if the current reminder object has been set 
+            - if not then the scheduler will call add alert
+            - otherwise the instance (reminder) will be checked if it is the current reminder
+              if so the user has chnged something in the reminder as a reuslt the scheduler 
+              will call modifie alert insted.
+            
+            ** this is a function that implements the signal pre save
+               as a result this function take the arguments sender, instance, **kwargs exactly
+               without change in the names or order of the variables,
+               any changes can cause an exception.
+        """
 
         UserAlertScheduler.__logger.info("in check before saving")
         UserAlertScheduler.__logger.debug("pre save")
         UserAlertScheduler.__logger.debug(f"instance: {instance}")
 
-        if UserAlertScheduler.__current_task is not None:
-            if UserAlertScheduler.__current_task.id == instance.id:
+        if UserAlertScheduler.__current_reminder is not None:
+            if UserAlertScheduler.__current_reminder.id == instance.id:
                 UserAlertScheduler.__logger.debug(
-                    f"the reminder has been changed: {UserAlertScheduler.__current_task} vs {instance}"
+                    f"the reminder has been changed: {UserAlertScheduler.__current_reminder} vs {instance}"
                 )
                 UserAlertScheduler.__modifie_alert(instance)
 
-            elif UserAlertScheduler.__current_task.date_time < instance.date_time:
+            elif UserAlertScheduler.__current_reminder.date_time < instance.date_time:
                 UserAlertScheduler.__logger.debug("end pre: the timer time hasnt been changed")
                 return None
 
@@ -211,7 +293,15 @@ class UserAlertScheduler():
     @staticmethod
     @receiver(pre_delete, sender=Reminder)
     def __check_before_delete(sender, instance, **kwargs):
-        """ remove the alert from the queue if possible """
+        """ remove the alert from the queue.
+            The schduler will call remove alert to check if the instance (reminder)
+            is in fact the current reminder, and will schedule a new reminder if need be.
+
+            ** this is a function that implements the signal pre delete
+               as a result this function take the arguments sender, instance, **kwargs exactly
+               without change in the names or order of the variables,
+               any changes can cause an exception.
+        """
 
         UserAlertScheduler.__logger.info("in check before delete")
         UserAlertScheduler.__logger.debug("pre delete")
@@ -222,12 +312,24 @@ class UserAlertScheduler():
     @staticmethod
     @receiver(post_delete, sender=Reminder)
     def __check_after_delete(sender, instance, **kwargs):
-        """ after removing the instnace, if it was the current reminder then we will schdule a new reminder """
+        """ set a new reminder if the current reminder is None
+
+            The scheudler delete each reminder at the end of his time
+            as a result a pre delete signal is being called, the scheduler check
+            that the reminder is the current remidnder and set it to None
+            Then the post delete signal is called and the scheduler will schedule a new reminder
+            after the deletion of the last reminder.
+
+            ** this is a function that implements the signal pre save
+               as a result this function take the arguments sender, instance, **kwargs exactly
+               without change in the names or order of the variables,
+               any changes can cause an exception.
+        """
 
         UserAlertScheduler.__logger.info("in check after delete")
         UserAlertScheduler.__logger.debug("post delete")
 
-        if UserAlertScheduler.__current_task is None:
+        if not UserAlertScheduler.__current_reminder:
             UserAlertScheduler.__logger.debug(
                 "current task and current timer are None, the last reminder has been deleted."
             )

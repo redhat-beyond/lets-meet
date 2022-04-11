@@ -9,12 +9,11 @@ class RemindersConfig(AppConfig):
     scheduler = None
 
     def ready(self) -> None:
-        print("ready")
-
-        if self.scheduler is None:
+        if not self.scheduler:
             Thread(target=RemindersConfig.create_scheduler, daemon=True).start()
 
     @staticmethod
     def create_scheduler():
         from reminders.scheduler import UserAlertScheduler
+
         RemindersConfig.scheduler = UserAlertScheduler()
