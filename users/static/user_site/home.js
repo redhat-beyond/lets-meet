@@ -1,23 +1,23 @@
-var toggle = document.querySelector('.toggle');
-var calender = document.querySelector('.calender');
+const toggle = document.querySelector('.toggle');
+const calender = document.querySelector('.calender');
 
 toggle.addEventListener('click', (e)=> {
-toggleClass(calender, 'cal-view');
+	toggleClass(calender, 'cal-view');
 });
 
 let toggleClass = (el, className) => {
-if (el.classList) {
-	el.classList.toggle(className);
-} else {
-	var classes = el.className.split(' ');
-	var existingIndex = classes.indexOf(className);
-
-	if (existingIndex >= 0) {
-	classes.splice(existingIndex, 1);
+	if (el.classList) {
+		el.classList.toggle(className);
 	} else {
-	classes.push(className);
-	}
+		let classes = el.className.split(' ');
+		const existingIndex = classes.indexOf(className);
 
-	el.className = classes.join(' ');
-}
+		if (existingIndex >= 0) {
+		classes.splice(existingIndex, 1);
+		} else {
+		classes.push(className);
+		}
+
+		el.className = classes.join(' ');
+	}
 };

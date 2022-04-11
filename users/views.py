@@ -37,7 +37,7 @@ def login_page(request):
     return render(request, "login/register_login.html", {'form': form, 'page': 'login'})
 
 
-def reqister_page(request):
+def register_page(request):
 
     if request.method == "POST":
         form = MyUserCreationForm(request.POST, request.FILES)
