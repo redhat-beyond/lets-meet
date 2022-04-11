@@ -145,10 +145,13 @@ class UserAlertScheduler():
         # start a new daemon thread for setting the current timer with the new reminder arguments
         Thread(target=UserAlertScheduler.__create_timer, args=(functions, message, user_id), daemon=True).start()
 
-        UserAlertScheduler.__logger.debug((
-            "new Timer has been started. ",
-            f"message: {message} - {user_id} - {UserAlertScheduler.__current_reminder.date_time}"
-        ))
+        try:
+            UserAlertScheduler.__logger.debug((
+                "new Timer has been started. ",
+                f"message: {message} - {user_id} - {UserAlertScheduler.__current_reminder.date_time}"
+            ))
+        except Exception:
+            pass
 
     @staticmethod
     def __create_timer(functions, message, user_id):
