@@ -2,21 +2,21 @@ import pytest
 from . import models
 from datetime import datetime
 from django.utils import timezone
+from events.tests import new_event, user0  # noqa: F401
 from events.models import EventParticipant
-from .models import Reminder, time_format
-from events.tests import new_event  # noqa: F401
-from django.core.exceptions import ValidationError
-from users.tests import user0  # noqa: F401
+from django.db.utils import IntegrityError
+from .models import Reminder, ReminderType
 from events.tests import event_participant_creator as participant0  # noqa: F401
 
 
-METHOD_0 = models.ReminderType.EMAIL
 MESSAGES_0 = 'This is a test text.'
+METHOD_0 = models.ReminderType.EMAIL
 TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 
 JOIN_MEETING = 'Joined Meeting in {minutes} minutes'
-PAST_DATE_TIME_ERROR = "{} is not a valid date_time"
+
 EXIST_REMINDER_ERROR = 'reminder already exists'
+PAST_DATE_TIME_ERROR = "date time should be bigger than the current date_time"
 
 
 @pytest.fixture
@@ -74,9 +74,8 @@ class TestReminder:
 
     def test_reminder_with_invalid_time(self, participant0, date_time=TIME_0):  # noqa: F811
         date_time = datetime(2022, 3, 22, 12, 12, 12, 0, tzinfo=timezone.utc)
-        expected = f'{time_format(date_time)} should be bigger than current.'
 
-        with pytest.raises(ValidationError, match=expected):
+        with pytest.raises(IntegrityError, match=PAST_DATE_TIME_ERROR):
             save_reminder(
                 create_reminder(participant0, METHOD_0, MESSAGES_0, date_time)
             )

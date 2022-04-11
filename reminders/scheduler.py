@@ -12,19 +12,19 @@ class UserAlertScheduler():
     """
     User Alert Scheduler is our implemintation of a reminder schdeuler when the user want to be
     nofieied in a specific time.
-    
+
     The User Alert Scheduler is dependent on the DB and registered to save and delete events,
     - When the user add a new reminder the scheduler will add the new reminder if his time is lower
       then the time in the current reminder.
-    - When the user delete a reminder the scheduler will change his current reminder if it was 
+    - When the user delete a reminder the scheduler will change his current reminder if it was
       the same reminder and schedule the next reminder in line.
-    
+
     ** Becuse the scheduler is only relavent when there is an action in the DB and will not be called
        from outside the class, each method defined is private and static.
        In addition this is a Singltone object and will be created once at the start of the reminder app.
-    
+
     The current methods which the scheduler support are reminder_email and send_site_notification.
-    Other functions can be added to the _get_function method that takes an enum 
+    Other functions can be added to the _get_function method that takes an enum
     ReminderType defined in the Reminder model.
     Each function needs to be as follows: function_name(message, <user>).
     <user> is the user model defined in our User model.
@@ -32,17 +32,17 @@ class UserAlertScheduler():
     This scheduler also has a logger object, becuse it is a complicated implemntation there can be a lot
     of errors and missed calls, so a logger has been placed with info and debug calls.
     """
-    
+
     __logger = None            # the logger object of the class
     __instance = None          # the instance of the class
     __current_timer = None     # the current reminder timer the scheduler is running
     __current_reminder = None  # the current reminder the scheduler is working on
 
     def __new__(self):
-        """ 
+        """
         __new__ is used becuse we want to make the scheduler a singletone
         there is an __instance object and it is checked every time if it has been initialized
-        if so the __instnace will be returned otherwise this is the first fime and it will be initialized 
+        if so the __instnace will be returned otherwise this is the first fime and it will be initialized
         """
 
         if not UserAlertScheduler.__instance:
@@ -80,7 +80,7 @@ class UserAlertScheduler():
 
             if UserAlertScheduler.__get_time_diffrence(reminder.date_time) < 0:
                 Reminder.objects.get(id=reminder.id).delete()
-    
+
     @staticmethod
     def __get_time_diffrence(date_time):
         """ return the time diffrence between the gievn date_time to our current time """
@@ -115,12 +115,12 @@ class UserAlertScheduler():
     @staticmethod
     def __add_alert(reminder=None):
         """ add a new alert.
-            the schedule will check against his current reminder if the reminder 
-            given has a better time then his own, if so the scheduler will stop 
+            the schedule will check against his current reminder if the reminder
+            given has a better time then his own, if so the scheduler will stop
             the timer and replace the current remidner with the newly given remidner.
 
             reminder: a reminder object as defined in the Reminder model,
-                      if nothing is given as the reminder object then 
+                      if nothing is given as the reminder object then
                       the reminder will be selected as the minimum date_time of all reminders """
 
         UserAlertScheduler.__logger.info("in add alert.")
@@ -155,12 +155,12 @@ class UserAlertScheduler():
         """ create the timer object.
             The scheduler needs a timer object that will go off when a spesific time has been reached
             "Timer" is a class defined in pythons own threading library that get a tmme and a method to invoke.
-            This function set the current timer to be a new timer object with 
+            This function set the current timer to be a new timer object with
                 time: the diffrence of the reminder time and the current time
                 target: the function given using the _get_function class
                 args: the argument that the function gets, a message and the user_id object
 
-            ** this function is run using a diffrent thread becuse the timer itself 
+            ** this function is run using a diffrent thread becuse the timer itself
                can cause a few problems with the migrate and the current thread running it.
         """
 
@@ -175,7 +175,7 @@ class UserAlertScheduler():
     def __remove_alert(reminder_id):
         """ remove the reminder with a reminder_id from the queue.
             The scheudler will check if the remidner given is the current remidner
-            if so the scheudler will remove it and the current timer, 
+            if so the scheudler will remove it and the current timer,
             and will set a new remidner with its own timer according to the add_alert function
         """
 
@@ -253,18 +253,29 @@ class UserAlertScheduler():
         UserAlertScheduler.__logger.debug("deleting the current task from the DB.")
 
         # remove the current reminder from the db
-        Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id).delete()
+        try:
+            current_reminder_instance = Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id)
+
+            if current_reminder_instance is not None:
+                current_reminder_instance.delete()
+
+        except Reminder.DoesNotExist:
+            UserAlertScheduler.__logger.warning((
+                "Query set: get by id didn't work.\n"
+                f"current reminder: {UserAlertScheduler.__current_reminder}\n"
+                f"args: {args} | kwargs: {kwargs}"
+            ))
 
     @staticmethod
     @receiver(pre_save, sender=Reminder)
     def __check_before_saving(sender, instance, **kwargs):
         """ add a new alert.
-            The scheudler will check if the current reminder object has been set 
+            The scheudler will check if the current reminder object has been set
             - if not then the scheduler will call add alert
             - otherwise the instance (reminder) will be checked if it is the current reminder
-              if so the user has chnged something in the reminder as a reuslt the scheduler 
+              if so the user has chnged something in the reminder as a reuslt the scheduler
               will call modifie alert insted.
-            
+
             ** this is a function that implements the signal pre save
                as a result this function take the arguments sender, instance, **kwargs exactly
                without change in the names or order of the variables,
