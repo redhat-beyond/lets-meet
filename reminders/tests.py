@@ -1,11 +1,14 @@
 import pytest
 from . import models
+from django.core import mail
 from datetime import datetime
+from django.conf import settings
 from django.utils import timezone
 from events.tests import new_event, user0  # noqa: F401
 from events.models import EventParticipant
 from django.db.utils import IntegrityError
 from .models import Reminder, ReminderType
+from main.utilities import send_reminder_email
 from events.tests import event_participant_creator as participant0  # noqa: F401
 
 
@@ -46,6 +49,11 @@ def save_reminder(reminder):
     reminder.participant_id.save()
     reminder.save()
     return reminder
+
+
+@pytest.fixture(autouse=True)
+def email_backend_setup():
+    settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
 @pytest.mark.django_db
@@ -95,3 +103,11 @@ class TestReminder:
             participant_id__user_id__username="testUser1"
         )
         assert expected_reminder == Reminder.objects.get_next_reminder()
+
+    def test_email_send(self):
+        mail.send_mail('subject', 'body.', 'from@example.com', ['to@example.com'])
+        assert len(mail.outbox) == 1
+
+    def test_send_reminder_email(self):
+        send_reminder_email("message", "user@mail")
+        assert len(mail.outbox) == 1

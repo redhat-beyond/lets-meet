@@ -17,7 +17,6 @@ def send_site_notification(message, reviever_id):
 def send_reminder_email(message, reciever_email):
     """ default reminder email message for calendar alert """
     title = "Lets Meet Calendar Alert"
-    reciever_email = "tamirsr@mta.ac.il"
     send_mail_notification(title, message, reciever_email)
 
 
