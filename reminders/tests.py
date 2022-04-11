@@ -81,9 +81,14 @@ class TestReminder:
                 create_reminder(participant0, METHOD_0, MESSAGES_0, date_time)
             )
 
-    def test_invalid_reminder_exist_twice(self, persist_reminder):
-        with pytest.raises(Exception, match=EXIST_REMINDER_ERROR):
-            persist_reminder.save()
+    def test_invalid_reminder_exist_twice(self):
+        event_participant = EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser2")
+        event_date_time = datetime(2022, 8, 24, 13, 13, 13, 0, tzinfo=timezone.utc)
+        message = "Joined Meeting in 50 minutes"
+        method = ReminderType.WEBSITE
+
+        with pytest.raises(IntegrityError, match='reminder already exists'):
+            create_reminder(event_participant, method, message, event_date_time).save()
 
     def test_get_earliest_reminder(self):
         expected_reminder = Reminder.objects.get(
