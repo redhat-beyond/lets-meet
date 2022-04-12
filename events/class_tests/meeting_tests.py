@@ -4,8 +4,9 @@ from django.utils import timezone
 from users.tests import user0  # noqa: F401
 from .event_tests import new_event  # noqa: F811 ,F401
 from django.core.exceptions import ValidationError
-from events.models import OptionalMeetingDates, EventParticipant
+from events.models import OptionalMeetingDates, EventParticipant, Event
 from .participant_test import event_participant_not_creator  # noqa:F811, F401
+
 
 
 DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
@@ -30,7 +31,7 @@ def persist_possible_meeting(possible_meeting0):
 
 
 def get_event_participant_from_db():
-    return EventParticipant.objects.filter(is_creator=True)[0]
+    return EventParticipant.objects.filter(is_creator=True).first()
 
 
 @pytest.mark.django_db
@@ -59,3 +60,25 @@ class TestMeeting():
     def test_duplicate_possible_meeting(self, persist_possible_meeting):
         with pytest.raises(ValidationError, match='meeting hours already exists'):
             persist_possible_meeting.save()
+
+    def test_get_all_event_dates(self, event_title="event3"):
+        event = Event.objects.get(title=event_title)
+        expected_results = [
+            OptionalMeetingDates.objects.get(id=3),
+            OptionalMeetingDates.objects.get(id=4),
+            OptionalMeetingDates.objects.get(id=5),
+        ]
+
+        assert expected_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
+
+    def test_remove_all_possible_dates(self, event_title="event3"):
+        event = Event.objects.get(title=event_title)
+        unexpected_results = [
+            OptionalMeetingDates.objects.get(id=3),
+            OptionalMeetingDates.objects.get(id=4),
+            OptionalMeetingDates.objects.get(id=5),
+        ]
+
+        OptionalMeetingDates.objects.remove_all_possible_dates(event)
+
+        assert unexpected_results not in list(OptionalMeetingDates.objects.all())
