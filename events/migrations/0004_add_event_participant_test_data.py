@@ -16,7 +16,11 @@ class Migration(migrations.Migration):
         event_participant_data = [
             (Event.objects.get(title='event1'), User.objects.get(username="testUser1"), True),
             (Event.objects.get(title='event1'), User.objects.get(username="testUser2"), False),
-            (Event.objects.get(title='event2'), User.objects.get(username="testUser3"), True)
+            (Event.objects.get(title='event2'), User.objects.get(username="testUser3"), True),
+
+            (Event.objects.get(title='event3'), User.objects.get(username="testUser1"), True),
+            (Event.objects.get(title='event3'), User.objects.get(username="testUser2"), False),
+            (Event.objects.get(title='event3'), User.objects.get(username="testUser3"), False)
         ]
 
         with transaction.atomic():

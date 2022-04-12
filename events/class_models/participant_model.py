@@ -14,6 +14,7 @@ class EventParticipant(models.Model):
 
     def clean(self) -> None:
         validate_unique_user(self.event_id, self.user_id)
+        return super().clean()
 
     def save(self, *args, **kwargs):
         self.clean()
