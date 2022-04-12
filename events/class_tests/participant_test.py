@@ -52,7 +52,7 @@ class TestParticipant():
 
     def test_get_an_event_participants(self):
         event = Event.objects.get(title="event1")
-        expected_participants=[
+        expected_participants = [
             EventParticipant.objects.get(id=1),
             EventParticipant.objects.get(id=2)
         ]
@@ -71,4 +71,3 @@ class TestParticipant():
         expected_deleted_participants = EventParticipant.objects.get(id=3)
         EventParticipant.objects.remove_participant_from_event(event, user)
         assert expected_deleted_participants not in EventParticipant.objects.all()
-
