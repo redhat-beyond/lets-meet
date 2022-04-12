@@ -1,5 +1,6 @@
 import pytest
 from users.tests import user0  # noqa:F811, F401
+from users.models import User
 from ..models import Event, EventParticipant
 from .event_tests import new_event  # noqa: F401
 from django.core.exceptions import ValidationError
@@ -48,3 +49,26 @@ class TestParticipant():
     def test_invalid_register_user_twice(self, persist_event_participant):
         with pytest.raises(ValidationError, match='user already exist in meeting'):
             persist_event_participant.save()
+
+    def test_get_an_event_participants(self):
+        event = Event.objects.get(title="event1")
+        expected_participants=[
+            EventParticipant.objects.get(id=1),
+            EventParticipant.objects.get(id=2)
+        ]
+        all_participants_in_event1 = EventParticipant.objects.get_an_event_participants(event)
+        assert list(expected_participants) == list(all_participants_in_event1)
+
+    def test_get_creator_of_event(self):
+        event = Event.objects.get(title="event1")
+        expected_participants = EventParticipant.objects.get(id=1)
+        creator_of_event1 = EventParticipant.objects.get_creator_of_event(event)
+        assert expected_participants == creator_of_event1
+
+    def test_remove_participant_from_event(self):
+        event = Event.objects.get(title="event2")
+        user = User.objects.get(id=3)
+        expected_deleted_participants = EventParticipant.objects.get(id=3)
+        EventParticipant.objects.remove_participant_from_event(event, user)
+        assert expected_deleted_participants not in EventParticipant.objects.all()
+
