@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<title>Create Event</title>
+</head>
+<body>
+
+    <legend class="border-bottom mb-4">Create Event</legend>
+
+    <div>
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+            <!--{{ form.non_field_errors }}-->
+        </div>
+    {% endif %}
+    </div>
+
+<div class="content-section " style="margin-left:10px;">
+    <form id="createEvent" method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+
+            <div>       
+                <input type="text" name="title"  placeholder="Title" value="{{form.title.value}}" class="input" required/><br>
+                <input type="text" name="location"  placeholder="Location" value="{{form.location.value}}" class="input"/><br>
+                <textarea name="description" placeholder="Description">{{form.description.value}}</textarea><br>
+                <input type="datetime-local" name="date_time_start"  placeholder="Date time start" value="{{form.date_time_start.value}}" class="input" required/><br>
+                <input type="datetime-local" name="date_time_end"  placeholder="Date time end" value="{{form.date_time_end.value}}" class="input" required/><br>
+                {{form.color}}
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Create</button>
+        </div>
+    </form>
+    {% if messages %}
+    {% endif %}
+</div>
+<h1>create_event</h1>
+
+<script>
+
+</script>
+    
+
+
+</body>
+</html>
