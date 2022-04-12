@@ -1,5 +1,3 @@
-from users.models import User
-from django.utils import timezone
 from django.contrib import messages
 from reminders.models import Reminder
 from django.forms import formset_factory
