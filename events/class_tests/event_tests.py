@@ -58,3 +58,26 @@ class TestEvent():
     def test_invalidation(self, title, date_time_start, date_time_end, expected_error):
         with pytest.raises(ValidationError, match=expected_error):
             create_event(title, date_time_start, date_time_end).save()
+
+    def test_get_all_meetings(self):
+        assert Event.objects.get(title="event1") in Event.objects.get_all_meetings()
+        assert Event.objects.get(title="event3") in Event.objects.get_all_meetings()
+
+    def test_get_all_users_meetings(self, user_id=1):
+        assert Event.objects.get(title="event1") in Event.objects.get_all_users_meetings(user_id)
+        assert Event.objects.get(title="event3") in Event.objects.get_all_users_meetings(user_id)
+        assert Event.objects.get(title="event2") not in Event.objects.get_all_users_meetings(user_id)
+
+    @pytest.mark.parametrize('event_title, user_id, year, month', [
+        ("event1", 1, 2020, 3),
+        ("event3", 1, 2020, 1)
+    ])
+    def test_get_all_users_month_meetings(self, event_title, user_id, year, month):
+        assert Event.objects.get(title=event_title) in Event.objects.get_all_users_month_meetings(user_id, year, month)
+
+    @pytest.mark.parametrize('event_title, user_id, date', [
+        ("event1", 1, datetime(2022, 3, 24)),
+        ("event3", 1, datetime(2022, 1, 24))
+    ])
+    def test_get_all_users_day_meetings(self, event_title, user_id, date):
+        assert Event.objects.get(title=event_title) in Event.objects.get_all_users_day_meetings(user_id, date)

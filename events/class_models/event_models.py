@@ -1,6 +1,60 @@
 from django.db import models
+from django.db.models import Count
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+
+
+class EventQuerySet(models.QuerySet):
+    def get_all_meetings(self):
+        """ get all the meetings from all the users """
+        return self.alias(participant_amount=Count('eventparticipant__event_id')).filter(participant_amount__gte=2)
+
+    def get_all_users_meetings(self, user_id):
+        """ get only the meetings that the user_id is a participant """
+        return self.get_all_meetings().filter(eventparticipant__user_id=user_id)
+
+    def get_all_users_month_meetings(self, user_id, year, month):
+        """ get only the meetings for the user given in the month given """
+        return self.__date_filter(
+            self.get_all_users_meetings(user_id),
+            start_year=year, start_month=month
+        )
+
+    def get_all_users_day_meetings(self, user_id, date):
+        """ get only the meeting for the user at the date given """
+        year, month, day = date.year, date.month, date.day
+
+        return self.__date_filter(
+            self.get_all_users_meetings(user_id),
+            start_year=year, start_month=month,
+            start_day=day
+        )
+
+    def __date_filter(self, query, start_year=None, end_year=None,
+                      start_month=None, end_month=None, start_day=None, end_day=None):
+        """ helper query.
+            get the events in the dates between the given variabes """
+        result = query
+
+        if start_year is not None:
+            result = result.filter(date_time_start__year__gte=start_year)
+
+            if end_year is not None:
+                result = result.filter(date_time_end__year__lte=end_year)
+
+        if start_month is not None:
+            result = result.filter(date_time_start__month__gte=start_month)
+
+            if end_month is not None:
+                result = result.filter(date_time_end__month__lte=end_month)
+
+        if start_day is not None:
+            result = result.filter(date_time_start__day__gte=start_day)
+
+            if end_day is not None:
+                result = result.filter(date_time_end__day__lte=end_day)
+
+        return result
 
 
 class Colors(models.TextChoices):
@@ -28,6 +82,8 @@ class Event(models.Model):
         choices=Colors.choices,
         default=Colors.BLACK,
     )
+
+    objects = EventQuerySet.as_manager()
 
     def clean(self):
         if not self.title:
