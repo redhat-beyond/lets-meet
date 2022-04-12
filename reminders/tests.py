@@ -1,5 +1,4 @@
 import pytest
-from . import models
 from django.core import mail
 from datetime import datetime
 from django.conf import settings
@@ -13,10 +12,10 @@ from events.tests import event_participant_creator as participant0  # noqa: F401
 
 
 MESSAGES_0 = 'This is a test text.'
-METHOD_0 = models.ReminderType.EMAIL
+METHOD_0 = ReminderType.EMAIL
 TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 
-JOIN_MEETING = 'Joined Meeting in {minutes} minutes'
+JOIN_MEETING = 'Joined Meeting in {} minutes'
 
 EXIST_REMINDER_ERROR = 'reminder already exists'
 PAST_DATE_TIME_ERROR = "date time should be bigger than the current date_time"
@@ -24,7 +23,7 @@ PAST_DATE_TIME_ERROR = "date time should be bigger than the current date_time"
 
 @pytest.fixture
 def reminder_0(participant0):  # noqa: F811
-    return models.Reminder(participant_id=participant0, method=METHOD_0, messages=MESSAGES_0, date_time=TIME_0)
+    return Reminder(participant_id=participant0, method=METHOD_0, messages=MESSAGES_0, date_time=TIME_0)
 
 
 def test_new_reminder_0(reminder_0, participant0):  # noqa: F811
@@ -60,11 +59,11 @@ def email_backend_setup():
 class TestReminder:
 
     def test_persist_reminder(self, persist_reminder):
-        assert persist_reminder in models.Reminder.objects.all()
+        assert persist_reminder in Reminder.objects.all()
 
     def test_delete_reminder(self, persist_reminder):
         persist_reminder.delete()
-        assert persist_reminder not in models.Reminder.objects.all()
+        assert persist_reminder not in Reminder.objects.all()
 
     def test_exist_reminder(self):
         assert Reminder.objects.filter(
@@ -80,7 +79,7 @@ class TestReminder:
                                                         user_id__username="testUser3")
         )
 
-    def test_reminder_with_invalid_time(self, participant0, date_time=TIME_0):  # noqa: F811
+    def test_reminder_with_invalid_time(self, participant0):  # noqa: F811
         date_time = datetime(2022, 3, 22, 12, 12, 12, 0, tzinfo=timezone.utc)
 
         with pytest.raises(IntegrityError, match=PAST_DATE_TIME_ERROR):
@@ -91,7 +90,7 @@ class TestReminder:
     def test_invalid_reminder_exist_twice(self):
         event_participant = EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser2")
         event_date_time = datetime(2022, 8, 24, 13, 13, 13, 0, tzinfo=timezone.utc)
-        message = "Joined Meeting in 50 minutes"
+        message = JOIN_MEETING.format(50)
         method = ReminderType.WEBSITE
 
         with pytest.raises(IntegrityError, match='reminder already exists'):
