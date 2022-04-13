@@ -15,10 +15,14 @@ class Migration(migrations.Migration):
             name='PossibleParticipant',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('participant_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                     to='events.eventparticipant')),
-                ('possible_meeting_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                          to='events.possiblemeeting')),
+                ('participant_id', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='events.eventparticipant')
+                 ),
+                ('possible_meeting_id', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='events.possiblemeeting')
+                 ),
             ],
         ),
     ]

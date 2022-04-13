@@ -42,8 +42,8 @@ class PossibleParticipant(models.Model):
                 f" {time_format(self.possible_meeting_id.date_time_end)} ")
 
 
-# validate if the current participant is participanting in the current event
 def validate_event_participant(participant_event, event):
+    """ validate if the current participant is participanting in the current event """
     if participant_event != event:
         raise ValidationError("The participant is not part of this event")
 

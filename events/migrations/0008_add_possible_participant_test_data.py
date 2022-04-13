@@ -25,22 +25,34 @@ class Migration(migrations.Migration):
             (test_participant2,
              PossibleMeeting.objects.get(participant_id__id=test_participant2.id)),
 
-            (EventParticipant.objects.get(event_id__title='event3', user_id__username='testUser1'),
-             possible_meetings_arr_for_event3[0]),
-
-            (EventParticipant.objects.get(event_id__title='event3', user_id__username='testUser2'),
-             possible_meetings_arr_for_event3[1]),
-
-            (EventParticipant.objects.get(event_id__title='event3', user_id__username='testUser3'),
-             possible_meetings_arr_for_event3[1]),
-            (EventParticipant.objects.get(event_id__title='event3', user_id__username='testUser3'),
-             possible_meetings_arr_for_event3[2])
+            (EventParticipant.objects.get(
+                event_id__title='event3',
+                user_id__username='testUser1'),
+                possible_meetings_arr_for_event3[0]
+             ),
+            (EventParticipant.objects.get(
+                event_id__title='event3',
+                user_id__username='testUser2'),
+                possible_meetings_arr_for_event3[1]
+             ),
+            (EventParticipant.objects.get(
+                event_id__title='event3',
+                user_id__username='testUser3'),
+                possible_meetings_arr_for_event3[1]
+             ),
+            (EventParticipant.objects.get(
+                event_id__title='event3',
+                user_id__username='testUser3'),
+                possible_meetings_arr_for_event3[2]
+             )
         ]
 
         with transaction.atomic():
             for participant_id, possible_meeting_id in possible_participant_data:
-                possible_participant = PossibleParticipant(participant_id=participant_id,
-                                                           possible_meeting_id=possible_meeting_id)
+                possible_participant = PossibleParticipant(
+                    participant_id=participant_id,
+                    possible_meeting_id=possible_meeting_id
+                 )
                 possible_participant.save()
 
     operations = [
