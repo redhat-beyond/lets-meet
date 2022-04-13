@@ -4,12 +4,12 @@
 import django.db.models.functions.datetime
 from django.db import migrations, models
 import django.db.models.deletion
+import django.db.models.functions.datetime
 import django.utils.timezone
 import reminders.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -20,30 +20,40 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Reminder',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_time', models.DateTimeField(blank=True, null=True, validators=[reminders.models.validate_date])),
+                ('id', models.BigAutoField
+                    (auto_created=True, primary_key=True, serialize=False, verbose_name='ID')
+                 ),
+                ('date_time',
+                 models.DateTimeField(
+                     default=django.utils.timezone.now, validators=[reminders.models.validate_date])
+                 ),
                 ('messages', models.TextField(blank=True, null=True)),
                 ('method',
-                    models.CharField(
-                        choices=[('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email')],
-                        default='web',
-                        max_length=3
-                    )
-                 ),
-                ('participant_id', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='events.eventparticipant')
-                 ),
+                 models.CharField(choices=[('web', 'Website'), ('ema', 'Email'), ('wae', 'Website and Email')],
+                                  default='web', max_length=3)),
+                ('participant_id',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.eventparticipant')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Notification',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('seen_time', models.DateTimeField(default=django.utils.timezone.now, null=True)),
+                ('sent_time', models.DateTimeField(default=django.utils.timezone.now)),
+                ('message', models.TextField(blank=True, null=True)),
+                ('participant_id',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.eventparticipant')),
             ],
         ),
         migrations.AddConstraint(
-            model_name='reminder',
-            constraint=models.UniqueConstraint(fields=('participant_id', 'date_time'), name='unique reminder'),
+            model_name='notification',
+            constraint=models.UniqueConstraint(fields=('participant_id', 'sent_time'), name='unique notification'),
         ),
         migrations.AddConstraint(
-            model_name='reminder',
+            model_name='notification',
             constraint=models.CheckConstraint(
-                check=models.Q(('date_time__gte', django.db.models.functions.datetime.Now())),
-                name='date_time__gte_current_time'
-            ),
+                check=models.Q(('sent_time__gte', django.db.models.functions.datetime.Now())),
+                name='sent_time__gte_current_time'),
         ),
     ]
