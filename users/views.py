@@ -1,3 +1,5 @@
+from datetime import datetime
+from calendar import Calendar
 from users.models import User
 from django.contrib import messages
 from users.forms import MyUserCreationForm
@@ -7,6 +9,11 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def login_page(request):
+    """ return the login-register page with the login tab opened.
+
+        the user will have to login with his email and password,
+        an error message will show up if the user doesn't exists.
+    """
 
     if request.user.is_authenticated:
         return redirect("home")
@@ -38,6 +45,11 @@ def login_page(request):
 
 
 def register_page(request):
+    """ return the login-register page with the register tab opened.
+
+        the user will have to input: username, email, password, confremation password,
+        and optionaly a photo for there profile and a phone number.
+    """
 
     if request.method == "POST":
         form = MyUserCreationForm(request.POST, request.FILES)
@@ -66,10 +78,64 @@ def register_page(request):
 
 @login_required
 def user_logout(request):
+    """ user logout """
+
     logout(request)
     return redirect('login')
 
 
 @login_required
 def main_page(request):
-    return render(request, "user_site/home.html")
+    calandar = get_calandar_days()
+    current_month = get_current_month_name()
+    current_date = (datetime.now().month, datetime.now().day)
+    week_days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+    return render(
+        request, "user_site/home.html",
+        {'week_days': week_days, 'calandar': calandar, 'month_name': current_month, 'current_date': current_date}
+    )
+
+
+def get_current_month_name(month=None):
+    """ get the current month name.
+
+        if month is given then get the name of that month
+        otherwise get this month name
+    """
+    current_date = datetime.now()
+
+    if month is not None:
+        current_date = datetime(current_date.year, month, current_date.day)
+
+    return current_date.strftime("%B")
+
+
+def get_calandar_days(year=None, month=None):
+    """ return a matrix of dates. Each sublist is a week in the month, each week has 7 dates.
+        This list will include dates from the month before if the current month hasn't started with sunday """
+
+    current_week = list()
+    calendar = Calendar(6)  # 6 => means that the week start with Sunday
+    calandar_dates = list()
+    current_date = datetime.now()
+
+    if not year:
+        year = current_date.year
+
+    if not month:
+        month = current_date.month
+
+    # iterate over the list of all the current month dates.
+    # divide the list to each week and return the resulting matrix
+
+    for index, date_index in enumerate(calendar.itermonthdays3(year, month)):
+        current_week.append(date_index)
+
+        if (index + 1) != 1 and (index + 1) % 7 == 0:
+            calandar_dates.append(current_week)
+            current_week = list()
+
+    calandar_dates.append(current_week)
+
+    return calandar_dates

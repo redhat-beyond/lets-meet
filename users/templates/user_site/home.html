@@ -1,260 +1,85 @@
-
 {% extends "base.html" %}
 
 {% block head-content %}
-	<title> Awesome Text Effect </title>
+    <meta charset="utf-8"/>
+    <title>stocks</title>
+    <meta content="stocks" property="og:title"/>
+    <meta content="stocks" property="twitter:title"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
-	{% load static %}
-	<link href="{% static 'user_site/home.css' %}" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'user_site/home.css' %}" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.lordicon.com//libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style>
+        #overlay {
+            position: fixed; /* Sit on top of the page content */
+            display: none; /* Hidden by default */
+            width: 100%; /* Full width (cover the whole page) */
+            height: 100%; /* Full height (cover the whole page) */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+            z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            cursor: pointer; /* Add a pointer on hover */
+        }
+    </style>
+
 {% endblock %}
 
 {% block body-content %}
-	<div class="container">
-		<h1>April</h1>
-		<div class="calender cal-view" data-component="calender-module">
-			<a href="#" class="toggle">toggle view</a>
-			<div class='calender__month'>
-			<div class='calender__week'>
-				<div class='calender__day--hidden'>
-				<span class="date">29</span>
-				</div>
-				<div class='calender__day--hidden'>
-				<span class="date">30</span>
-				</div>
-				<div class='calender__day--hidden'>
-				<span class="date">31</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">01</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Shadow Factory</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">02</span>
+    <div id="overlay"></div>
+    <div class="table-title">
+        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }}:</h1>
+    </div>
+    <div style="display: inline;">
+        <div class="table-icon" style="float:left; padding-left: 6%;">
+            <a href="/admin" style="color: black;">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="table-icon" id="credit">
+            <a href="{% url 'home' %}" style="color: white;">
+                <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <table class="table-fill">
+        <thead>
+            <tr>
+                {% for day in week_days %}
+                    <th class="text-center" style="width: 14.28%;">{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-hover" id="tbody-main">
+            {% for row in calandar %}
+                <tr>
+                    {% for day in row %}
+                    <td class="text-center" style="position: relative;">
+                        <div style="cursor: pointer;" onclick='alert("this is the day number {{ day }}")'>
+                            <p class="tab" 
+                                {% if current_date.1 == day.2 %} style="font-weight: bold; color: red;" {% endif %}
+                                {% if current_date.0 == day.1 %} style="font-weight: bold;" {% endif %}>
+                                {{ day.2 }}
+                            </p>
 
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">03</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">04</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Engelbert Humperdinck: Sings the old songs</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Steps: We are back, stairlift. </a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Renecks: Cottoneyejoe reunion</a>
-					</div>
-				</div>
-				</div>
-			</div>
-			<div class='calender__week'>
-				<div class='calender__day--empty'>
-				<span class="date">05</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">06</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Alpines</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">07</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Lil Peep</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">08</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">The Milkybar Kid: The Whitest White</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">S Club 7</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Small Angry Rapper</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">09</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Mumford &amp; Sons sing songs.</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Alice DJ: Better off alone</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">10</span>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">11</span>
-				</div>
-			</div>
-			<div class='calender__week'>
-				<div class='calender__day'>
-				<span class="date">12</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Ronan Keating: Life is a Rollercoaster</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Cher: If I could turn back time</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">13</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">14</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Rachael Yamagata</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">15</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Rachael Yamagata</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">16</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">R Kelly: A bit of bump N Grind?</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Gardeners Questiontime, live!</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">East 17: Blantent Leyton</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">17</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">18</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Nadine Shan</a>
-					</div>
-				</div>
-				</div>
-			</div>
-			<div class='calender__week'>
-				<div class='calender__day'>
-				<span class="date">19</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">Nick Hakim</a>
-					</div>
-					<div class="event-list__event">
-					<a href="#">Charlotte OC</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">20</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="">Oasis: Tropical Orange</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">21</span>
-				<div class="event-list__event">
-					<a href="#">Move</a>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">22</span>
-				<div class="event-list__event">
-					<a href="#">Alex Vargas</a>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">23</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">BoyZone: Ronan's off on his Rollercoaster</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">Big Apple Hotdogs</a>
-					</div>
-					<div class="event-list__event">
-					<a href="">3T: Our uncle is dead</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">24</span>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">25</span>
-				</div>
-			</div>
-			<div class='calender__week'>
-				<div class='calender__day'>
-				<span class="date">26</span>
-				<div class="event-list__event">
-					<a href="#">Gangly</a>
-				</div>
-				</div>
-				<div class='calender__day'>
-				<span class="date">27</span>
-				<div class="event-list__event">
-					<a href="#">Thomas Dybdahl</a>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">28</span>
-				</div>
-				<div class='calender__day'>
-				<span class="date">29</span>
-				<div class="event-list">
-					<div class="event-list__event">
-					<a href="#">2 Unlimited: Reach for the sky</a>
-					</div>
-				</div>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">30</span>
-				</div>
-				<div class='calender__day--empty'>
-				<span class="date">31</span>
-				</div>
-				<div class='calender__day--hidden'>
-				<span class="date">1</span>
-				</div>
-			</div>
-			</div>
-		</div>
-	</div>
-
-	{% load static %}
-	<script src="{% static 'user_site/home.js' %}"></script>
-
+                        </div> 
+                    </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
