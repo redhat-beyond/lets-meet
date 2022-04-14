@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from .class_models.event_models import Event
 from .class_models.participant_model import EventParticipant
+from users.models import User
 
 
 class EventCreationForm(ModelForm):
@@ -23,13 +24,14 @@ class EventCreationForm(ModelForm):
 
     class Meta:
         model = Event
-        fields = ["title", "location", "description", "date_time_start", "date_time_end"]
+        fields = '__all__'
 
     def save(self, commit=True):
         instance = super(EventCreationForm, self).save(commit=False)
+        print(self.user_id)
+        current_user = User.objects.get(email=self.user_id)
         if commit:
             instance.save()
-            self.user_id.save()
-            event_participant = EventParticipant(event_id=instance, user_id=self.user_id, is_creator=True)
+            event_participant = EventParticipant(event_id=instance, user_id=current_user, is_creator=True)
             event_participant.save()
         return instance

@@ -1,9 +1,8 @@
-from django.http import HttpRequest
 from .class_tests.event_tests import *  # noqa: F403 F401
 from .class_tests.participant_test import *  # noqa: F403 F401
 from .class_models.meeting_models import *  # noqa: F403 F401
-from .class_models.participant_model import EventParticipant  # noqa: F403 F401
-from .class_models.event_models import Event  # noqa: F403 F401
+from .class_models.participant_model import EventParticipant
+from .class_models.event_models import Event, Colors
 from .forms import EventCreationForm
 from users import models
 import pytest
@@ -14,7 +13,7 @@ LOCATION = 'new_form_location'
 DESCRIPTION = 'new_form_description'
 DATE_TIME_START = "11:11 PM 11-Nov-2011"
 DATE_TIME_END = "12:12 PM 12-Dec-2012"
-
+COLOR = Colors.BLACK
 # form's 'test user' preferences -> new event creator preferences
 NAME = "form_test_user"
 EMAIL = "form_test_user@gmail.com"
@@ -33,72 +32,58 @@ def persist_form_user(form_user):
     return form_user
 
 
+@pytest.fixture
+def valid_event_data():
+    return {
+            "title": TITLE,
+            "location": LOCATION,
+            "description": DESCRIPTION,
+            "date_time_start": DATE_TIME_START,
+            "date_time_end": DATE_TIME_END,
+            "color": COLOR,
+        }
+
+
+@pytest.mark.django_db
 class TestCreateEventForm:
 
-    @pytest.fixture
-    def test_title_is_required(self, form_user):
-        request = HttpRequest()
-        request.POST = {
-            "location": LOCATION,
-            "description": DESCRIPTION,
-            "date_time_start": DATE_TIME_START,
-            "date_time_end": DATE_TIME_END,
-        }
-        new_form = EventCreationForm(request.POST, user_id=form_user)
-        assert not new_form.is_valid()
+    @pytest.mark.parametrize("invalid_data", [
+            # title cannot be None
+            {'title': None, 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_END, 'color': COLOR},
+            # title cannot be blank
+            {'title': "", 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_END, 'color': COLOR},
+            # date_time_start cannot be None
+            {'title': None, 'date_time_start': None, 'date_time_end': DATE_TIME_END, 'color': COLOR},
+            # date_time_end cannot be None
+            {'title': None, 'date_time_start': DATE_TIME_START, 'date_time_end': None, 'color': COLOR},
+            # date_time_end must be bigger than date_time_start
+            {'title': None, 'date_time_start': DATE_TIME_END, 'date_time_end': DATE_TIME_START, 'color': COLOR},
+            # date_time_end cannot be equal to date_time_start
+            {'title': None, 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_START, 'color': COLOR},
+        ])
+    def test_event_creation_form_errors(self, invalid_data, form_user):
+        form = EventCreationForm(data=invalid_data, user_id=form_user)
 
-    def test_start_date_time_is_required(self, form_user):
-        request = HttpRequest()
-        request.POST = {
-            "title": TITLE,
-            "location": LOCATION,
-            "description": DESCRIPTION,
-            "date_time_end": DATE_TIME_END,
-        }
-        new_form = EventCreationForm(request.POST, user_id=form_user)
-        assert not new_form.is_valid()
+        with pytest.raises(ValueError):
+            if form.is_valid():
+                form.save
+            else:
+                raise ValueError()
 
-    def test_end_date_time_is_required(self, form_user):
-        request = HttpRequest()
-        request.POST = {
-            "title": TITLE,
-            "location": LOCATION,
-            "description": DESCRIPTION,
-            "date_time_start": DATE_TIME_START,
-        }
-        new_form = EventCreationForm(request.POST, user_id=form_user)
-        assert not new_form.is_valid()
+    def test_event_created(self, valid_event_data, persist_form_user):
+        form = EventCreationForm(data=valid_event_data, user_id=persist_form_user)
+        new_event = form.save()
+        assert Event.objects.get(pk=new_event.id)
 
-    @pytest.fixture
-    def test_only_date_times_and_title_required(self, form_user):
-        request = HttpRequest()
-        request.POST = {
-            "title": TITLE,
-            "date_time_start": DATE_TIME_START,
-            "date_time_end": DATE_TIME_END,
-        }
-        new_form = EventCreationForm(request.POST, user_id=form_user)
-        assert new_form.is_valid()
+    def test_event_participant_created(self, valid_event_data, persist_form_user):
+        form = EventCreationForm(data=valid_event_data, user_id=persist_form_user)
+        new_event = form.save()
+        assert EventParticipant.objects.get(event_id=Event.objects.get(pk=new_event.id), user_id=persist_form_user)
 
-    @pytest.fixture
-    def persist_new_form(self, form_user):
-        request = HttpRequest()
-        request.POST = {
-            "title": TITLE,
-            "location": LOCATION,
-            "description": DESCRIPTION,
-            "date_time_start": DATE_TIME_START,
-            "date_time_end": DATE_TIME_END,
-        }
-        new_form = EventCreationForm(request.POST, user_id=form_user)
-        assert new_form.is_valid()
-        new_form.save(True)
-        return new_form
-
-    @pytest.mark.django_db
-    def test_event_created(self, persist_new_form):
-        assert Event.objects.get(title=TITLE)
-
-    @pytest.mark.django_db
-    def test_event_participant_created(self, persist_new_form):
-        assert EventParticipant.objects.filter(event_id=Event.objects.get(title=TITLE))
+    def test_user_not_exists_when_saving_form(self, valid_event_data, form_user):
+        form = EventCreationForm(data=valid_event_data, user_id=form_user)
+        with pytest.raises(models.User.DoesNotExist):
+            if form.is_valid():
+                form.save()
+            else:
+                assert False
