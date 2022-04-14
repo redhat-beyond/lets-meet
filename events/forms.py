@@ -23,12 +23,13 @@ class EventCreationForm(ModelForm):
 
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ["title", "location", "description", "date_time_start", "date_time_end"]
 
     def save(self, commit=True):
         instance = super(EventCreationForm, self).save(commit=False)
         if commit:
             instance.save()
+            self.user_id.save()
             event_participant = EventParticipant(event_id=instance, user_id=self.user_id, is_creator=True)
             event_participant.save()
         return instance
