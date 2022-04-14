@@ -3,6 +3,7 @@ from users.models import User
 from django.forms import ModelForm, Textarea
 from .class_models.event_models import Event
 from .class_models.participant_model import EventParticipant
+from users.models import User
 
 
 class DataTimePickerInput(forms.DateTimeInput):
