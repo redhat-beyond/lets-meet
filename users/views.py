@@ -22,8 +22,6 @@ def login_page(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        print(f"username: {email}\npassword: {password}")
-
         try:
             user = User.objects.get(email=email)
         except Exception:
