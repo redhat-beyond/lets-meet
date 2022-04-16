@@ -5,7 +5,7 @@ from threading import Timer, Thread
 from django.dispatch import receiver
 from reminders.models import Reminder, ReminderType
 from main.utilities import send_reminder_email, send_site_notification
-from django.db.models.signals import pre_save, pre_delete, post_delete
+from django.db.models.signals import post_save, pre_delete, post_delete
 
 
 class UserAlertScheduler():
@@ -33,10 +33,10 @@ class UserAlertScheduler():
     of errors and missed calls, so a logger has been placed with info and debug calls.
     """
 
-    __logger = None            # the logger object of the class
-    __instance = None          # the instance of the class
-    __current_timer = None     # the current reminder timer the scheduler is running
-    __current_reminder = None  # the current reminder the scheduler is working on
+    __logger = None              # the logger object of the class
+    __instance = None            # the instance of the class
+    __current_timer = None       # the current reminder timer the scheduler is running
+    __current_reminder = None    # the current reminder the scheduler is working on
 
     def __new__(self):
         """
@@ -143,15 +143,15 @@ class UserAlertScheduler():
         UserAlertScheduler.__current_reminder = reminder
 
         # start a new daemon thread for setting the current timer with the new reminder arguments
+        if UserAlertScheduler.__current_timer is not None and UserAlertScheduler.__current_timer.is_alive():
+            UserAlertScheduler.__current_timer.cancel()
+
         Thread(target=UserAlertScheduler.__create_timer, args=(functions, message, user_id), daemon=True).start()
 
-        try:
-            UserAlertScheduler.__logger.debug((
-                "new Timer has been started. ",
-                f"message: {message} - {user_id} - {UserAlertScheduler.__current_reminder.date_time}"
-            ))
-        except Exception:
-            pass
+        UserAlertScheduler.__logger.debug((
+            "new Timer has been started. ",
+            f"message: {message} - {user_id} - {UserAlertScheduler.__current_reminder.date_time}"
+        ))
 
     @staticmethod
     def __create_timer(functions, message, user_id):
@@ -218,23 +218,17 @@ class UserAlertScheduler():
             )
 
             next_reminder = None
-            UserAlertScheduler.__current_timer.cancel()
 
             if reminder.date_time < UserAlertScheduler.__current_reminder.date_time:
                 next_reminder = reminder
 
             UserAlertScheduler.__logger.debug(f"a new reminder is added: {next_reminder}")
 
-            UserAlertScheduler.__add_alert(next_reminder)
-
         else:
             UserAlertScheduler.__current_reminder = reminder
 
             UserAlertScheduler.__logger.debug(f"the current reminder has been modified: {reminder}")
-
-            # modifie the timer
-            UserAlertScheduler.__current_timer.cancel()
-            UserAlertScheduler.__add_alert(reminder)
+            print(f"the current reminder has been modified: {reminder}")
 
     @staticmethod
     def __alert_user(methods, *args, **kwargs):
@@ -256,22 +250,14 @@ class UserAlertScheduler():
         UserAlertScheduler.__logger.debug("deleting the current task from the DB.")
 
         # remove the current reminder from the db
-        try:
-            current_reminder_instance = Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id)
+        current_reminder_instance = Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id)
 
-            if current_reminder_instance is not None:
-                current_reminder_instance.delete()
-
-        except Reminder.DoesNotExist:
-            UserAlertScheduler.__logger.warning((
-                "Query set: get by id didn't work.\n"
-                f"current reminder: {UserAlertScheduler.__current_reminder}\n"
-                f"args: {args} | kwargs: {kwargs}"
-            ))
+        if current_reminder_instance is not None:
+            current_reminder_instance.delete()
 
     @staticmethod
-    @receiver(pre_save, sender=Reminder)
-    def __check_before_saving(sender, instance, **kwargs):
+    @receiver(post_save, sender=Reminder)
+    def __check_after_saving(sender, instance, **kwargs):
         """ add a new alert.
             The scheudler will check if the current reminder object has been set
             - if not then the scheduler will call add alert
@@ -279,14 +265,14 @@ class UserAlertScheduler():
               if so the user has chnged something in the reminder as a reuslt the scheduler
               will call modifie alert insted.
 
-            ** this is a function that implements the signal pre save
+            ** this is a function that implements the signal post save
                as a result this function take the arguments sender, instance, **kwargs exactly
                without change in the names or order of the variables,
                any changes can cause an exception.
         """
 
-        UserAlertScheduler.__logger.info("in check before saving")
-        UserAlertScheduler.__logger.debug("pre save")
+        UserAlertScheduler.__logger.info("in check after saving")
+        UserAlertScheduler.__logger.debug("post save")
         UserAlertScheduler.__logger.debug(f"instance: {instance}")
 
         if UserAlertScheduler.__current_reminder is not None:
@@ -297,7 +283,7 @@ class UserAlertScheduler():
                 UserAlertScheduler.__modifie_alert(instance)
 
             elif UserAlertScheduler.__current_reminder.date_time < instance.date_time:
-                UserAlertScheduler.__logger.debug("end pre: the timer time hasnt been changed")
+                UserAlertScheduler.__logger.debug("end post: the timer time hasnt been changed")
                 return None
 
         UserAlertScheduler.__logger.debug(f"set new alert: {instance}")
