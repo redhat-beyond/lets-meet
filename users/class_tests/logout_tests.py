@@ -16,5 +16,5 @@ class TestLogout:
 
     def test_sign_out_redirect(self, client):
         response = client.get('/logout/')
-        HOMEPAGE_URL = '/accounts/login/?next=/logout/'
+        HOMEPAGE_URL = '/login/?next=/logout/'
         assert response.url == HOMEPAGE_URL

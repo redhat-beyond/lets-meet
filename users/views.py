@@ -74,7 +74,7 @@ def register_page(request):
     return render(request, "login/register_login.html", {'form': form, 'page': 'register'})
 
 
-@login_required
+@login_required(login_url="login")
 def user_logout(request):
     """ user logout """
 
@@ -82,7 +82,7 @@ def user_logout(request):
     return redirect('login')
 
 
-@login_required
+@login_required(login_url="login")
 def main_page(request):
     calandar = get_calandar_days()
     current_month = get_current_month_name()
