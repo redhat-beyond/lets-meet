@@ -1,0 +1,30 @@
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/forms.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div class="content-section">
+        <form action="{% url 'upload' %}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+             <fieldset class="form-group">
+            {% csrf_token %}
+            {% for field in form %}
+          <input type="{{field.field.widget.input_type}}" name="{{field.name}}" placeholder="{{field.label}}" class="input"/>
+        {% endfor %}
+             </fieldset>
+                    <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Save</button>
+
+        </div>
+        </form>
+{% if messages %}
+        <h1>what the fuck do you want</h1>
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"
+    {% endif %}>{{ message }}</li>
+ {% endfor %}
+</ul>
+  </div>
+
+{% endif %}
+{% endblock content %}

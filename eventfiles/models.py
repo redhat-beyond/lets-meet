@@ -1,6 +1,6 @@
 from os import path
 from django.db import models
-from events.models import EventParticipant
+from events.models import EventParticipant, Event
 from django.core.exceptions import ValidationError
 
 
@@ -17,8 +17,21 @@ class EventFile(models.Model):
         if EventFile.objects.filter(file=up_file, participant_id=up_participant_id):
             raise ValidationError('that file already exist in meeting')
 
+    @staticmethod
+    def get_files_by_event(event_id):
+        participants = EventParticipant.objects.filter(event_id=event_id)
+        files=[]
+        #files =EventFile.objects.filter(participant_id=EventParticipant.objects.filter(event_id=event_id)))
+        for participant in participants:
+            files.extend(EventFile.objects.filter(participant_id=participant))
+
+        return files
+
+    # def __str__(self):
+    # return f"{self.participant_id} - {path.basename(self.file.name)}"
+
     def __str__(self):
-        return f"{self.participant_id} - {path.basename(self.file.name)}"
+        return f"{path.basename(self.file.name)}"
 
     def clean(self) -> None:
         EventFile.validate_unique_file(self.file, self.participant_id)

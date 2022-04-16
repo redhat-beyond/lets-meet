@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ohaio</title>
+        {% load static %}
+    <link href="'event_files/event_files.css' " rel="stylesheet">
+
+    {% block head-content %}
+    {% endblock %}
+</head>>
+<body>
+{% block content %}
+<center>
+<div class="content-section">
+    {% if files %}
+        {% for post in files %}
+        <h2>{{post}}</h2>
+            <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}">Download</a>
+        {% endfor %}
+    {% endif %}
+    {% if not files %}
+         <h2>No files exist</h2>
+    {% endif %}
+
+    <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+    <fieldset class="form-group">
+    {% csrf_token %}
+    {% for field in form %}
+        <input type="{{field.field.widget.input_type}}" name="{{field.name}}" placeholder="{{field.label}}" class="input"/>
+    {% endfor %}
+    </fieldset>
+    <div class="form-group">
+    <button class="btn btn-outline-info" type="submit">Save</button>
+        </div>
+    </form>
+    {% if messages %}
+    <h1>what the fuck do you want</h1>
+    <ul class="messages">
+    {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>
+        {{ message }}</li>
+     {% endfor %}
+    </ul>
+</div>
+    {% endif %}
+</center>
+</body>
+{% endblock content %}
