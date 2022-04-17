@@ -37,6 +37,14 @@ def get_event_participant_from_db():
 @pytest.mark.django_db
 class TestMeeting():
 
+    @pytest.fixture
+    def expected_meeting_results(self):
+        return [
+            OptionalMeetingDates.objects.get(id=3),
+            OptionalMeetingDates.objects.get(id=4),
+            OptionalMeetingDates.objects.get(id=5),
+        ]
+
     def test_persist_possible_meeting(self, persist_possible_meeting):
         assert persist_possible_meeting in OptionalMeetingDates.objects.all()
 
@@ -61,23 +69,13 @@ class TestMeeting():
         with pytest.raises(ValidationError, match='meeting hours already exists'):
             persist_possible_meeting.save()
 
-    def test_get_all_event_dates(self, event_title="event3"):
+    def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
         event = Event.objects.get(title=event_title)
-        expected_results = [
-            OptionalMeetingDates.objects.get(id=3),
-            OptionalMeetingDates.objects.get(id=4),
-            OptionalMeetingDates.objects.get(id=5),
-        ]
 
-        assert expected_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
+        assert expected_meeting_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
 
-    def test_remove_all_possible_dates(self, event_title="event3"):
+    def test_remove_all_possible_dates(self, unexpected_results, event_title="event3"):
         event = Event.objects.get(title=event_title)
-        unexpected_results = [
-            OptionalMeetingDates.objects.get(id=3),
-            OptionalMeetingDates.objects.get(id=4),
-            OptionalMeetingDates.objects.get(id=5),
-        ]
 
         OptionalMeetingDates.objects.remove_all_possible_dates(event)
 
