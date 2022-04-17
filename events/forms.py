@@ -16,6 +16,16 @@ class EventCreationForm(ModelForm):
         self.user_id = kwargs.pop('user_id')
         super(EventCreationForm, self).__init__(*args, **kwargs)
 
+<<<<<<< HEAD
+=======
+    title = forms.CharField(initial="", required=True, max_length=50)
+    location = forms.CharField(initial="", required=False, max_length=50)
+    description = forms.CharField(initial="", required=False)
+    date_time_start = date_time_end = forms.DateTimeField(
+        input_formats=['%I:%M %p %d-%b-%Y'],
+    )
+
+>>>>>>> 6a3359a (add css anf minor fixes)
     class Meta:
         model = Event
         fields = '__all__'
