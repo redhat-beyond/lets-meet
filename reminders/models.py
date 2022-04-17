@@ -61,11 +61,7 @@ class Reminder(models.Model):
         except IntegrityError as error:
             if row_duplication_error in error.args:
                 raise IntegrityError("reminder already exists")
-
             elif time_validation_error in error.args:
                 raise IntegrityError("date time should be bigger than the current date_time")
-
             raise error
-
-        else:
-            return result
+        return result
