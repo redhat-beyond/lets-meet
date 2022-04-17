@@ -16,11 +16,7 @@ class EventCreationForm(ModelForm):
     description = forms.CharField(initial="", required=False)
     date_time_start = date_time_end = forms.DateTimeField(
         input_formats=['%I:%M %p %d-%b-%Y'],
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local'},
-            format='%I:%M %p %d-%b-%Y'
-         )
-     )
+    )
 
     class Meta:
         model = Event
