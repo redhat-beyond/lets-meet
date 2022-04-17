@@ -1,12 +1,14 @@
 import pytest
-from django.utils import timezone
 from . import models
 from datetime import datetime
+from django.utils import timezone
 from events.models import EventParticipant
-from events.tests import new_event, user0  # noqa: F401
-from events.tests import event_participant_creator as participant0  # noqa: F401
-from django.core.exceptions import ValidationError
 from .models import Reminder, time_format
+from events.tests import new_event  # noqa: F401
+from django.core.exceptions import ValidationError
+from users.tests import user0  # noqa: F401
+from events.tests import event_participant_creator as participant0  # noqa: F401
+
 
 METHOD_0 = models.ReminderType.EMAIL
 MESSAGES_0 = 'This is a test text.'

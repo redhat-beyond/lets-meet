@@ -1,5 +1,7 @@
 import pytest
 from users.models import User
+from .constants import VALID_USERNAME2, HOMEPAGE_URL
+from .constants import VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD
 
 
 @pytest.mark.django_db
@@ -7,8 +9,8 @@ class TestLogout:
 
     @pytest.fixture
     def sign_in_user(self, client):
-        User.objects.create_user(username='valid_username', email='valid@mta.ac.il', password='pw123123')
-        client.post('/register/', data={'username': 'valid_username2', 'password': 'pw123123'})
+        User.objects.create_user(username=VALID_USERNAME, email=VALID_EMAIL, password=VALID_PASSWORD)
+        client.post('/register/', data={'username': VALID_USERNAME2, 'password': VALID_PASSWORD})
 
     def test_sign_out_user_with_client(self, client, sign_in_user):
         response = client.post('/logout/')
@@ -16,5 +18,4 @@ class TestLogout:
 
     def test_sign_out_redirect(self, client):
         response = client.get('/logout/')
-        HOMEPAGE_URL = '/login/?next=/logout/'
         assert response.url == HOMEPAGE_URL

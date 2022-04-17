@@ -1,12 +1,12 @@
+import pytest
 from datetime import datetime
 from django.utils import timezone
+from users.tests import user0  # noqa: F401
 from .event_tests import new_event  # noqa: F811 ,F401
 from django.core.exceptions import ValidationError
 from ..models import PossibleMeeting, EventParticipant
 from .participant_test import event_participant_not_creator  # noqa:F811, F401
-from users.tests import user0  # noqa: F401
 
-import pytest
 
 DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)

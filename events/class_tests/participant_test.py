@@ -1,9 +1,8 @@
+import pytest
 from users.tests import user0  # noqa:F811, F401
 from ..models import Event, EventParticipant
 from .event_tests import new_event  # noqa: F401
 from django.core.exceptions import ValidationError
-
-import pytest
 
 
 def create_event_participant(event, user, is_creator):

@@ -1,7 +1,8 @@
 import pytest
 from users.models import User
-from users.forms import MyUserCreationForm as SignUpForm
+from .constants import LOGIN_HTML_PATH
 from pytest_django.asserts import assertTemplateUsed
+from users.forms import MyUserCreationForm as SignUpForm
 
 
 @pytest.mark.django_db
@@ -51,7 +52,7 @@ class TestSignUp:
     def test_renders_add_sign_up_template(self, client):
         response = client.get('/register/')
         assert response.status_code == 200
-        assertTemplateUsed(response, 'login/register_login.html')
+        assertTemplateUsed(response, LOGIN_HTML_PATH)
 
     def test_post_valid_sign_up_with_client(self, client, valid_users):
         response = client.post('/register/', data=valid_users)
