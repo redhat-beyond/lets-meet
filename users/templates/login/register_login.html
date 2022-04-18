@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block head-content %}
+<title>Login Page </title>
+
+{% load static %}
+<link href="{% static 'login/login.css' %}" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.0.0/animate.min.css">
+{% endblock %}
+
+{% block body-content %}
+
+  {% if messages %}
+          
+    <script>
+      Swal.fire({
+        heightAuto: false,
+        icon: 'error',
+        title: 'An Error Occurred',
+        html: '{% if messages %}' +
+                  '{% for message in messages %}' +
+                    '{{message}}<br>' + 
+                  '{% endfor %}' +
+              '{% endif %}',
+      })
+
+    </script>
+
+  {% endif %}
+
+  <div class="container {% if page == 'register' %} right-panel-active {% endif %}">
+
+    <!-- Sign Up -->
+    <div class="container__form container--signup">
+      <form action="{% url 'register' %}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h2 class="form__title">Sign Up</h2>
+        
+        {% for field in form %}
+          <input type="{{field.field.widget.input_type}}" name="{{field.name}}" placeholder="{{field.label}}" class="input"/>
+        {% endfor %}
+        
+        <button class="btn">Sign Up</button>
+      
+      </form>
+    </div>
+
+    <!-- Sign In -->
+    <div class="container__form container--signin">
+      <form action="{% url 'login' %}" class="form" id="form2" method="POST">
+        {% csrf_token %}
+
+        <h2 class="form__title">Sign In</h2>
+          <input type="text" placeholder="Username" name="email" class="input" />
+          <input type="password" placeholder="Password" name="password" class="input" />
+        <button class="btn">Sign In</button>
+      </form>
+    </div>
+
+    <!-- Overlay -->
+    <div class="container__overlay">
+      <div class="overlay">
+        <div class="overlay__panel overlay--left">
+          <button class="btn" id="signIn">Sign In</button>
+        </div>
+        <div class="overlay__panel overlay--right">
+          <button class="btn" id="signUp">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% load static %}
+  <script src="{% static 'login/login.js' %}"></script>
+
+{% endblock %}
