@@ -8,7 +8,6 @@ from events.models import OptionalMeetingDates, EventParticipant, Event
 from .participant_test import event_participant_not_creator  # noqa:F811, F401
 
 
-
 DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
 
