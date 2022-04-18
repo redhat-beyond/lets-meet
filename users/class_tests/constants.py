@@ -20,3 +20,10 @@ NOT_INTERPRETED = "Could not interpret numbers after plus-sign."
 NOT_PHONE_NUMBER = "The string supplied did not seem to be a phone number."
 NAME_LENGTH_ERROR = "Ensure this value has at most 30 characters."
 EMAIL_ERROR = "Email is not valid"
+
+TEST_USER = 'testUser'
+TEST_EMAIL = 'user@mta.ac.il'
+TEST_PASSWORD = 'PasswordU$er123'
+
+TEST_USER2 = 'testUser1'
+TEST_EMAIL2 = 'testUser1@mta.ac.il'

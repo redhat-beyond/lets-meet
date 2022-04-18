@@ -4,7 +4,8 @@ from pytest_django.asserts import assertTemplateUsed
 from users.forms import MyUserCreationForm as SignUpForm
 from .constants import (
     LOGIN_HTML_PATH, VALID_EMAIL, VALID_USERNAME,
-    VALID_PASSWORD, NOT_VALID_PASSWORD
+    VALID_PASSWORD, NOT_VALID_PASSWORD, TEST_USER,
+    TEST_PASSWORD, TEST_EMAIL, TEST_USER2, TEST_EMAIL2
 )
 
 
@@ -13,13 +14,13 @@ class TestSignUp:
 
     @pytest.fixture
     def valid_users_credentials(self):
-        return {'username': 'testUser', 'email': 'user@mta.ac.il',
-                'password1': 'PasswordU$er123', 'password2': 'PasswordU$er123'}
+        return {'username': TEST_USER, 'email': TEST_EMAIL,
+                'password1': TEST_PASSWORD, 'password2': TEST_PASSWORD}
 
     @pytest.fixture
     def valid_users(self):
-        return {'username': 'testUser1', 'email': 'testUser1@mta.ac.il',
-                'password1': 'PasswordU$er123', 'password2': 'PasswordU$er123'}
+        return {'username': TEST_USER2, 'email': TEST_EMAIL2,
+                'password1': TEST_PASSWORD, 'password2': TEST_PASSWORD}
 
     @pytest.mark.parametrize("invalid_user_credentials", [
         # username cannot be None
