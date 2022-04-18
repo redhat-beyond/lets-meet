@@ -44,9 +44,17 @@ class Notification(models.Model):
         return f"{self.participant_id} - {self.message}"
 
     def clean(self):
-        # self.validate_unique_notification(self, self.participant_id, self.sent_time)
+        validate_unique_notification(self.participant_id, self.sent_time)
         validate_seen_date(self.seen_time, self.sent_time)
         return super().clean()
+
+
+def validate_unique_notification(participant, sent_time):
+    if Notification.objects.filter(
+            participant_id=participant,
+            sent_time=sent_time
+    ):
+        raise ValidationError('notification already exists')
 
 
 def validate_seen_date(time_seen, time_sent):

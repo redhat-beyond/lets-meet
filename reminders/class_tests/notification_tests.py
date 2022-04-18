@@ -5,13 +5,15 @@ from events.models import EventParticipant
 from events.tests import new_event, user0  # noqa: F401
 from events.tests import event_participant_creator as participant0  # noqa: F401
 from ..models import Notification, ReminderType
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
 METHOD_0 = ReminderType.EMAIL
 MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
 SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 BAD_SEEN_TIME_0 = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-JOIN_MEETING = 'Joined Meeting in {minutes} minutes'
+JOIN_MEETING = 'Joined Meeting in {} minutes'
 PAST_DATE_TIME_ERROR = "{} is not a valid date_time"
 EXIST_NOTIFICATION_ERROR = 'reminder already exists'
 
@@ -63,11 +65,22 @@ class TestNotification:
                                                         user_id__username="testUser3")
         )
 
-    # TODO: fix test
-    # def test_notification_with_invalid_time(self, participant0, seen_time=SENT_TIME_0,
-    #                                         sent_time=BAD_SEEN_TIME_0):  # noqa: F811
-    #     expected = f'{time_format(SENT_TIME_0)} should be bigger than current.'
-    #     with pytest.raises(IntegrityError, match=expected):
-    #         save_notification(
-    #             create_notification(participant0, SEEN_TIME_0, SENT_TIME_0, MESSAGE_0)
-    #         )
+    def test_invalid_time(self):
+        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
+        date_time_sent = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+        date_time_read = timezone.now()
+        message = JOIN_MEETING.format(35)
+        expected = 'sent time should be bigger than the current date'
+
+        with pytest.raises(IntegrityError, match=expected):
+            create_notification(participant, date_time_read, date_time_sent, message).save()
+
+    def test_duplication_of_notification(self):  # noqa: F811
+        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
+        date_time_sent = datetime(2032, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+        date_time_read = datetime(2033, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+        message = JOIN_MEETING.format(35)
+        expected = 'notification already exists'
+
+        with pytest.raises(ValidationError, match=expected):
+            create_notification(participant, date_time_read, date_time_sent, message).save()
