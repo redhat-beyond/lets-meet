@@ -3,7 +3,7 @@ VALID_EMAIL = 'valid@mta.ac.il'
 VALID_USERNAME = 'valid_username'
 VALID_USERNAME2 = 'valid_username2'
 
-NOT_VALID_PASSWORD = 'pw123123'
+NOT_VALID_PASSWORD = 'password'
 NOT_VALID_EMAIL = 'not_valid@mta.ac.il'
 
 HOMEPAGE_URL = '/login/?next=/logout/'

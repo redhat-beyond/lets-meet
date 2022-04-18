@@ -1,7 +1,9 @@
 import pytest
 from users.models import User
-from .constants import VALID_USERNAME2, HOMEPAGE_URL
-from .constants import VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD
+from .constants import (
+    VALID_USERNAME2, HOMEPAGE_URL,
+    VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD
+)
 
 
 @pytest.mark.django_db

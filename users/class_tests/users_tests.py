@@ -1,9 +1,11 @@
 import pytest
 from users.models import User
 from phonenumber_field.phonenumber import PhoneNumber
-from .constants import NAME, EMAIL, PASSWORD, PHONE_NUM
-from .constants import MISSING_REGION, NOT_VALID_PHONE, NOT_INTERPRETED
-from .constants import NOT_PHONE_NUMBER, NAME_LENGTH_ERROR, EMAIL_ERROR
+from .constants import (
+    NAME, EMAIL, PASSWORD, PHONE_NUM,
+    MISSING_REGION, NOT_VALID_PHONE, NOT_INTERPRETED,
+    NOT_PHONE_NUMBER, NAME_LENGTH_ERROR, EMAIL_ERROR
+)
 
 
 @pytest.fixture
