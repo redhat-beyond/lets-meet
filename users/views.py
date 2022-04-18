@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-Calendar = Calendar(6)  # 6 => means that the week start with Sunday
+cal = Calendar(6)  # 6 => means that the week start with Sunday
 
 
 def login_page(request):
@@ -98,7 +98,7 @@ def get_calandar_days(year=None, month=None):
         This list will include dates from the month before if the current month hasn't started with sunday """
 
     current_week = list()
-    calendar = Calendar()
+    calendar = cal
     calandar_dates = list()
     current_date = datetime.now()
     if not year:
