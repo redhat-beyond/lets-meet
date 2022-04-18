@@ -4,8 +4,10 @@ from collections import namedtuple
 from django.contrib.auth import authenticate
 from pytest_django.asserts import assertTemplateUsed
 from users.forms import MyUserCreationForm as LoginForm
-from .constants import VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD
-from .constants import NOT_VALID_EMAIL, NOT_VALID_PASSWORD, LOGIN_HTML_PATH
+from .constants import (
+    VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD,
+    NOT_VALID_EMAIL, NOT_VALID_PASSWORD, LOGIN_HTML_PATH
+)
 
 
 USER_CREDENTIALS = namedtuple("USER_CREDENTIALS", "email password")
