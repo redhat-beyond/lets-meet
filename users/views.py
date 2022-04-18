@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-calendar = Calendar(6)  # 6 => means that the week start with Sunday
+cal = Calendar(6)  # 6 => means that the week start with Sunday
 
 
 def login_page(request):
@@ -106,7 +106,7 @@ def get_calandar_days(year=None, month=None):
         month = current_date.month
     # iterate over the list of all the current month dates.
     # divide the list to each week and return the resulting matrix
-    for index, date_index in enumerate(calendar.itermonthdays3(year, month)):
+    for index, date_index in enumerate(cal.itermonthdays3(year, month)):
         current_week.append(date_index)
         if (index + 1) != 1 and (index + 1) % 7 == 0:
             calandar_dates.append(current_week)
