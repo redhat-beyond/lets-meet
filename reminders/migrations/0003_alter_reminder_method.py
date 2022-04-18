@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='reminder',
             name='method',
-            field=models.CharField(choices=[('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email')], default='web', max_length=3),
+            field=models.CharField(choices=[('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email')],
+                                   default='web', max_length=3),
         ),
     ]
