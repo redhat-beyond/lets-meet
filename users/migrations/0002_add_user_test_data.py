@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
         with transaction.atomic():
             for user_name, user_email, user_password, user_phone in users_test_data:
                 user = User(username=user_name, email=user_email, password=user_password, phone_number=user_phone)
+                user.set_password(user_password)
                 user.save()
 
     operations = [

@@ -1,0 +1,241 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+
+body {
+    background: #344557 url("https://images.unsplash.com/photo-1525784451128-d1488f52f03e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=2000&q=80") no-repeat fixed 0 0;
+    background-size: cover;
+    font-family: "Roboto", helvetica, arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+
+#home {
+    float: right;
+    padding-right: 6%;
+}
+
+div.table-title {
+    display: block;
+    margin: auto;
+    max-width: 50%;
+    padding-top: 5%;
+    padding-bottom: 3%;
+    width: 100%;
+}
+
+.table-title h1 {
+    color: #fafafa;
+    font-size: 50px;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+    text-decoration: underline;
+    font-family: "Roboto", helvetica, arial, sans-serif;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+    text-transform:uppercase;
+}
+
+.table-icon {
+    font-size:25px;
+    color: white;
+    padding-bottom: 15px;
+}
+
+.table-fill {
+    table-layout: auto;
+    background: white;
+    border-radius:3px;
+    border-collapse: collapse;
+    /* height: 320px; */
+    margin: auto;
+    /* max-width: 80%; */
+    max-width: 90%;
+    padding:5px;
+    width: 100%;
+    height: 60vh;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    animation: float 5s infinite;
+}
+
+th {
+    color:#D5DDE5;;
+    background:#1b1e24;
+    border-bottom:4px solid #9ea7af;
+    border-right: 1px solid #343a45;
+    font-size:23px;
+    font-weight: 100;
+    padding:24px;
+    text-align:left;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    vertical-align:middle;
+}
+
+th:first-child {
+    border-top-left-radius:3px;
+}
+
+th:last-child {
+    border-top-right-radius:3px;
+    border-right:none;
+}
+
+tr {
+    border-top: 1px solid #C1C3D1;
+    border-bottom-: 1px solid #C1C3D1;
+    color:#666B85;
+    font-size:16px;
+    font-weight:normal;
+    text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+
+tr:hover td {
+    background:#4d5a68;
+    color:#FFFFFF;
+    border-top: 1px solid #22262e;
+}
+
+tr:first-child {
+    border-top:none;
+}
+
+tr:last-child {
+    border-bottom:none;
+}
+
+tr:nth-child(odd) td {
+    background:#EBEBEB;
+}
+
+tr:nth-child(odd):hover td {
+    background:#4d5a68;
+}
+
+tr:last-child td:first-child {
+    border-bottom-left-radius:3px;
+}
+
+tr:last-child td:last-child {
+    border-bottom-right-radius:3px;
+}
+
+td {
+    overflow: auto;
+    background:#FFFFFF;
+    padding:30px;
+    text-align:left;
+    vertical-align:middle;
+    font-weight:300;
+    font-size:18px;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+    border-right: 0px;
+}
+
+th.text-left {
+    text-align: center;
+}
+
+th.text-center {
+    text-align: center;
+}
+
+th.text-right {
+    text-align: right;
+}
+
+td.text-left {
+    text-align: center;
+}
+
+td.text-center {
+    text-align: center;
+}
+
+td.text-right {
+    text-align: right;
+}
+
+.fa-cogs{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size:30px;
+    color: white;
+}
+
+.swal2-input{
+    font-size: 18px;
+    max-height: 36px;
+}
+
+body.swal2-shown > [aria-hidden="true"] {
+    filter: blur(10px);
+}
+
+body > * {
+    transition: 0.1s filter linear;
+}
+
+.image-upload > input {
+    display: none;
+}
+
+.icon {
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    color: white;
+    font-size: 15px;
+}
+
+@media only screen and (max-width: 790px)  {
+    #home {
+        position: fixed;
+        right: -20px;
+    }
+}
+
+.text-center > * {
+    position: absolute;
+}
+
+.tab {
+    position: absolute;
+    top: -4vh;
+    left: 0px;
+    color: black;
+}
+
+.event_tab {
+    height: 2vh;
+    width: 10vw;
+    color: white;
+    margin-bottom: 5px;
+    border-radius: 10px 80px;
+    background-color: grey;
+}
+
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}

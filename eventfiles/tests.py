@@ -1,8 +1,9 @@
 import pytest
 from .models import EventFile
+from users.tests import user0  # noqa: F401
 from django.core.files import File
 from django.core.exceptions import ValidationError
-from events.tests import event_participant_not_creator, new_event, user0  # noqa: F401
+from events.tests import event_participant_not_creator, new_event  # noqa: F401
 
 
 TEST_FILE_PATH = 'static/test_files/testFile.txt'

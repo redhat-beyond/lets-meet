@@ -3,6 +3,9 @@
 # replace .bashrc file from vagrant directory to ~ directory
 cp /vagrant/.bashrc .bashrc
 
+# preventing error "$'\r': command not found"
+sed -i 's/\r$//' .bashrc
+
 # Install Pipenv, the -n option makes sudo fail instead of asking for a
 # password if we dont have sufficient privileges to run it
 sudo -n dnf install -y pipenv

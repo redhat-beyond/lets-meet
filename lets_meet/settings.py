@@ -34,11 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main.apps.MainConfig',
-    'events.apps.EventsConfig',
-    'users.apps.UsersConfig',
-    'reminders.apps.RemindersConfig',
     'phonenumber_field',
+    'main.apps.MainConfig',
+    'users.apps.UsersConfig',
+    'events.apps.EventsConfig',
+    'reminders.apps.RemindersConfig',
     'eventfiles.apps.EventfilesConfig',
 ]
 
