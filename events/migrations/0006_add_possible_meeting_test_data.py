@@ -4,14 +4,14 @@ from django.db import migrations, transaction
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0005_possiblemeeting'),
+        ('events', '0005_optionalmeetingdates'),
     ]
 
     def generate_possible_meeting_data(apps, schema_editor):
         from datetime import datetime
-        from events.models import EventParticipant
-        from events.models import PossibleMeeting
         from django.utils import timezone
+        from events.models import OptionalMeetingDates
+        from events.models import EventParticipant
 
         possible_meeting_data = [
             (EventParticipant.objects.filter(is_creator=True)[0],
@@ -23,9 +23,9 @@ class Migration(migrations.Migration):
         ]
 
         with transaction.atomic():
-            for participant_id, date_time_start, date_time_end in possible_meeting_data:
-                event_participant = PossibleMeeting(participant_id=participant_id,
-                                                    date_time_start=date_time_start, date_time_end=date_time_end)
+            for event_creator_id, date_time_start, date_time_end in possible_meeting_data:
+                event_participant = OptionalMeetingDates(event_creator_id=event_creator_id,
+                                                         date_time_start=date_time_start, date_time_end=date_time_end)
                 event_participant.save()
 
     operations = [

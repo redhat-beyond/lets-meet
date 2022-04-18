@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('events', '0006_add_possible_meeting_test_data'),
+        ('events', '0003_eventparticipant'),
     ]
 
     operations = [

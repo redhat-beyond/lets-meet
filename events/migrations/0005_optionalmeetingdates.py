@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='PossibleMeeting',
+            name='OptionalMeetingDates',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date_time_start', models.DateTimeField()),
                 ('date_time_end', models.DateTimeField()),
-                ('participant_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                ('event_creator_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
                  to='events.eventparticipant')),
             ],
         ),

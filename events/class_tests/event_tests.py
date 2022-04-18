@@ -5,11 +5,11 @@ from ..models import Event, time_format
 from django.core.exceptions import ValidationError
 
 
-DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
 TITLE = 'new_title'
 LOCATION = 'new_location'
 DESCRIPTION = 'new_description'
+DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
+DATE_TIME_START = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 
 
 @pytest.fixture

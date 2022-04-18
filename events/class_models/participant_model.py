@@ -1,5 +1,5 @@
-from users.models import User
 from django.db import models
+from users.models import User
 from .event_models import Event
 from django.core.exceptions import ValidationError
 
