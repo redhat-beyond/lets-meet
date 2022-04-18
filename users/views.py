@@ -77,7 +77,7 @@ def main_page(request):
     week_days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     return render(
         request, "user_site/home.html",
-        {'week_days': week_days, 'calandar': calandar, 'month_name': current_month, 'current_date': current_date}
+        {'week_days': week_days, 'calandar': cal, 'month_name': current_month, 'current_date': current_date}
     )
 
 
