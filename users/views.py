@@ -71,7 +71,7 @@ def user_logout(request):
 
 @login_required(login_url="login")
 def main_page(request):
-    calandar = get_calandar_days()
+    cal = get_calandar_days()
     current_month = get_current_month_name()
     current_date = (datetime.now().month, datetime.now().day)
     week_days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
