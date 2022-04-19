@@ -10,26 +10,26 @@ from django.db.models.signals import post_save, pre_delete, post_delete
 
 class UserAlertScheduler():
     """
-    User Alert Scheduler is our implemintation of a reminder schdeuler when the user want to be
-    nofieied in a specific time.
+    User Alert Scheduler is our implementation of a reminder scheduler when the user wants to be
+    notified at a specific time.
 
     The User Alert Scheduler is dependent on the DB and registered to save and delete events,
-    - When the user add a new reminder the scheduler will add the new reminder if his time is lower
-      then the time in the current reminder.
-    - When the user delete a reminder the scheduler will change his current reminder if it was
+    - When the user adds a new reminder the scheduler will add the new reminder if his time is lower
+      than the time in the current reminder.
+    - When the user deletes a reminder the scheduler will change his current reminder if it was
       the same reminder and schedule the next reminder in line.
 
-    ** Becuse the scheduler is only relavent when there is an action in the DB and will not be called
-       from outside the class, each method defined is private and static.
-       In addition this is a Singltone object and will be created once at the start of the reminder app.
+    ** Because the scheduler is only relevant when there is an action in the DB and will not be called
+       from outside of the class, each method defined is private and static.
+       In addition this is a Singleton object and will be created once at the start of the reminder app.
 
     The current methods which the scheduler support are reminder_email and send_site_notification.
     Other functions can be added to the _get_function method that takes an enum
-    ReminderType defined in the Reminder model.
+    ReminderType is defined in the Reminder model.
     Each function needs to be as follows: function_name(message, <user>).
     <user> is the user model defined in our User model.
 
-    This scheduler also has a logger object, becuse it is a complicated implemntation there can be a lot
+    This scheduler also has a logger object, because it is a complicated implementation there can be a lot
     of errors and missed calls, so a logger has been placed with info and debug calls.
     """
 
@@ -54,14 +54,13 @@ class UserAlertScheduler():
         return UserAlertScheduler.__instance
 
     @staticmethod
-    def define_logger(file=stdout, error_type=logging.WARNING):
+    def define_logger(file=stdout, log_level=logging.WARNING):
         """ define the __logger object.
-            logger format: the type of logged message such as Info, Debug, Warnning and etc
             file: where the logger will log all his message. default is stdout
             logger level: define which types of logger message will show up. default Warnning """
 
         log_format = "%(levelname)s %(asctime)s - %(message)s"
-        logging.basicConfig(filemode=file, level=error_type, format=log_format)
+        logging.basicConfig(filemode=file, level=log_level, format=log_format)
         return logging.getLogger(__name__)
 
     @staticmethod
@@ -78,11 +77,11 @@ class UserAlertScheduler():
 
             # check each reminder time against the current time
 
-            if UserAlertScheduler.__get_time_diffrence(reminder.date_time) < 0:
+            if UserAlertScheduler.__get_time_difference(reminder.date_time) < 0:
                 Reminder.objects.get(id=reminder.id).delete()
 
     @staticmethod
-    def __get_time_diffrence(date_time):
+    def __get_time_difference(date_time):
         """ return the time diffrence between the gievn date_time to our current time """
 
         return date_time.timestamp() - datetime.now().timestamp()
@@ -104,10 +103,10 @@ class UserAlertScheduler():
 
         function_to_invoke = list()
 
-        if method_type == ReminderType.EMAIL or method_type == ReminderType.WEBSITE_EMAIL:
+        if method_type in (ReminderType.EMAIL, ReminderType.WEBSITE_EMAIL):
             function_to_invoke.append(send_reminder_email)
 
-        if method_type == ReminderType.WEBSITE or method_type == ReminderType.WEBSITE_EMAIL:
+        if method_type in (ReminderType.WEBSITE, ReminderType.WEBSITE_EMAIL):
             function_to_invoke.append(send_site_notification)
 
         return function_to_invoke
@@ -156,19 +155,19 @@ class UserAlertScheduler():
     @staticmethod
     def __create_timer(functions, message, user_id):
         """ create the timer object.
-            The scheduler needs a timer object that will go off when a spesific time has been reached
-            "Timer" is a class defined in pythons own threading library that get a tmme and a method to invoke.
+            The scheduler needs a timer object that will go off when a specific time has been reached
+            "Timer" is a class defined in Python's own threading library that gets a time and a method to invoke.
             This function set the current timer to be a new timer object with
                 time: the diffrence of the reminder time and the current time
                 target: the function given using the _get_function class
                 args: the argument that the function gets, a message and the user_id object
 
-            ** this function is run using a diffrent thread becuse the timer itself
+            ** this function is run using a different thread because the timer itself
                can cause a few problems with the migrate and the current thread running it.
         """
 
         UserAlertScheduler.__current_timer = Timer(
-            UserAlertScheduler.__get_time_diffrence(UserAlertScheduler.__current_reminder.date_time),
+            UserAlertScheduler.__get_time_difference(UserAlertScheduler.__current_reminder.date_time),
             UserAlertScheduler.__alert_user,
             args=(functions, message, user_id)
         )
@@ -205,9 +204,9 @@ class UserAlertScheduler():
     def __modifie_alert(reminder):
         """ modifie the reminder in the queue.
             The scheudler will check if the given reminder is the current reminder object
-            if so the scheduler will chekc if the time has been change,
-            if the time has been incresed then the scheduler will try to add a new remidner insted
-            otherwise the reminder will be change in the scheduler to the reminder object given
+                if so the scheduler will check if the time has been changed,
+                if the time has been increased then the scheduler will try to add a new reminder instead
+                otherwise, the remainder will be changed in the scheduler to the reminder object given
         """
 
         UserAlertScheduler.__logger.info("in modifie alert")
@@ -252,21 +251,21 @@ class UserAlertScheduler():
         # remove the current reminder from the db
         current_reminder_instance = Reminder.objects.get(id=UserAlertScheduler.__current_reminder.id)
 
-        if current_reminder_instance is not None:
+        if current_reminder_instance:
             current_reminder_instance.delete()
 
     @staticmethod
     @receiver(post_save, sender=Reminder)
     def __check_after_saving(sender, instance, **kwargs):
         """ add a new alert.
-            The scheudler will check if the current reminder object has been set
-            - if not then the scheduler will call add alert
+            The scheduler will check if the current reminder object has been set
+            - if not then the scheduler will call add an alert
             - otherwise the instance (reminder) will be checked if it is the current reminder
-              if so the user has chnged something in the reminder as a reuslt the scheduler
-              will call modifie alert insted.
+              if so the user has changed something in the reminder as a result the scheduler
+              will call modify alert instead.
 
             ** this is a function that implements the signal post save
-               as a result this function take the arguments sender, instance, **kwargs exactly
+               as a result this function takes the arguments sender, instance, **kwargs exactly
                without change in the names or order of the variables,
                any changes can cause an exception.
         """
@@ -275,7 +274,7 @@ class UserAlertScheduler():
         UserAlertScheduler.__logger.debug("post save")
         UserAlertScheduler.__logger.debug(f"instance: {instance}")
 
-        if UserAlertScheduler.__current_reminder is not None:
+        if UserAlertScheduler.__current_reminder:
             if UserAlertScheduler.__current_reminder.id == instance.id:
                 UserAlertScheduler.__logger.debug(
                     f"the reminder has been changed: {UserAlertScheduler.__current_reminder} vs {instance}"
@@ -298,7 +297,7 @@ class UserAlertScheduler():
             is in fact the current reminder, and will schedule a new reminder if need be.
 
             ** this is a function that implements the signal pre delete
-               as a result this function take the arguments sender, instance, **kwargs exactly
+               as a result this function takes the arguments sender, instance, **kwargs exactly
                without change in the names or order of the variables,
                any changes can cause an exception.
         """
@@ -314,14 +313,14 @@ class UserAlertScheduler():
     def __check_after_delete(sender, instance, **kwargs):
         """ set a new reminder if the current reminder is None
 
-            The scheudler delete each reminder at the end of his time
+            The scheduler delete each reminder at the end of his time
             as a result a pre delete signal is being called, the scheduler check
             that the reminder is the current remidnder and set it to None
             Then the post delete signal is called and the scheduler will schedule a new reminder
             after the deletion of the last reminder.
 
             ** this is a function that implements the signal pre save
-               as a result this function take the arguments sender, instance, **kwargs exactly
+               as a result this function takes the arguments sender, instance, **kwargs exactly
                without change in the names or order of the variables,
                any changes can cause an exception.
         """

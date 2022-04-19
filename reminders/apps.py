@@ -10,7 +10,7 @@ class RemindersConfig(AppConfig):
 
     def ready(self) -> None:
         if not self.scheduler:
-            Thread(target=RemindersConfig.create_scheduler, daemon=True).start()
+            Thread(target=self.create_scheduler, daemon=True).start()
 
     @staticmethod
     def create_scheduler():

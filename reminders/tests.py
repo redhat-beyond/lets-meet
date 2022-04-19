@@ -87,7 +87,7 @@ class TestReminder:
                 create_reminder(participant0, METHOD_0, MESSAGES_0, date_time)
             )
 
-    def test_invalid_reminder_exist_twice(self):
+    def test_reminder_exist_twice(self):
         event_participant = EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser2")
         event_date_time = datetime(2022, 8, 24, 13, 13, 13, 0, tzinfo=timezone.utc)
         message = JOIN_MEETING.format(50)

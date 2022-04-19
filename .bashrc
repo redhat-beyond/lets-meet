@@ -33,7 +33,7 @@ alias migrate="manage migrate"
 alias migration="makemigrations | migrate"
 alias run_tests="pipenv run pytest -v"
 alias run_flake8="pipenv run flake8 --max-line-length 120"
-alias reset_db="rm db.sqlite3 | rm -r static/files | rm -r static/profiles | migrate"
+alias reset_db="rm -f db.sqlite3 | rm -rf static/files | rm -rf static/profiles | migrate"
 
 alias find_program="netstat -plten | grep python"
 alias stop_program="sudo kill -9 "
