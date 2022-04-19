@@ -109,7 +109,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -137,3 +136,7 @@ dmypy.json
 
 # Distribution / packaging
 .idea/
+
+# Django media files
+static/files/
+static/profiles/
