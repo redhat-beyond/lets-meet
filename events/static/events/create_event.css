@@ -129,20 +129,6 @@ input:focus {
   font-size: 1.3em;
 }
 
-#password + i {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 25px;
-  float: right;
-  position: relative;
-  top: -43px;
-  right: 15px;
-  cursor: pointer;
-}
-
-#password + i:hover {
-  color: rgba(255, 255, 255, 1);
-}
-
 input[type="checkbox"] {
   width: inherit;
   padding: 0;
@@ -162,29 +148,6 @@ input[type="checkbox"] + span {
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
-}
-
-.button:hover {
-  background: #aae0f0;
-  box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
-}
-
-footer .fp a {
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-}
-
-footer .hr {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  margin: 60px 0px 40px;
-}
-
-footer .fp {
-  text-align: center;
-}
-
-footer .fp a:hover {
-  color: rgba(255, 255, 255, 1);
 }
 
 #create-event-form {
@@ -210,9 +173,6 @@ footer .fp a:hover {
     width: 300px;
   }
 
-  footer .hr {
-    margin-top: 50px;
-  }
 }
 
 @media (max-width: 399px) {
