@@ -1,11 +1,12 @@
 from django import forms
-from django.forms import ModelForm
 from .class_models.event_models import Event
 from .class_models.participant_model import EventParticipant
 from users.models import User
 
+TIME_FORMAT = ['%I:%M %p %d-%b-%Y']
 
-class EventCreationForm(ModelForm):
+
+class EventCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user_id = kwargs.pop('user_id')
@@ -15,7 +16,7 @@ class EventCreationForm(ModelForm):
     location = forms.CharField(initial="", required=False, max_length=50)
     description = forms.CharField(initial="", required=False)
     date_time_start = date_time_end = forms.DateTimeField(
-        input_formats=['%I:%M %p %d-%b-%Y'],
+        input_formats=TIME_FORMAT,
     )
 
     class Meta:

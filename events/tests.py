@@ -38,13 +38,13 @@ class TestCreateEventForm:
             # title cannot be blank
             {'title': "", 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_END, 'color': COLOR},
             # date_time_start cannot be None
-            {'title': None, 'date_time_start': None, 'date_time_end': DATE_TIME_END, 'color': COLOR},
+            {'title': TITLE, 'date_time_start': None, 'date_time_end': DATE_TIME_END, 'color': COLOR},
             # date_time_end cannot be None
-            {'title': None, 'date_time_start': DATE_TIME_START, 'date_time_end': None, 'color': COLOR},
+            {'title': TITLE, 'date_time_start': DATE_TIME_START, 'date_time_end': None, 'color': COLOR},
             # date_time_end must be bigger than date_time_start
-            {'title': None, 'date_time_start': DATE_TIME_END, 'date_time_end': DATE_TIME_START, 'color': COLOR},
+            {'title': TITLE, 'date_time_start': DATE_TIME_END, 'date_time_end': DATE_TIME_START, 'color': COLOR},
             # date_time_end cannot be equal to date_time_start
-            {'title': None, 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_START, 'color': COLOR},
+            {'title': TITLE, 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_START, 'color': COLOR},
         ])
     def test_event_creation_form_errors(self, invalid_data, persist_user):
         form = EventCreationForm(data=invalid_data, user_id=persist_user)

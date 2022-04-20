@@ -3,5 +3,5 @@ from django.urls import path
 
 
 urlpatterns = [
-    path("create/", views.create_event, name="create"),
+    path("create/", views.create_event, name="create_event"),
 ]
