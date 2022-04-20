@@ -5,7 +5,7 @@ from events.models import Event
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from users.forms import MyUserCreationForm, UserUpdateForm
+from users.forms import MyUserCreationForm
 from django.contrib.auth import authenticate, login, logout
 
 cal = Calendar(6)  # 6 => means that the week start with Sunday
@@ -71,21 +71,6 @@ def user_logout(request):
 
 
 @login_required(login_url="login")
-def update_user(request):
-    user = request.user
-    form = UserUpdateForm(instance=user)
-
-    if request.method == "POST":
-        form = UserUpdateForm(request.POST, request.FILES, instance=user)
-
-        if form.is_valid():
-            form.save()
-            return redirect('update-user')
-
-    return render(request, "update_profile/update_form.html", {'form': form})
-
-
-@login_required(login_url="login")
 def main_page(request, date=None):
 
     if not date:
@@ -101,8 +86,6 @@ def main_page(request, date=None):
     current_events = Event.objects.filter(eventparticipant__user_id=request.user.id)
     table_measurements = get_table_measurements(current_events)
     week_days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-
-    print(f"next: {get_dates(year, month, True)} || pre: {get_dates(year, month, False)}")
 
     return render(
         request, "user_site/home.html",
