@@ -13,13 +13,14 @@ def user0():
     return User(email=EMAIL, phone_number=PHONE_NUM, password=PASSWORD, username=NAME)
 
 
+@pytest.fixture
+def persist_user(db, user0):
+    user0.save()
+    return user0
+
+
 @pytest.mark.django_db()
 class TestUser:
-
-    @pytest.fixture
-    def persist_user(self, db, user0):
-        user0.save()
-        return user0
 
     def test_persist_user(self, persist_user):
         assert persist_user in User.objects.all()
