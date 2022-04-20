@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models import Count
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -11,7 +12,8 @@ class EventQuerySet(models.QuerySet):
 
     def get_all_user_events(self, user_id):
         """ get all the events that the user_id is part of """
-        return self.filter(eventparticipant__user_id=user_id)
+        meetings_ids = self.get_all_user_meetings(user_id).values('id')
+        return self.filter(eventparticipant__user_id=user_id).exclude(Q(id__in=meetings_ids))
 
     def get_all_user_meetings(self, user_id):
         """ get only the meetings that the user_id is a participant """

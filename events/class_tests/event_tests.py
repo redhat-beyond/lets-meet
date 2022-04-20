@@ -83,6 +83,5 @@ class TestEvent():
         assert Event.objects.get(title=event_title) in Event.objects.get_all_user_day_meetings(user_id, date)
 
     def test_get_all_user_events(self):
-        event1 = Event.objects.get(title='event1')
-        event3 = Event.objects.get(title='event3')
-        assert [event1, event3] == list(Event.objects.get_all_user_events(1))
+        event2 = Event.objects.get(title='event2')
+        assert [event2] == list(Event.objects.get_all_user_events(user_id=3))
