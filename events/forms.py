@@ -24,9 +24,8 @@ class EventCreationForm(ModelForm):
 
     def save(self, commit=True):
         instance = super(EventCreationForm, self).save(commit=False)
-        print(self.user_id)
-        current_user = User.objects.get(email=self.user_id)
         if commit:
+            current_user = User.objects.get(email=self.user_id)
             instance.save()
             event_participant = EventParticipant(event_id=instance, user_id=current_user, is_creator=True)
             event_participant.save()
