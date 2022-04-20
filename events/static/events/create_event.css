@@ -7,6 +7,7 @@
 body {
   background: url("https://images.unsplash.com/photo-1480497490787-505ec076689f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80") no-repeat;
   background-size: cover;
+  background-repeat: repeat;
   font-family: "Montserrat", sans-serif;
   margin: 0;
 }
@@ -28,7 +29,6 @@ a {
 .container {
   position: absolute;
   width: 600px;
-  height: 900px;
   left: 48%;
   margin-left: -262.5px;
   margin-top: 10%;
@@ -70,7 +70,7 @@ a {
 }
 
 .headings > a span {
-  font-size: 1.4rem;
+  font-size: 3rem;
   letter-spacing: 1px;
 }
 
@@ -148,6 +148,11 @@ input[type="checkbox"] + span {
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
+}
+
+.button:hover {
+  background: #aae0f0;
+  box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
 }
 
 #create-event-form {

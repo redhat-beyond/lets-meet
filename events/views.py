@@ -3,10 +3,8 @@ from events.forms import EventCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-REDIRECT_PAGE = 'welcome_page'
 
-
-@login_required(login_url=REDIRECT_PAGE)
+@login_required(login_url='login')
 def create_event(request):
 
     if request.method == 'POST':
@@ -16,7 +14,7 @@ def create_event(request):
 
             title = form.cleaned_data.get('title')
             messages.success(request, f'Event: {title} created!')
-            return redirect(REDIRECT_PAGE)
+            return redirect('home')
 
     else:
         form = EventCreationForm(user_id=request.user)
