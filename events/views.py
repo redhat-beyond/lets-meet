@@ -10,10 +10,8 @@ REDIRECT_PAGE = 'welcome_page'
 def create_event(request):
 
     if request.method == 'POST':
-        print(request.POST)
         form = EventCreationForm(request.POST, user_id=request.user)
         if form.is_valid():
-            print("Valid form")
             form.save()
 
             title = form.cleaned_data.get('title')
