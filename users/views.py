@@ -80,7 +80,7 @@ def update_user(request):
 
         if form.is_valid():
             form.save()
-            return redirect('update-user')
+            return redirect('home')
 
     return render(request, "update_profile/update_form.html", {'form': form})
 
