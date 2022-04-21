@@ -12,8 +12,10 @@ import pytest
 TITLE = 'new_form'
 LOCATION = 'new_form_location'
 DESCRIPTION = 'new_form_description'
-DATE_TIME_START = "11:11 PM 11-Nov-2011"
-DATE_TIME_END = "12:12 PM 12-Dec-2012"
+# DATE_TIME_END = "12:12 PM 12-Dec-2012"
+# DATE_TIME_START = "11:11 PM 11-Nov-2011"
+DATE_TIME_END = "2012-12-12 12:12"
+DATE_TIME_START = "2012-11-11 11:11"
 COLOR = Colors.BLACK
 
 
