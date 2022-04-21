@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import Q
-from django.db.models import Count
+from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 

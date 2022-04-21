@@ -41,9 +41,8 @@ class TestEvent():
         assert persist_event not in Event.objects.all()
 
     def test_exist_event(self):
-        assert Event.objects.get(title='event1')
-        assert Event.objects.get(title='event2')
-        assert Event.objects.get(title='event3')
+        for title_id in ['1', '2', '3']:
+            assert Event.objects.get(title=f'event{title_id}')
 
     @pytest.mark.parametrize('title, date_time_start, date_time_end, expected_error', [
         (None, DATE_TIME_START, DATE_TIME_END, 'Title cannot be blank'),
@@ -60,13 +59,17 @@ class TestEvent():
             create_event(title, date_time_start, date_time_end).save()
 
     def test_get_all_meetings(self):
-        assert Event.objects.get(title="event1") in Event.objects.get_all_meetings()
-        assert Event.objects.get(title="event3") in Event.objects.get_all_meetings()
+        result = Event.objects.get_all_meetings()
+        for title_id in ['1', '3']:
+            assert Event.objects.get(title=f"event{title_id}") in result
+        assert result.count() == 2
 
     def test_get_all_user_meetings(self, user_id=1):
-        assert Event.objects.get(title="event1") in Event.objects.get_all_user_meetings(user_id)
-        assert Event.objects.get(title="event3") in Event.objects.get_all_user_meetings(user_id)
-        assert Event.objects.get(title="event2") not in Event.objects.get_all_user_meetings(user_id)
+        result = Event.objects.get_all_user_meetings(user_id)
+        for title_id in ['1', '3']:
+            assert Event.objects.get(title=f"event{title_id}") in result
+        assert Event.objects.get(title="event2") not in result
+        assert result.count() == 2
 
     @pytest.mark.parametrize('event_title, user_id, year, month', [
         ("event1", 1, 2020, 3),

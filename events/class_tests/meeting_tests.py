@@ -70,12 +70,9 @@ class TestMeeting():
 
     def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
         event = Event.objects.get(title=event_title)
-
         assert expected_meeting_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
 
     def test_remove_all_possible_dates(self, unexpected_results, event_title="event3"):
         event = Event.objects.get(title=event_title)
-
         OptionalMeetingDates.objects.remove_all_possible_dates(event)
-
         assert unexpected_results not in list(OptionalMeetingDates.objects.all())
