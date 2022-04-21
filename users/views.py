@@ -5,7 +5,7 @@ from events.models import Event
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from users.forms import MyUserCreationForm
+from users.forms import MyUserCreationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
 
 cal = Calendar(6)  # 6 => means that the week start with Sunday
@@ -68,6 +68,21 @@ def user_logout(request):
 
     logout(request)
     return redirect('login')
+
+
+@login_required(login_url="login")
+def update_user(request):
+    user = request.user
+    form = UserUpdateForm(instance=user)
+
+    if request.method == "POST":
+        form = UserUpdateForm(request.POST, request.FILES, instance=user)
+
+        if form.is_valid():
+            form.save()
+            return redirect('update-user')
+
+    return render(request, "update_profile/update_form.html", {'form': form})
 
 
 @login_required(login_url="login")
