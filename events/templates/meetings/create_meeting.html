@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block head-content %}
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'events/create_event.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+
+    <title>Create Meeting Page </title>
+{% endblock %}
+
+{% block body-content %}
+<div class="container">
+    <div class="wrap">
+        <form method="POST" >
+            {% csrf_token %}
+            {{create_event_form.as_p}}
+
+            {% if optional_meetings_formset.non_form_errors %}
+                {{ optional_meetings_formset.non_form_errors }}
+            {% endif %}
+
+            {% if optional_meetings_formset.errors %}
+                {% for error in optional_meetings_formset.errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
+
+            {% if messages %}
+                <ul class="errorlist">
+                    {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {{optional_meetings_formset.management_form}}
+            <div id="optional-meeting-dates-form-list">
+                {% if formset_meeting_data %}
+                    {% for form in formset_meeting_data %}
+                        <div id="form-{{form.id}}" class="optional-meeting-dates-form">
+                            <p>
+                                <label for="id_optional_meetings-{{form.id}}-date_time_start">Date time start:</label>
+                                <input type="datetime-local" value="{{form.date_time_start}}" name="optional_meetings-{{form.id}}-date_time_start" id="id_optional_meetings-{{form.id}}-date_time_start">
+                            </p>
+                            <p>
+                                <label for="id_optional_meetings-{{form.id}}-date_time_end">Date time end:</label>
+                                <input type="datetime-local" value="{{form.date_time_end}}" name="optional_meetings-{{form.id}}-date_time_end" id="id_optional_meetings-{{form.id}}-date_time_end">
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div id="empty-optional-meeting-dates-form" class="hidden">{{ optional_meetings_formset.empty_form.as_p }}</div>
+            <button id="add-more-optional-meeting-dates" type="button">Add more dates</button>
+            <br/>
+
+            {{meeting_participants_formset.management_form}}
+            <div id="meeting-participants-form-list">
+                {% if formset_participant_data %}
+                    {% for form in formset_participant_data %}
+                        <div id="form-{{form.id}}" class="meeting-participants-form">
+                            <p>
+                                <label for="id_participants-{{form.id}}-participant_email">Participant email:</label>
+                                <input type="email" value="{{form.email}}" name="participants-{{form.id}}-participant_email" id="id_participants-{{form.id}}-participant_email">
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div id="empty-meeting-participants-form" class="hidden">{{ meeting_participants_formset.empty_form.as_p }}</div>
+            <button id="add-more-meeting-paricipants" type="button">Add more participants</button>
+
+            <input type="submit" class="button" name="submit" value="create" />
+        </form>
+
+    </div>
+</div>
+
+<script src="{% static 'events/create_meeting.js' %}"></script>
+
+{% endblock %}

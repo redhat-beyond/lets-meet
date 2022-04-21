@@ -37,7 +37,7 @@ class PossibleParticipant(models.Model):
 
     def __str__(self) -> str:
         return (f"participant: {self.participant_id.user_id.email}"
-                f" event: {self.possible_meeting_id.participant_id.event_id.title}"
+                f" event: {self.possible_meeting_id.event_creator_id.event_id.title}"
                 f" {time_format(self.possible_meeting_id.date_time_start)} -"
                 f" {time_format(self.possible_meeting_id.date_time_end)} ")
 

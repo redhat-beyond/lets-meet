@@ -209,3 +209,7 @@ input[type="checkbox"] + span {
   color: rgba(248, 8, 8, 0.6);
   font-size: 17px;
 }
+
+.hidden{
+  display: none
+}
