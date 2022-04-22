@@ -2,17 +2,12 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 
-def send_mail_notification(title, message, receiver_email):
-    """ send an email notification with the title and message to the receiver email given """
-    send_mail(title, message, settings.EMAIL_HOST_USER, [receiver_email])
-
-
 def send_site_notification(message, receiver_id):
     """ notify the receiver by his id with the message given by the site notification """
     print(f"notification -> {message} - {receiver_id}")  # for debug only
 
-
 # pre built notifications
+
 
 def send_reminder_email(message, receiver_email):
     """ default reminder email message for calendar alert """
