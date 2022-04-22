@@ -13,8 +13,13 @@ def create_notification(message, receiver_id):
     """ create a notification with the receiver id the message given using the site notification """
     Notification(participant_id=receiver_id, sent_time=timezone.now(),  message=message).save()
 
-# pre built notifications
 
+def create_notification(message, receiver_id):
+    """ create a notification with the receiver id the message given using the site notification """
+    print(f"notification -> {message}  -  {receiver_id}")  # for debug only
+
+
+# pre built notifications
 
 def send_reminder_email(message, receiver_email):
     """ default reminder email message for calendar alert """
