@@ -21,7 +21,6 @@ class EventFile(models.Model):
     def get_files_by_event(event_id):
         participants = EventParticipant.objects.filter(event_id=event_id)
         files=[]
-        #files =EventFile.objects.filter(participant_id=EventParticipant.objects.filter(event_id=event_id)))
         for participant in participants:
             files.extend(EventFile.objects.filter(participant_id=participant))
 

@@ -3,53 +3,73 @@
 <head>
     <title>Event files</title>
         {% load static %}
-    <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'event_files/file.css' %}" rel="stylesheet" type="text/css">
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
+  <script src="{% static 'event_files/event_files.js' %}"></script>
     {% block head-content %}
     {% endblock %}
-</head>>
-<body>
+</head>
 {% block content %}
-<center>
-<div class="content-section">
-    <h1 > {{title}} files</h1>
-    <div class="dow-list__item padding-xs">
-        {% if files %}
-            {% for post in files %}
-        <div class='PostContent'>
-                <h2 class="FileName" >{{post}}</h2>
-                <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}" class="DownloadButton">
-                     <i class="fa-solid fa-circle-down fa-lg" aria-hidden="true"></i>
-                </a>
-        </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-    {% if not files %}
-         <h2>No files exist</h2>
-    {% endif %}
+<body>
 
-    <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
-    <fieldset class="form-group">
-    {% csrf_token %}
-      <input type="file" name="{{form.file.name}}" class="input" />
-        {% for field in form %}
-          <input type="{{field.field.widget.input_type}}" name="{{field.name}}" placeholder="{{field.label}}" class="input"/>
-        {% endfor %}
-    </fieldset>
-    <div class="form-group">
-    <button class="btn btn-outline-info" type="submit">Save</button>
+<center>
+<div class="container-shadow">
+
+     <div class="container">
+
+
+        <div class="wrap">
+            <h1 class="title" > {{title}} files:</h1>
+
+            <div class="dow-list__item padding-xs">
+                {% if files %}
+                    {% for post in files %}
+
+                <div class='PostContent'>
+                        <h2 class="FileName" >{{post}}</h2>
+                        <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}" class="DownloadButton">
+                             <i class="fa-solid fa-circle-down fa-2x" aria-hidden="true"></i>
+                        </a>
+                </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+
+            {% if not files %}
+                 <h2>No files exist</h2>
+            {% endif %}
+
+            <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+            <fieldset class="form-group">
+            {% csrf_token %}
+       <input id="uploadFile" placeholder="File Name here" disabled="disabled" />
+            <div class="fileUpload">
+                <span>Upload</span>
+                <input id="uploadBtn" type="file" name="{{form.file.name}}" class="upload" />
+            </div>
+
+            </fieldset>
+
+            <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Save</button>
+                </div>
+            </form>
+
+
+
+            {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"
+                {% endif %}>
+                {{ message }}</li>
+             {% endfor %}
+            </ul>
+
         </div>
-    </form>
-    {% if messages %}
-    <ul class="messages">
-    {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}"
-        {% endif %}>
-        {{ message }}</li>
-     {% endfor %}
-    </ul>
+     </div>
 </div>
     {% endif %}
 </center>

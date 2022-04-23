@@ -4,9 +4,8 @@ from django.http import HttpResponse, Http404
 from .form import MyEventFileCreationForm
 from os import path
 from django.conf import settings
-from django.views.generic import CreateView
 from django.contrib import messages
-from events.class_models.participant_model import EventParticipant, Event
+from events.models import EventParticipant, Event
 from django.contrib.auth.decorators import login_required
 
 FILE_PATH = settings.MEDIA_ROOT / "files"
@@ -15,26 +14,39 @@ REDIRECT_PAGE = 'welcome_page'
 
 @login_required(login_url=REDIRECT_PAGE)
 def file_page_per_event(request, event_id):
-    current_event = Event.objects.get(pk=event_id)
-    title = current_event.title
     if not request.user.is_authenticated:
         return redirect("welcome_page")
-    form = MyEventFileCreationForm()
-    messages.success(request, 'first step')
+
+    current_event = Event.objects.get(pk=event_id)
+    title = current_event.title
+    user_id = request.user
+    messages.success(request, 'loaded page')
+
+    try:
+        participant_id = EventParticipant.objects.get(event_id=current_event, user_id=user_id)
+    except EventParticipant.DoesNotExist:
+        return redirect("home")
+
+    if participant_id:
+        messages.success(request, 'participant_id recived')
     if request.method == 'POST':
-        messages.warning(request, 'post type')
+        messages.warning(request, 'post type request')
         print(request.POST)
         form = MyEventFileCreationForm(request.POST, request.FILES)
-        form.participant_id = EventParticipant.objects.get(pk=1)
-        if form.is_valid():
-            print("Valid form")
-            event_file = form.save()
-            messages.warning(request, 'uploaded.')
-        else:
-            messages.warning(request, 'missing arguments')
-    context = {'files': EventFile.get_files_by_event(event_id), 'event': event_id, 'form': form,'title':title}
+        print(form.fields)
+        event_form = form.save(commit=False)
+        event_form.participant_id = participant_id
+        event_form.save()
+        messages.warning(request, 'uploaded.')
+    else:
+        form = MyEventFileCreationForm()
+    context = {'files': EventFile.get_files_by_event(event_id), 'event': event_id, 'form': form, 'title': title}
     return render(request, "file/event_files.html", context)
 
+
+# participant_id = EventParticipant.objects.get(event_id=current_event, user_id=user_id)
+# EventCreationForm(data=valid_event_data, user_id=persist_form_user)
+# participant_id=participant_id
 
 def download(request):
     event = request.GET.get('event')
