@@ -1,9 +1,8 @@
 import pytest
 from users.models import User
 from users.tests import persist_user  # noqa: F401
-from events.models import Event, Colors
 from events.forms import EventCreationForm
-from events.models import EventParticipant
+from events.models import Event, Colors, EventParticipant
 
 
 # form preferences -> new event preferences
