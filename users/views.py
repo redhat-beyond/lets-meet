@@ -119,6 +119,7 @@ def get_dates(year=None, month=None, next=True):
 
     if not year:
         year = int(datetime.now().year)
+
     if not month:
         month = int(datetime.now().month)
 
