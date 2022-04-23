@@ -122,10 +122,7 @@ def get_dates(year=None, month=None, next=True):
     if not month:
         month = int(datetime.now().month)
 
-    if next:
-        action = 1
-    else:
-        action = -1
+    action = 1 if next else -1
 
     if month + action > 12:
         year += 1
@@ -163,12 +160,8 @@ def get_table_measurements(events):
 
     max_amount_of_events = get_max_day_events(events)  # get max events in one day
 
-    if max_amount_of_events > 2:
-        tab_top_positioning = max_amount_of_events * 2
-        maximum_row_height = max_amount_of_events * 5
-    else:
-        maximum_row_height = 13
-        tab_top_positioning = 4
+    tab_top_positioning = max_amount_of_events * 2 if max_amount_of_events > 2 else 4
+    maximum_row_height = max_amount_of_events * 5 if max_amount_of_events > 2 else 13
 
     maximum_row_height = min(maximum_row_height, 30)
     tab_top_positioning = min(tab_top_positioning, 13)
