@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.mail import send_mail
-from django.utils import timezone
 
 
 def send_mail_notification(title, message, receiver_email):
@@ -22,4 +21,4 @@ def send_reminder_email(message, receiver_email):
 
 
 def time_format(date_time):
-    return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
+    return date_time.strftime("%Y-%m-%d %H:%M:%S")

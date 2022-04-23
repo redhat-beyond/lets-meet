@@ -1,8 +1,7 @@
 import pytest
 from datetime import datetime
 from django.utils import timezone
-from events.models import Event
-from main.utilities import time_format
+from ..models import Event, time_format
 from django.core.exceptions import ValidationError
 
 
