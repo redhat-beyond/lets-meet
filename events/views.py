@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from events.models import Event, EventParticipant
+from events.models import Event
 from django.contrib.auth.decorators import login_required
 from events.forms import EventCreationForm, EventUpdateForm
 
@@ -16,7 +16,7 @@ def create_event(request):
         form = EventCreationForm(request.POST, user_id=request.user)
 
         if form.is_valid():
-            event = form.save()
+            form.save()
 
             title = form.cleaned_data.get('title')
             messages.success(request, f'Event: {title} created!')
