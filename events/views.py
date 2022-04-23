@@ -24,7 +24,7 @@ def create_event(request):
             participant = EventParticipant.objects.get(user_id=request.user, event_id=event)
             reminder = reminder_form.save(commit=False)
 
-            if reminder.date_time is not None:
+            if reminder.date_time:
                 reminder.participant_id = participant
                 reminder.messages = "meeting in 5 min"
                 reminder.method = ReminderType.EMAIL
@@ -35,7 +35,7 @@ def create_event(request):
             return redirect(HOME_PAGE)
     else:
         event_form = EventCreationForm(user_id=request.user)
-        reminder_form = ReminderCreationForm(request.POST)
+        reminder_form = ReminderCreationForm()
 
     return render(request, 'events/create_event.html',
                   {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Create Event'})
@@ -59,12 +59,12 @@ def update_event(request, pk):
         if event_form.is_valid() and reminder_form.is_valid():
             event_form.save()
 
-            if reminder_form.instance.date_time is not None:
+            if reminder_form.instance.date_time:
                 reminder = reminder_form.save(commit=False)
                 reminder.participant_id = participant
                 reminder.save()
             else:
-                if reminder_instance is not None:
+                if reminder_instance:
                     reminder_instance.delete()
 
             return redirect(HOME_PAGE)

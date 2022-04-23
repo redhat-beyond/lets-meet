@@ -17,7 +17,7 @@ class ReminderQuerySet(models.QuerySet):
 
 
 def validate_date(date_time):
-    if date_time is not None:
+    if date_time:
         if timezone.now() > date_time:
             raise ValidationError('date time should be bigger than the current date_time')
 
