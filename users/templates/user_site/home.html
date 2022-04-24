@@ -23,19 +23,35 @@
 {% endblock %}
 
 {% block body-content %}
+
+    <div>
+        <h3 id="user-name"> Welcome {{ user.username }}: </h3>
+        <a href="{% url 'update-user' %}"><img id="user-profile" src="{{ user.profile_pic.url }}" width="50" height="50">  </a>  
+    </div>
+
     <div id="overlay"></div>
     <div class="table-title">
-        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }}:</h1>
+        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_date.0 }}:</h1>
     </div>
     <div style="display: inline;">
-        <div class="table-icon" style="float:left; padding-left: 6%;">
-            <a href="#create_event" style="color: white;">
+        <div class="table-icon" id="right-arrow">
+            <a href="/main/{{ next_date }}" style="color: white;">
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="table-icon" id="left-arrow">
+            <a href="/main/{{ previous_date }}" style="color: black;">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="table-icon" id="plus">
+            <a href="{% url 'create_event' %}" style="color: black;">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </a>
         </div>
-        <div class="table-icon" id="home">
-            <a href="{% url 'home' %}" style="color: white;">
-                <i class="fa fa-home" aria-hidden="true"></i>
+        <div class="table-icon" id="credit">
+            <a href="/admin" style="color: white;">
+                <i class="fa fa-user-secret" aria-hidden="true"></i>
             </a>
         </div>
     </div>
@@ -48,17 +64,31 @@
             </tr>
         </thead>
         <tbody class="table-hover" id="tbody-main">
-            {% for row in calandar %}
+            {% for row in calendar %}
                 <tr>
                     {% for day in row %}
-                    <td class="text-center" style="position: relative;">
-                        <div style="cursor: pointer;" onclick='alert("this is the day number {{ day }}")'>
-                            <p class="tab" 
-                                {% if current_date.1 == day.2 %} style="font-weight: bold; color: red;" {% endif %}
-                                {% if current_date.0 == day.1 %} style="font-weight: bold;" {% endif %}>
+                    <td class="text-center" style="position: relative; height: {{ max_height }}vh; 
+                                                   {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
+                                                   {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
+                        <div style="cursor: pointer;">
+                            <p class="tab" style="top: -{{ max_margin }}vh;
+                                {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
+                                {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
                                 {{ day.2 }}
                             </p>
 
+                            {% for event in current_events %}
+                                {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
+                                    {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
+                                        <a id="link" href="{% url 'update_event' pk=event.id %}"> 
+                                            <div class="square"
+                                                style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                                {{ event.title }} - {{ event.date_time_start.time | time:'H:i:s' }} - {{ event.date_time_end.time | time:'H:i:s' }}
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
                         </div> 
                     </td>
                     {% endfor %}

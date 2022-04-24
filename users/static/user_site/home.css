@@ -2,7 +2,7 @@
 
 
 body {
-    background: #344557 url("https://images.unsplash.com/photo-1525784451128-d1488f52f03e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=2000&q=80") no-repeat fixed 0 0;
+    background: #344557 url("https://images.unsplash.com/photo-1437419764061-2473afe69fc2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2064&q=80") no-repeat fixed 0 0;
     background-size: cover;
     font-family: "Roboto", helvetica, arial, sans-serif;
     font-size: 16px;
@@ -10,9 +10,27 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-#home {
+#plus {
+    float:left;
+    padding-left: 1%;
+}
+
+#credit {
+    float: right;
+    padding-right: 1%;
+}
+
+#right-arrow {
+    cursor: pointer;
     float: right;
     padding-right: 6%;
+}
+
+#left-arrow {
+    cursor: pointer;
+    color: black;
+    float:left;
+    padding-left: 6%;
 }
 
 div.table-title {
@@ -20,7 +38,6 @@ div.table-title {
     margin: auto;
     max-width: 50%;
     padding-top: 5%;
-    padding-bottom: 3%;
     width: 100%;
 }
 
@@ -53,9 +70,10 @@ div.table-title {
     max-width: 90%;
     padding:5px;
     width: 100%;
-    height: 60vh;
+    height: 70vh;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     animation: float 5s infinite;
+    margin-bottom: 4%;
 }
 
 th {
@@ -90,25 +108,25 @@ tr {
     text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
 }
 
-tr:hover td {
+td:hover {
     background:#4d5a68;
     color:#FFFFFF;
     border-top: 1px solid #22262e;
 }
 
-tr:first-child {
+td:first-child {
     border-top:none;
 }
 
-tr:last-child {
+td:last-child {
     border-bottom:none;
 }
 
-tr:nth-child(odd) td {
+tr:nth-child(odd) {
     background:#EBEBEB;
 }
 
-tr:nth-child(odd):hover td {
+tr:nth-child(odd):hover {
     background:#4d5a68;
 }
 
@@ -129,7 +147,6 @@ td {
     font-weight:300;
     font-size:18px;
     text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
-    border-right: 1px solid #C1C3D1;
 }
 
 td:last-child {
@@ -200,7 +217,7 @@ body > * {
 }
 
 @media only screen and (max-width: 790px)  {
-    #home {
+    #credit {
         position: fixed;
         right: -20px;
     }
@@ -217,13 +234,17 @@ body > * {
     color: black;
 }
 
-.event_tab {
+.square {
     height: 2vh;
     width: 10vw;
     color: white;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    /* border-radius: 10px; */
     border-radius: 10px 80px;
-    background-color: grey;
+    /* background-color: grey; */
+    /* outline: 2px solid blue; */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #overlay {
@@ -238,4 +259,24 @@ body > * {
     background-color: rgba(0,0,0,0.5); /* Black background with opacity */
     z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
+}
+
+#link {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#user-profile {
+    display: inline;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+#user-name {
+    color: white;
+    display: inline;
+    position: fixed;
+    top: 30px;
+    right: 100px;
 }
