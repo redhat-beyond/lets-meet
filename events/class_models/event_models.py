@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Colors(models.TextChoices):
@@ -38,7 +39,7 @@ class Event(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.title} - {time_format(self.date_time_start)}"
+        return f"{self.title} - {time_format(timezone.localtime(self.date_time_start))}"
 
 
 def time_format(date_time):
