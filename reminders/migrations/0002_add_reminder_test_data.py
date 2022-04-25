@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
         reminder_data = [
             (EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser1"),
-             datetime(2022, 4, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
+             datetime(2022, 7, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
              JOIN_MEETING.format(15),
              ReminderType.WEBSITE_EMAIL,
              ),
