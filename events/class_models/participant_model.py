@@ -1,13 +1,27 @@
-from users.models import User
 from django.db import models
+from users.models import User
 from .event_models import Event
 from django.core.exceptions import ValidationError
+
+
+class EventParticipantQuerySet(models.QuerySet):
+
+    def get_an_event_participants(self, event):
+        return self.filter(event_id=event)
+
+    def get_creator_of_event(self, event):
+        return self.get(event_id=event, is_creator=True)
+
+    def remove_participant_from_event(self, event, user):
+        return self.get(event_id=event, user_id=user).delete()
 
 
 class EventParticipant(models.Model):
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     is_creator = models.BooleanField(null=False)
+
+    objects = EventParticipantQuerySet.as_manager()
 
     def __str__(self) -> str:
         return f"{self.user_id} - {self.event_id}"

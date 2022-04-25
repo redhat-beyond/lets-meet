@@ -9,7 +9,7 @@ def upload_to_function(instance, filename):
 
 
 class EventFile(models.Model):
-    participant_id = models.ForeignKey(EventParticipant, on_delete=models.RESTRICT)
+    participant_id = models.ForeignKey(EventParticipant, models.SET_NULL, null=True)
     file = models.FileField(upload_to=upload_to_function)
 
     @staticmethod

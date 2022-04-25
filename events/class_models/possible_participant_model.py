@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from .meeting_models import PossibleMeeting
+from .meeting_models import OptionalMeetingDates
 from .participant_model import EventParticipant
 from .event_models import time_format
 
@@ -11,7 +11,7 @@ class PossibleParticipantsQuerySet(models.QuerySet):
         return self.filter(possible_meeting_id=meeting_id)
 
     def get_all_possible_participants(self, event_id):
-        return self.filter(possible_meeting_id__participant_id__event_id=event_id)
+        return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)
 
     def remove_all_possible_meeting_participants(self, meeting_id):
         return self.get_all_date_participants(meeting_id).delete()
@@ -22,13 +22,13 @@ class PossibleParticipantsQuerySet(models.QuerySet):
 
 class PossibleParticipant(models.Model):
     participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
-    possible_meeting_id = models.ForeignKey(PossibleMeeting, on_delete=models.CASCADE)
+    possible_meeting_id = models.ForeignKey(OptionalMeetingDates, on_delete=models.CASCADE)
 
     objects = PossibleParticipantsQuerySet.as_manager()
 
     def clean(self) -> None:
         validate_unique_possible_participant(self.participant_id, self.possible_meeting_id)
-        validate_event_participant(self.participant_id.event_id, self.possible_meeting_id.participant_id.event_id)
+        validate_event_participant(self.participant_id.event_id, self.possible_meeting_id.event_creator_id.event_id)
         return super().clean()
 
     def save(self, *args, **kwargs):
