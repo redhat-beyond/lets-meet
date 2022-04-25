@@ -57,7 +57,7 @@ class TestParticipant():
             EventParticipant.objects.get(id=2)
         ]
         all_participants_in_event1 = EventParticipant.objects.get_an_event_participants(event)
-        assert list(expected_participants) == list(all_participants_in_event1)
+        assert expected_participants == list(all_participants_in_event1)
 
     def test_get_creator_of_event(self):
         event = Event.objects.get(title="event1")
