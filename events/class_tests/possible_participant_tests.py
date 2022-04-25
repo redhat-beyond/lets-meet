@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from ..models import PossibleMeeting, EventParticipant, PossibleParticipant, Event
+from ..models import OptionalMeetingDates, EventParticipant, PossibleParticipant, Event
 from django.utils import timezone
 from datetime import datetime
 import pytest
@@ -15,9 +15,9 @@ def create_possible_participant(participant_id, possible_meeting_id):
 
 @pytest.fixture
 def get_possible_meeting():
-    possible_meeting = PossibleMeeting.objects.get(
+    possible_meeting = OptionalMeetingDates.objects.get(
         date_time_start=datetime(2023, 1, 25, 18, 0, 0, 0, tzinfo=timezone.utc),
-        participant_id__event_id__title="event3"
+        event_creator_id__event_id__title="event3"
     )
     return possible_meeting
 
@@ -53,7 +53,7 @@ class TestPossibleParticipant():
 
     def test_row_duplication(self):
         event_participant = EventParticipant.objects.filter(is_creator=True).first()
-        possible_meeting = PossibleMeeting.objects.get(participant_id=event_participant.id)
+        possible_meeting = OptionalMeetingDates.objects.get(event_creator_id=event_participant.id)
 
         with pytest.raises(ValidationError, match=ROW_DUPLICATION_ERROR):
             create_possible_participant(event_participant, possible_meeting).save()
@@ -61,7 +61,7 @@ class TestPossibleParticipant():
 
     def test_invalid_registeration_of_pareticipant_to_meeting(self):
         participant_of_event1 = EventParticipant.objects.filter(is_creator=True, event_id__title='event1').first()
-        possible_meeting_of_event2 = PossibleMeeting.objects.get(participant_id__event_id__title='event2')
+        possible_meeting_of_event2 = OptionalMeetingDates.objects.get(event_creator_id__event_id__title='event2')
 
         with pytest.raises(ValidationError, match=INVALID_PARTICIPANT_REGISTRATION):
             create_possible_participant(participant_of_event1, possible_meeting_of_event2).save()
