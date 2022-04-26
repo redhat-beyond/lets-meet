@@ -5,7 +5,7 @@
 }
 
 body {
-  background: url("https://images.unsplash.com/photo-1480497490787-505ec076689f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80") no-repeat;
+  background: url("https://images.unsplash.com/photo-1570126646281-5ec88111777f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1682&q=80") no-repeat;
   background-size: cover;
   background-repeat: repeat;
   font-family: "Montserrat", sans-serif;
@@ -18,9 +18,9 @@ a {
 
 .container-shadow {
   position: absolute;
+  /* width: 25%; */
   width: 600px;
-  /* height: 1100px; */
-  left: 48%;
+  left: 50%;
   margin-left: -262.5px;
   margin-top: 8vh;
   box-shadow: 0px 30px 50px -20px #000;
@@ -28,9 +28,9 @@ a {
 
 .container {
   position: absolute;
+  /* width: 25%; */
   width: 600px;
-  /* height: 1100px; */
-  left: 48%;
+  left: 50%;
   margin-left: -262.5px;
   margin-top: 8vh;
   background: linear-gradient(90deg, #29323c 0%, #3b4249 100%);
@@ -39,13 +39,15 @@ a {
 
 .wrap {
   position: relative;
+  /* width: 75%; */
   width: 400px;
   margin: 0 auto;
 }
 
 .headings {
   position: relative;
-  margin: 90px auto 70px;
+  /* margin: 90px auto 70px; */
+  margin-top: 5vh;
 }
 
 .headings > a {
@@ -119,13 +121,13 @@ input:focus {
   font-size: 1.3em;
 }
 
-#id_color {
+#id_color, #id_method {
   margin-left: 20px;
   font-size: 1.3em;
 }
 
-#description {
-  width: 380px;
+#id_description {
+  width: 95%;
   margin-left: 10px;
   font-size: 1.3em;
 }
@@ -146,6 +148,7 @@ input[type="checkbox"] + span {
   color: #2c353e;
   text-transform: uppercase;
   margin-top: 2em;
+  margin-bottom: 2em;
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
@@ -163,6 +166,7 @@ input[type="checkbox"] + span {
 @media (max-width: 524px) {
   .container-shadow {
     width: 400px;
+    /* width: 80%; */
     margin-top: 60px;
     left: 50%;
     margin-left: -200px;
@@ -170,6 +174,7 @@ input[type="checkbox"] + span {
 
   .container {
     width: 400px;
+    /* width: 80%; */
     margin-top: 60px;
     left: 50%;
     margin-left: -200px;
