@@ -1,10 +1,10 @@
 import pytest
 from datetime import datetime
 from django.utils import timezone
-from reminders.models import Reminder, ReminderType
+from reminders.models import ReminderType
 from reminders.forms import ReminderUpdateForm
-from events.models import Event, EventParticipant, Colors
 from pytest_django.asserts import assertTemplateUsed
+from events.models import Event, EventParticipant, Colors
 
 # from users.tests import sign_in_user
 
@@ -45,7 +45,7 @@ class TestUpdateReminder:
     @pytest.fixture
     def get_event_participant(self):
         return EventParticipant.objects.get(id=1)
- 
+
     @pytest.fixture
     def valid_event_data(self):
         reminder = Event.objects.get(id=1)
@@ -87,9 +87,3 @@ class TestUpdateReminder:
         assert response.status_code == 200
         print(response)
         assertTemplateUsed(response, REMINDER_CREATION_HTML_PATH)
-
-    def test_post_valid_update_reminder(self, client, sign_in, valid_event_data):
-        original_reminder = Reminder.objects.get(id=1)
-        response = client.post(REMINDER_CREATION_URL, data=valid_event_data)
-        assert response.status_code == 200
-        assert original_reminder.method != Reminder.objects.get(id=1).method
