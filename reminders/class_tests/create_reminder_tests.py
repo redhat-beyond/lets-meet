@@ -57,7 +57,12 @@ class TestCreateReminder:
         {'participant_id': None, 'date_time': VALID_DATE_TIME, 'messages': MESSAGE, 'method': INVALID_METHOD},
         # datetime should be greater then the present time
         {'participant_id': None, 'date_time': INVALID_DATE_TIME, 'messages': MESSAGE, 'method': VALID_METHOD}
-    ], ids=["method is none", "method is not from ReminderType", "date is before the current time"])
+    ], ids=[
+        "method is none",
+        "method is not from ReminderType",
+        "date is before the current time"
+        ]
+    )
     def test_create_reminder(self, get_event_participant, invalid_user_credentials):
         invalid_user_credentials['participant_id'] = get_event_participant
 

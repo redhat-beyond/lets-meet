@@ -68,18 +68,13 @@ class TestReminder:
         assert persist_reminder not in Reminder.objects.all()
 
     def test_exist_reminder(self):
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser1")
-        )
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser2")
-        )
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event2",
-                                                        user_id__username="testUser3")
-        )
+        for event_id, user_id in zip([1, 1, 2], range(1, 4)):
+            assert Reminder.objects.filter(
+                participant_id=EventParticipant.objects.get(
+                    event_id__title=f"event{event_id}",
+                    user_id__username=f"testUser{user_id}"
+                )
+            )
 
     def test_reminder_with_invalid_time(self, participant0):  # noqa: F811
         date_time = datetime(2022, 3, 22, 12, 12, 12, 0, tzinfo=timezone.utc)
