@@ -1,8 +1,8 @@
 import pytest
-from users.tests import user0  # noqa:F811, F401
 from users.models import User
-from ..models import Event, EventParticipant
-from .event_tests import new_event  # noqa: F401
+from users.tests import user0  # noqa:F811, F401
+from events.tests import new_event  # noqa: F401
+from events.models import Event, EventParticipant
 from django.core.exceptions import ValidationError
 
 
@@ -52,10 +52,7 @@ class TestParticipant():
 
     def test_get_an_event_participants(self):
         event = Event.objects.get(title="event1")
-        expected_participants = [
-            EventParticipant.objects.get(id=1),
-            EventParticipant.objects.get(id=2)
-        ]
+        expected_participants = [EventParticipant.objects.get(id=i) for i in range(1, 3)]
         all_participants_in_event1 = EventParticipant.objects.get_an_event_participants(event)
         assert expected_participants == list(all_participants_in_event1)
 

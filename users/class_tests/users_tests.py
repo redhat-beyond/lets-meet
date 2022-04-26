@@ -50,7 +50,12 @@ class TestUser:
         ("user@com", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
         (EMAIL, PHONE_NUM, PASSWORD, "agyT02!@9#" * 15, NAME_LENGTH_ERROR),
         (EMAIL, PHONE_NUM, PASSWORD, "16%$-7jkd@!?" * 15, NAME_LENGTH_ERROR)
-    ])
+        ], ids=["phone is too long", "phone number has two ++",
+                "phone number start with an unknown international extention ",
+                "international phone number is too long", "phone number with letters",
+                "junk email", "email without <provider>.com", "email with out .com",
+                "username too long", "username too long with special cherecters"]
+    )
     def test_invalid_user_values(self, email, phone_num, password, username, excpected_error):
         with pytest.raises(Exception, match=excpected_error):
             phone_number = PhoneNumber.from_string(phone_number=phone_num)
@@ -58,6 +63,5 @@ class TestUser:
             user.save()
 
     def test_user_existence(self):
-        assert User.objects.get(username="testUser1")
-        assert User.objects.get(username="testUser2")
-        assert User.objects.get(username="testUser3")
+        for id in range(1, 4):
+            assert User.objects.get(username=f"testUser{id}")

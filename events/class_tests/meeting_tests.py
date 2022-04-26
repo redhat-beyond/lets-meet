@@ -2,10 +2,10 @@ import pytest
 from datetime import datetime
 from django.utils import timezone
 from users.tests import user0  # noqa: F401
-from .event_tests import new_event  # noqa: F811 ,F401
+from events.tests import new_event  # noqa: F811 ,F401
 from django.core.exceptions import ValidationError
 from events.models import OptionalMeetingDates, EventParticipant, Event
-from .participant_test import event_participant_not_creator  # noqa:F811, F401
+from events.tests import event_participant_not_creator  # noqa:F811, F401
 
 
 DATE_TIME_END = datetime(2022, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
@@ -38,11 +38,7 @@ class TestMeeting():
 
     @pytest.fixture
     def expected_meeting_results(self):
-        return [
-            OptionalMeetingDates.objects.get(id=3),
-            OptionalMeetingDates.objects.get(id=4),
-            OptionalMeetingDates.objects.get(id=5),
-        ]
+        return [OptionalMeetingDates.objects.get(id=f"{id}") for id in range(3, 6)]
 
     def test_persist_possible_meeting(self, persist_possible_meeting):
         assert persist_possible_meeting in OptionalMeetingDates.objects.all()

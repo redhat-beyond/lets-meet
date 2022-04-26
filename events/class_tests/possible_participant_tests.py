@@ -1,8 +1,8 @@
-from django.core.exceptions import ValidationError
-from ..models import OptionalMeetingDates, EventParticipant, PossibleParticipant, Event
-from django.utils import timezone
-from datetime import datetime
 import pytest
+from datetime import datetime
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from events.models import OptionalMeetingDates, EventParticipant, PossibleParticipant, Event
 
 
 ROW_DUPLICATION_ERROR = "The User is already registered in this possible meeting date"
@@ -30,13 +30,7 @@ def get_event():
 
 @pytest.fixture
 def get_possible_event_participants():
-    possible_event_participants = [
-        PossibleParticipant.objects.get(id=3),
-        PossibleParticipant.objects.get(id=4),
-        PossibleParticipant.objects.get(id=5),
-        PossibleParticipant.objects.get(id=6)
-    ]
-    return possible_event_participants
+    return [PossibleParticipant.objects.get(id=f'{id}') for id in range(3, 7)]
 
 
 @pytest.fixture
@@ -59,7 +53,7 @@ class TestPossibleParticipant():
             create_possible_participant(event_participant, possible_meeting).save()
             create_possible_participant(event_participant, possible_meeting).save()
 
-    def test_invalid_registeration_of_pareticipant_to_meeting(self):
+    def test_invalid_registration_of_participant_to_meeting(self):
         participant_of_event1 = EventParticipant.objects.filter(is_creator=True, event_id__title='event1').first()
         possible_meeting_of_event2 = OptionalMeetingDates.objects.get(event_creator_id__event_id__title='event2')
 
@@ -67,9 +61,9 @@ class TestPossibleParticipant():
             create_possible_participant(participant_of_event1, possible_meeting_of_event2).save()
 
     def test_get_all_date_participants(self, get_possible_meeting, get_possible_meeting_participants):
-        expected_participants_in_curr_meeting = get_possible_meeting_participants
-        participants_in_curr_meeting = PossibleParticipant.objects.get_all_date_participants(get_possible_meeting)
-        assert list(participants_in_curr_meeting) == list(expected_participants_in_curr_meeting)
+        expected_participants_in_current_meeting = get_possible_meeting_participants
+        participants_in_current_meeting = PossibleParticipant.objects.get_all_date_participants(get_possible_meeting)
+        assert list(participants_in_current_meeting) == list(expected_participants_in_current_meeting)
 
     def test_get_all_possible_participants(self, get_event, get_possible_event_participants):
         expected_participants_in_event3 = get_possible_event_participants
