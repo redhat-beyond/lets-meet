@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from events.forms import EventCreationForm, EventUpdateForm
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
 
+from main.utilities import convert_time_delta
+
 
 HOME_PAGE = 'home'
 LOGIN_PAGE = 'login'
@@ -26,8 +28,7 @@ def create_event(request):
 
             if reminder.date_time is not None:
                 reminder.participant_id = participant
-                reminder.messages = "meeting in 5 min"
-                # reminder.method = ReminderType.EMAIL
+                reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
 
             title = event_form.cleaned_data.get('title')
@@ -56,10 +57,11 @@ def update_event(request, pk):
         reminder_form = ReminderUpdateForm(request.POST, instance=reminder_instance)
 
         if event_form.is_valid() and reminder_form.is_valid():
-            event_form.save()
+            event = event_form.save()
 
             if reminder_form.instance.date_time is not None:
                 reminder = reminder_form.save(commit=False)
+                reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.participant_id = participant
                 reminder.save()
             else:
