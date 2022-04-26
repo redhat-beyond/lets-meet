@@ -42,7 +42,15 @@ class TestCreateEventForm:
             {'title': TITLE, 'date_time_start': DATE_TIME_END, 'date_time_end': DATE_TIME_START, 'color': COLOR},
             # date_time_end cannot be equal to date_time_start
             {'title': TITLE, 'date_time_start': DATE_TIME_START, 'date_time_end': DATE_TIME_START, 'color': COLOR},
-        ])
+        ], ids=[
+            "title is none",
+            "title is blank",
+            "star time is none",
+            "end time is none",
+            "end time is not bigger then start time",
+            "start time and end time are equal"
+        ]
+     )
     def test_event_creation_form_errors(self, invalid_data, persist_user):  # noqa: F811
         form = EventCreationForm(data=invalid_data, user_id=persist_user)
 
