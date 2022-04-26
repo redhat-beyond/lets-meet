@@ -50,11 +50,17 @@ class TestUser:
         ("user@com", PHONE_NUM, PASSWORD, NAME, EMAIL_ERROR),
         (EMAIL, PHONE_NUM, PASSWORD, "agyT02!@9#" * 15, NAME_LENGTH_ERROR),
         (EMAIL, PHONE_NUM, PASSWORD, "16%$-7jkd@!?" * 15, NAME_LENGTH_ERROR)
-        ], ids=["phone is too long", "phone number has two ++",
-                "phone number start with an unknown international extention ",
-                "international phone number is too long", "phone number with letters",
-                "junk email", "email without <provider>.com", "email with out .com",
-                "username too long", "username too long with special cherecters"]
+        ], ids=[
+            "phone is too long",
+            "phone number has two ++",
+            "phone number start with an unknown international extention ",
+            "international phone number is too long",
+            "phone number with letters",
+            "junk email",
+            "email without <provider>.com",
+            "email with out .com",
+            "username too long", "username too long with special cherecters"
+        ]
     )
     def test_invalid_user_values(self, email, phone_num, password, username, excpected_error):
         with pytest.raises(Exception, match=excpected_error):

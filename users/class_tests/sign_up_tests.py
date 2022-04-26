@@ -29,7 +29,11 @@ class TestSignUp:
         {'username': VALID_USERNAME, 'email': VALID_EMAIL, 'password1': None, 'password2': None},
         # passowrds do not match
         {'username': VALID_USERNAME, 'email': VALID_EMAIL, 'password1': NOT_VALID_PASSWORD, 'password2': VALID_PASSWORD}
-    ], ids=["username is none", "password is none", "passwords do not match"])
+    ], ids=[
+        "username is none",
+        "password is none",
+        "passwords do not match"
+    ])
     def test_sign_up_invalid(self, invalid_user_credentials):
         form = SignUpForm(data=invalid_user_credentials)
 

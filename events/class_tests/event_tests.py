@@ -53,9 +53,14 @@ class TestEvent():
          f'{time_format(DATE_TIME_START)} must be smaller than {time_format(DATE_TIME_START)}'),
         (TITLE, DATE_TIME_END, DATE_TIME_START,
          f'{time_format(DATE_TIME_END)} must be smaller than {time_format(DATE_TIME_START)}')
-    ], ids=["title is none", "title is blank", "star time is none", "end time is none",
-            "end time is not bigger then start time", "start time and end time are equal"]
-    )
+    ], ids=[
+        "title is none",
+        "title is blank",
+        "star time is none",
+        "end time is none",
+        "end time is not bigger then start time",
+        "start time and end time are equal"
+    ])
     def test_invalidation(self, title, date_time_start, date_time_end, expected_error):
         with pytest.raises(ValidationError, match=expected_error):
             create_event(title, date_time_start, date_time_end).save()
@@ -76,14 +81,20 @@ class TestEvent():
     @pytest.mark.parametrize('event_title, user_id, year, month', [
         ("event1", 1, 2020, 3),
         ("event3", 1, 2020, 1)
-    ], ids=["get all users month meeting of event 1", "get all users month meeting of event 3"])
+    ], ids=[
+        "get all users month meeting of event 1",
+        "get all users month meeting of event 3"
+    ])
     def test_get_all_user_month_meetings(self, event_title, user_id, year, month):
         assert Event.objects.get(title=event_title) in Event.objects.get_all_user_month_meetings(user_id, year, month)
 
     @pytest.mark.parametrize('event_title, user_id, date', [
         ("event1", 1, datetime(2022, 3, 24)),
         ("event3", 1, datetime(2022, 1, 24))
-    ], ids=["get all users day meeting of event 1", "get all users month meeting of event 3"])
+    ], ids=[
+        "get all users day meeting of event 1",
+        "get all users month meeting of event 3"
+    ])
     def test_get_all_user_day_meetings(self, event_title, user_id, date):
         assert Event.objects.get(title=event_title) in Event.objects.get_all_user_day_meetings(user_id, date)
 
