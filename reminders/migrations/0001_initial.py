@@ -8,6 +8,7 @@ import reminders.class_models.reminder_models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
@@ -40,8 +41,11 @@ class Migration(migrations.Migration):
                 ('seen_time', models.DateTimeField(default=django.utils.timezone.now, null=True)),
                 ('sent_time', models.DateTimeField(default=django.utils.timezone.now)),
                 ('message', models.TextField(blank=True, null=True)),
-                ('participant_id',
-                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.eventparticipant')),
+                ('participant_id', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='events.eventparticipant'
+                    )
+                 ),
             ],
         ),
         migrations.CreateModel(
@@ -70,6 +74,13 @@ class Migration(migrations.Migration):
             constraint=models.CheckConstraint(
                 check=models.Q(('date_time__gte', django.db.models.functions.datetime.Now())),
                 name='date_time__gte_current_time'
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name='reminder',
+            constraint=models.UniqueConstraint(
+                fields=('participant_id', 'date_time', 'messages'),
+                name='unique reminder'
             ),
         ),
         migrations.AddConstraint(
