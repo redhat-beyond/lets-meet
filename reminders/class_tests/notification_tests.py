@@ -3,20 +3,20 @@ from datetime import datetime
 from django.utils import timezone
 from django.db import IntegrityError
 from events.models import EventParticipant
-from reminders.models import Notification, ReminderType
+from reminders.models import Notification
 from events.tests import (  # noqa: F401
     new_event, user0,
     event_participant_creator as participant0
 )
 
-METHOD_0 = ReminderType.EMAIL
+
 MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
 JOIN_MEETING = 'Joined Meeting in {} minutes'
-PAST_DATE_TIME_ERROR = "{} is not a valid date_time"
-EXIST_NOTIFICATION_ERROR = 'reminder already exists'
 SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-BAD_SEEN_TIME_0 = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+
+ROW_DUPLICATION_ERROR = 'notification already exists'
+PAST_DATE_TIME_ERROR = 'sent time should be bigger than the current date'
 
 
 @pytest.fixture
@@ -46,6 +46,14 @@ def save_notification(notification):
 @pytest.mark.django_db
 class TestNotification:
 
+    @pytest.fixture
+    def event_participant(self):
+        return EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
+
+    @pytest.fixture
+    def notification_message(self):
+        return JOIN_MEETING.format(35)
+
     def test_persist_notification(self, persist_notification):
         assert persist_notification in Notification.objects.all()
 
@@ -54,35 +62,24 @@ class TestNotification:
         assert persist_notification not in Notification.objects.all()
 
     def test_exist_notification(self):
-        assert Notification.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser1")
-        )
-        assert Notification.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser2")
-        )
-        assert Notification.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event2",
-                                                        user_id__username="testUser3")
-        )
+        for event_id, user_id in zip([1, 1, 2], range(1, 4)):
+            assert Notification.objects.filter(
+                participant_id=EventParticipant.objects.get(
+                    event_id__title=f"event{event_id}",
+                    user_id__username=f"testUser{user_id}"
+                )
+            )
 
-    def test_invalid_time(self):
-        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
-        date_time_sent = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+    def test_invalid_time(self, event_participant, notification_message):
         date_time_read = timezone.now()
-        message = JOIN_MEETING.format(35)
-        expected = 'sent time should be bigger than the current date'
+        date_time_sent = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
 
-        with pytest.raises(IntegrityError, match=expected):
-            create_notification(participant, date_time_read, date_time_sent, message).save()
+        with pytest.raises(IntegrityError, match=PAST_DATE_TIME_ERROR):
+            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
 
-    def test_duplication_of_notification(self):  # noqa: F811
-        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
+    def test_duplication_of_notification(self, event_participant, notification_message):  # noqa: F811
         date_time_sent = datetime(2032, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
         date_time_read = datetime(2033, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
-        message = JOIN_MEETING.format(35)
-        expected = 'notification already exists'
 
-        with pytest.raises(IntegrityError, match=expected):
-            create_notification(participant, date_time_read, date_time_sent, message).save()
+        with pytest.raises(IntegrityError, match=ROW_DUPLICATION_ERROR):
+            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
