@@ -14,12 +14,17 @@ function build_table() {
 
 	$.get(get_notification, {}, function(data, status) {
 
-		$("#notification-badge").text(data.length);  // change the icon to the amount of notification
+		let length = data.length;
+		if (length === 0) {
+			length = "";
+		}
+
+		$("#notification-badge").text(length);  // change the icon to the amount of notification
 
 		data.forEach((element, index) => {
 			let line = "<tr id=row" + String(element.id);
 				line += ">";
-				line += "<td class='message' colspan='2'>" + element.messages + "</td>";
+				line += "<td class='message' colspan='2'>" + element.message + "</td>";
 				line += "<td class='remove_btn' onclick=remove_from_list('#row" + String(element.id) + "')> dismiss </td>";
 				line += "</tr>";
 
