@@ -1,27 +1,29 @@
 import pytest
-from django.utils import timezone
 from datetime import datetime
-from events.models import EventParticipant
-from events.tests import new_event, user0  # noqa: F401
-from events.tests import event_participant_creator as participant0  # noqa: F401
-from ..models import Notification, ReminderType
+from django.utils import timezone
 from django.db import IntegrityError
-from django.core.exceptions import ValidationError
+from events.models import EventParticipant
+from reminders.models import Notification, ReminderType
+from events.tests import (  # noqa: F401
+    new_event, user0,
+    event_participant_creator as participant0
+)
 
 METHOD_0 = ReminderType.EMAIL
 MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
-SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-BAD_SEEN_TIME_0 = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 JOIN_MEETING = 'Joined Meeting in {} minutes'
 PAST_DATE_TIME_ERROR = "{} is not a valid date_time"
 EXIST_NOTIFICATION_ERROR = 'reminder already exists'
+SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+BAD_SEEN_TIME_0 = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 
 
 @pytest.fixture
 def notification_0(participant0):  # noqa: F811
-    return Notification(participant_id=participant0, seen_time=SEEN_TIME_0, sent_time=SENT_TIME_0,
-                        message=MESSAGE_0)
+    return Notification(
+        participant_id=participant0, seen_time=SEEN_TIME_0, sent_time=SENT_TIME_0, message=MESSAGE_0
+    )
 
 
 @pytest.fixture
@@ -82,5 +84,5 @@ class TestNotification:
         message = JOIN_MEETING.format(35)
         expected = 'notification already exists'
 
-        with pytest.raises(ValidationError, match=expected):
+        with pytest.raises(IntegrityError, match=expected):
             create_notification(participant, date_time_read, date_time_sent, message).save()

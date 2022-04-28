@@ -1,10 +1,9 @@
-from events.models import EventParticipant
-from django.utils import timezone
-from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.db.models.functions import Now
+from events.models import EventParticipant
+from django.db import models, IntegrityError
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError
 
 
 class Notification(models.Model):
@@ -19,45 +18,31 @@ class Notification(models.Model):
             models.CheckConstraint(check=Q(sent_time__gte=Now()), name="sent_time__gte_current_time")
         ]
 
+    @staticmethod
+    def validate_seen_date(time_seen, time_sent):
+        if time_seen:
+            if time_seen < time_sent:
+                raise ValidationError('seen time cannot be earlier than time of creation.')
+
     def save(self, *args, **kwargs):
         time_validation_error = "CHECK constraint failed: sent_time__gte_current_time"
-        row_duplication_error = ("UNIQUE constaint failed: "
-                                 "participants_participant.participant_id_id, "
-                                 "participants_participant.sent_time")
+        row_duplication_error = ("UNIQUE constraint failed: "
+                                 "reminders_notification.participant_id_id, "
+                                 "reminders_notification.sent_time")
         self.clean()
         try:
             result = super().save(*args, **kwargs)
-
         except IntegrityError as error:
             if row_duplication_error in error.args:
                 raise IntegrityError("notification already exists")
-
             elif time_validation_error in error.args:
                 raise IntegrityError("sent time should be bigger than the current date")
-
             raise error
-
-        else:
-            return result
+        return result
 
     def __str__(self):
         return f"{self.participant_id} - {self.message}"
 
     def clean(self):
-        validate_unique_notification(self.participant_id, self.sent_time)
-        validate_seen_date(self.seen_time, self.sent_time)
+        self.validate_seen_date(self.seen_time, self.sent_time)
         return super().clean()
-
-
-def validate_unique_notification(participant, sent_time):
-    if Notification.objects.filter(
-            participant_id=participant,
-            sent_time=sent_time
-    ):
-        raise ValidationError('notification already exists')
-
-
-def validate_seen_date(time_seen, time_sent):
-    if time_seen is not None:
-        if time_seen < time_sent:
-            raise ValidationError('seen time cannot be earlier than time of creation.')
