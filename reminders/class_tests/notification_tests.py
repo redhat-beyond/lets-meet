@@ -45,6 +45,14 @@ def save_notification(notification):
 @pytest.mark.django_db
 class TestNotification:
 
+    @pytest.fixture
+    def event_participant(self):
+        return EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
+
+    @pytest.fixture
+    def notification_message(self):
+        return JOIN_MEETING.format(35)
+
     def test_persist_notification(self, persist_notification):
         assert persist_notification in Notification.objects.all()
 

@@ -54,13 +54,17 @@ class Reminder(models.Model):
     def __str__(self):
         return f"{self.participant_id} - {time_format(self.date_time)}"
 
+    def clean(self):
+        validate_date(self.date_time)
+        return super().clean()
+
     def save(self, *args, **kwargs):
         time_validation_error = "CHECK constraint failed: date_time__gte_current_time"
         row_duplication_error = ("UNIQUE constraint failed: "
                                  "reminders_reminder.participant_id_id, "
                                  "reminders_reminder.date_time, "
                                  "reminders_reminder.messages")
-
+        self.clean()
         try:
             result = super().save(*args, **kwargs)
 
