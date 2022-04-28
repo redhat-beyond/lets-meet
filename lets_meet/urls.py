@@ -25,7 +25,8 @@ urlpatterns = [
     path('', views.welcome_page, name='welcome_page'),
     path('', include('users.urls')),
     path('event/', include('events.urls')),
-    path('file/', include('eventfiles.urls'))
+    path('file/', include('eventfiles.urls')),
+    path('notification/', include('reminders.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
