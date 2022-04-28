@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             name='Notification',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('seen_time', models.DateTimeField(default=django.utils.timezone.now, null=True)),
+                ('seen_time', models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)),
                 ('sent_time', models.DateTimeField(default=django.utils.timezone.now)),
                 ('message', models.TextField(blank=True, null=True)),
                 ('participant_id', models.ForeignKey(

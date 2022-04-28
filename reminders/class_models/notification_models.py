@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 
 class Notification(models.Model):
     participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
-    seen_time = models.DateTimeField(default=timezone.now, null=True)
+    seen_time = models.DateTimeField(default=timezone.now, null=True, blank=True)
     sent_time = models.DateTimeField(default=timezone.now)
     message = models.TextField(null=True, blank=True)
 
