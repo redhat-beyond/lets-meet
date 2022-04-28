@@ -26,6 +26,19 @@ def time_format(date_time):
     return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
 
 
+def time_format(date_time):
+    return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
+
+
+class ReminderQuerySet(models.QuerySet):
+    def get_next_reminder(self):
+        """ get the next reminder.
+            Using an order function on the Reminder table with the key date_time
+            and returning the first instance
+        """
+        return self.order_by('date_time').first()
+
+
 class ReminderType(models.TextChoices):
     EMAIL = "ema", "Email"
     WEBSITE = "web", "Website"
