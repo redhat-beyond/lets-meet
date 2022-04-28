@@ -3,7 +3,7 @@
 <head>
     <title>Event files</title>
         {% load static %}
-    <link href="{% static 'event_files/file.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
   <script src="{% static 'event_files/event_files.js' %}"></script>
@@ -12,20 +12,15 @@
 </head>
 {% block content %}
 <body>
-
 <center>
 <div class="container-shadow">
-
      <div class="container">
-
-
         <div class="wrap">
             <h1 class="title" > {{title}} files:</h1>
 
-            <div class="dow-list__item padding-xs">
+            <div class="file-list">
                 {% if files %}
                     {% for post in files %}
-
                 <div class='PostContent'>
                         <h2 class="FileName" >{{post}}</h2>
                         <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}" class="DownloadButton">
@@ -35,7 +30,6 @@
                     {% endfor %}
                 {% endif %}
             </div>
-
 
             {% if not files %}
                  <h2>No files exist</h2>
@@ -53,25 +47,12 @@
             </fieldset>
 
             <div class="form-group">
-            <button class="button" type="submit">Save</button>
+            <button id="submitBtn" class="hidden" type="submit">Save</button>
                 </div>
             </form>
-
-
-
-            {% if messages %}
-            <ul class="messages">
-            {% for message in messages %}
-                <li {% if message.tags %} class="{{ message.tags }}"
-                {% endif %}>
-                {{ message }}</li>
-             {% endfor %}
-            </ul>
-
         </div>
      </div>
 </div>
-    {% endif %}
-</center>
+    </center>
 </body>
 {% endblock content %}

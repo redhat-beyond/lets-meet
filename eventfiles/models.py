@@ -1,6 +1,6 @@
 from os import path
 from django.db import models
-from events.models import EventParticipant, Event
+from events.models import EventParticipant
 from django.core.exceptions import ValidationError
 
 

@@ -1,12 +1,9 @@
-from django import forms
 from .models import EventFile
 from django.forms import ModelForm
 from events.models import EventParticipant
-from django import forms
 
 
 class MyEventFileCreationForm(ModelForm):
-
     class Meta:
         model = EventFile
         fields = '__all__'

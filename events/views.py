@@ -6,8 +6,16 @@ from django.contrib.auth.decorators import login_required
 from events.forms import EventCreationForm, EventUpdateForm
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
 
+<< << << < HEAD
 from main.utilities import convert_time_delta
 
+== == == =
+LOGIN_PAGE = 'login'
+>> >> >> > 8e89
+f7d(Creating
+basic
+form
+file)
 HOME_PAGE = 'home'
 LOGIN_PAGE = 'login'
 
