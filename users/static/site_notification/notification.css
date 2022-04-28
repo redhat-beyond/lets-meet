@@ -1,0 +1,66 @@
+.bar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background: url("https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1752&q=80");
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    padding-bottom: 5%;
+}
+
+.bar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 360px;
+    font-size: 30px;
+    margin-left: 50px;
+    text-decoration: none;
+    color: #010101;
+    transition: 0.3s;
+}
+
+.message {
+    font-size: 1.2em;
+    width: 90%;
+}
+
+.remove_btn {
+    color: red;
+    width: 10%;
+    cursor: pointer;
+}
+
+.title-bar {
+    color: white;
+    margin-left: 7%;
+    margin-bottom: 10%;
+    text-decoration: underline;
+}
+
+.badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    font-size: 20px;
+}
+
+td a {
+    text-decoration: none;
+}
+
+#bell {
+    display: inline;
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    font-size: 40px;
+    color: white;
+}
