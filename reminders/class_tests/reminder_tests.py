@@ -11,6 +11,7 @@ from events.tests import (  # noqa: F401
     event_participant_creator as participant0
 )
 
+
 METHOD_0 = ReminderType.EMAIL
 MESSAGES_0 = 'This is a test text.'
 TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
@@ -53,18 +54,13 @@ class TestReminder:
         assert persist_reminder not in Reminder.objects.all()
 
     def test_exist_reminder(self):
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser1")
-        )
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event1",
-                                                        user_id__username="testUser2")
-        )
-        assert Reminder.objects.filter(
-            participant_id=EventParticipant.objects.get(event_id__title="event2",
-                                                        user_id__username="testUser3")
-        )
+        for event_id, user_id in zip([1, 1, 2], range(1, 4)):
+            assert Reminder.objects.filter(
+                participant_id=EventParticipant.objects.get(
+                    event_id__title=f"event{event_id}",
+                    user_id__username=f"testUser{user_id}"
+                )
+            )
 
     def test_reminder_with_invalid_time(self, participant0, date_time=TIME_0):  # noqa: F811
         date_time = datetime(2022, 3, 22, 12, 12, 12, 0, tzinfo=timezone.utc)
@@ -74,10 +70,10 @@ class TestReminder:
             save_reminder(create_reminder(participant0, date_time, MESSAGES_0, METHOD_0))
 
     def test_invalid_reminder_exist_twice(self):
-        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
-        date_time = datetime(2022, 8, 14, 13, 13, 13, 0, tzinfo=timezone.utc)
         message = JOIN_MEETING.format(30)
         reminder_type = ReminderType.WEBSITE
+        date_time = datetime(2022, 8, 14, 13, 13, 13, 0, tzinfo=timezone.utc)
+        participant = EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
 
         with pytest.raises(IntegrityError, match=EXIST_REMINDER_ERROR):
             create_reminder(participant, date_time, message, reminder_type).save()
