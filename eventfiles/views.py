@@ -1,12 +1,12 @@
 from django.shortcuts import redirect, render
 from .models import EventFile
 from django.http import HttpResponse, Http404
-from .form import MyEventFileCreationForm
 from os import path
 from django.conf import settings
 from django.contrib import messages
 from events.models import EventParticipant, Event
 from django.contrib.auth.decorators import login_required
+from eventfiles.form import MyEventFileCreationForm
 
 FILE_PATH = settings.MEDIA_ROOT / "files"
 REDIRECT_PAGE = 'welcome_page'
@@ -14,18 +14,16 @@ REDIRECT_PAGE = 'welcome_page'
 
 @login_required(login_url=REDIRECT_PAGE)
 def file_page_per_event(request, event_id):
-    if not request.user.is_authenticated:
-        return redirect("welcome_page")
 
-    current_event = Event.objects.get(pk=event_id)
-    title = current_event.title
     user_id = request.user
-    messages.success(request, 'loaded page')
-
     try:
+        current_event = Event.objects.get(pk=event_id)
         participant_id = EventParticipant.objects.get(event_id=current_event, user_id=user_id)
-    except EventParticipant.DoesNotExist:
+    except:
         return redirect("home")
+
+    title = current_event.title
+    messages.success(request, 'loaded page')
 
     if participant_id:
         messages.success(request, 'participant_id recived')
@@ -43,10 +41,6 @@ def file_page_per_event(request, event_id):
     context = {'files': EventFile.get_files_by_event(event_id), 'event': event_id, 'form': form, 'title': title}
     return render(request, "file/event_files.html", context)
 
-
-# participant_id = EventParticipant.objects.get(event_id=current_event, user_id=user_id)
-# EventCreationForm(data=valid_event_data, user_id=persist_form_user)
-# participant_id=participant_id
 
 def download(request):
     event = request.GET.get('event')

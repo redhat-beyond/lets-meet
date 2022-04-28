@@ -41,7 +41,7 @@ a {
     scrollbar-color: #aae0f0  lightgray;
     scrollbar-width: thin;
     box-shadow: 0px 0px 50px -20px #000;
-    overflow-y: scroll;
+    overflow-y: auto;
     color: white;
 }
 
@@ -64,10 +64,10 @@ color:black;
 .title{
     position: relative;
     margin: 90px auto 70px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 1);
+    font-size: 2.5rem;
     padding-bottom: 10px;
     display: inline-block;
-    font-size: 1.7rem;
     letter-spacing: 1px;
     border-bottom: solid 4px #aae0f0;
   box-shadow: 0 5px 5px -5px #1d2124;
@@ -111,10 +111,6 @@ color:black
   color: #aae0f0;
 }
 
-
-input[type="file"] {
-
-}
 .custom-file-upload {
     border: 1px solid #ccc;
     display: inline-block;
@@ -128,6 +124,24 @@ input[type="file"] {
     display: inline;
     margin: 10px;
 }
+input {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  background: transparent;
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 2px solid #1d2124;
+  outline: none;
+  box-sizing: border-box;
+
+  margin-bottom: 10px;
+}
+
+fieldset{
+ border: none;
+}
 
 .fileUpload input.upload {
     position: absolute;
@@ -137,6 +151,63 @@ input[type="file"] {
     padding: 0;
     font-size: 20px;
     cursor: pointer;
+    background: rgba(255, 255, 255, 1);
     opacity: 0;
-    filter: alpha(opacity=0);
+}
+
+#upload {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#uploadBtn{
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 16px;
+
+
+}
+#uploadBtn:hover {
+  background: #58d15d;
+  box-shadow: 0 0 10px #58d15d 0 0 30px #58d15d, 0 0 50px #58d15d;
+}
+#fileInput{
+    visibility: hidden;
+}
+
+
+.form-group
+{
+display: contents;
+}
+
+.button {
+  width: 100%;
+  background: #aae0f0;
+  color: #2c353e;
+  text-transform: uppercase;
+  margin-top: 2em;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.button:hover {
+  background: #aae0f0;
+  box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
 }

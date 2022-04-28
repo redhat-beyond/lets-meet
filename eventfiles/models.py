@@ -20,14 +20,11 @@ class EventFile(models.Model):
     @staticmethod
     def get_files_by_event(event_id):
         participants = EventParticipant.objects.filter(event_id=event_id)
-        files=[]
+        files = []
         for participant in participants:
             files.extend(EventFile.objects.filter(participant_id=participant))
 
         return files
-
-    # def __str__(self):
-    # return f"{self.participant_id} - {path.basename(self.file.name)}"
 
     def __str__(self):
         return f"{path.basename(self.file.name)}"

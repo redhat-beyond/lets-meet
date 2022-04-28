@@ -44,16 +44,16 @@
             <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
             <fieldset class="form-group">
             {% csrf_token %}
-       <input id="uploadFile" placeholder="File Name here" disabled="disabled" />
+       <input id="uploadFile" placeholder="No file selected" disabled="disabled" />
             <div class="fileUpload">
-                <span>Upload</span>
-                <input id="uploadBtn" type="file" name="{{form.file.name}}" class="upload" />
+                <span id="uploadBtn">Upload</span>
+                <input id="fileInput" type="file" name="{{form.file.name}}" class="upload" />
             </div>
 
             </fieldset>
 
             <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Save</button>
+            <button class="button" type="submit">Save</button>
                 </div>
             </form>
 
