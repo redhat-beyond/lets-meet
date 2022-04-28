@@ -9,7 +9,6 @@ from events.tests import (  # noqa: F401
     event_participant_creator as participant0
 )
 
-
 MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
 JOIN_MEETING = 'Joined Meeting in {} minutes'
 SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
