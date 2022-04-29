@@ -1,6 +1,6 @@
+let vote_url = "";
 let get_notification = "";
 let seen_notification = "";
-
 
 function build_table() {
 	const id = "#notification-table";
