@@ -12,7 +12,7 @@ def get_notification(request):
         Notification.objects.filter(
             participant_id__user_id=user,
             seen_time__isnull=True
-        ).values('id', 'message')
+        ).values('id', 'message', 'notification_type')
     )
 
     return JsonResponse(user_notifications, safe=False)
