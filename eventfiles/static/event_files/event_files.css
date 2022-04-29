@@ -5,17 +5,17 @@
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
-  margin: 0;
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
     position: fixed;
-  top: 0;
-  left: 0;
-background: url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2668&q=80") ;
-  min-width: 100%;
-  min-height: 100%;
-  background-size: cover;
-  background-repeat: repeat;
-  margin: 0;
+    top: 0;
+    left: 0;
+    background: url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2668&q=80") ;
+    min-width: 100%;
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: repeat;
+    margin: 0;
 }
 
 
@@ -53,15 +53,16 @@ a {
   width: 400px;
   margin: 0 auto;
 }
-.scroller {
-width: 300px;
-  height: 100px;
-  overflow-y: scroll;
 
+.scroller {
+    width: 300px;
+    height: 100px;
+    overflow-y: scroll;
 }
+
 #uploadFile{
-background:white;
-color:black;
+    background:white;
+    color:black;
 }
 
 .title{
@@ -73,37 +74,36 @@ color:black;
     display: inline-block;
     letter-spacing: 1px;
     border-bottom: solid 4px #aae0f0;
-  box-shadow: 0 5px 5px -5px #1d2124;
+    box-shadow: 0 5px 5px -5px #1d2124;
 }
 
-
 .title:hover {
-  color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1);
 }
 
 .PostContent {
-display: grid;
-background: rgba(255, 255, 255, 1);
-width: 400px;
-height: 1px;
-align-items: center;
-border-radius: 23px;
-padding: 33px;
-margin-bottom: 4%;
-color: black;
-margin-left:-7%
+    display: grid;
+    background: rgba(255, 255, 255, 1);
+    width: 400px;
+    height: 1px;
+    align-items: center;
+    border-radius: 23px;
+    padding: 33px;
+    margin-bottom: 4%;
+    color: black;
+    margin-left:-7%
 }
 
 .FileName{
-padding: 26px;
-margin-top: -10%;
-font-size: 98%;
-margin-right: 74%;
+    padding: 26px;
+    margin-top: -10%;
+    font-size: 98%;
+    margin-right: 74%;
 }
 
 .DownloadButton{
-margin-left: 89%;
-margin-top: -78px;
+    margin-left: 89%;
+    margin-top: -78px;
 }
 
 .fa-circle-down{
@@ -178,8 +178,6 @@ fieldset{
   display: inline-block;
   cursor: pointer;
   font-size: 16px;
-
-
 }
 #uploadBtn:hover {
   background: #58d15d;

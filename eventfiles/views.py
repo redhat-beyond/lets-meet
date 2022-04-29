@@ -12,8 +12,9 @@ FILE_PATH = settings.MEDIA_ROOT / "files"
 
 @login_required(login_url='welcome_page')
 def file_page_per_event(request, event_id):
-    user_id = request.user
+
     try:
+        user_id = request.user
         current_event = Event.objects.get(pk=event_id)
         participant_id = EventParticipant.objects.get(event_id=current_event, user_id=user_id)
     except EventParticipant.DoesNotExist:
