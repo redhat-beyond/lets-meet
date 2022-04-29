@@ -26,7 +26,7 @@ def create_event(request):
             participant = EventParticipant.objects.get(user_id=request.user, event_id=event)
             reminder = reminder_form.save(commit=False)
 
-            if reminder.date_time is not None:
+            if reminder.date_time:
                 reminder.participant_id = participant
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
@@ -59,13 +59,13 @@ def update_event(request, pk):
         if event_form.is_valid() and reminder_form.is_valid():
             event = event_form.save()
 
-            if reminder_form.instance.date_time is not None:
+            if reminder_form.instance.date_time:
                 reminder = reminder_form.save(commit=False)
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.participant_id = participant
                 reminder.save()
             else:
-                if reminder_instance is not None:
+                if reminder_instance:
                     reminder_instance.delete()
 
             return redirect(HOME_PAGE)

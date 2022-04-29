@@ -40,7 +40,7 @@ class UserAlertScheduler():
 
     def __new__(self):
         """
-        __new__ is used becurse we want to make the scheduler a singletone
+        __new__ is used because we want to make the scheduler a singletone
         there is an __instance object and it is checked every time if it has been initialized
         if so the __instance will be returned otherwise this is the first time and it will be initialized
         """
@@ -183,11 +183,11 @@ class UserAlertScheduler():
 
         UserAlertScheduler.__logger.info("in remove alert")
 
-        if UserAlertScheduler.__current_reminder is not None:
+        if UserAlertScheduler.__current_reminder:
 
             if UserAlertScheduler.__current_reminder.id == reminder_id:
 
-                if UserAlertScheduler.__current_timer is not None:
+                if UserAlertScheduler.__current_timer:
                     if UserAlertScheduler.__current_timer.is_alive():  # check if the timer is still running
                         UserAlertScheduler.__current_timer.cancel()
                         UserAlertScheduler.__current_reminder = None

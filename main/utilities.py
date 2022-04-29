@@ -8,7 +8,7 @@ def send_mail_notification(title, message, receiver_email):
 
 
 def send_site_notification(message, receiver_id):
-    """ notify the receiver id the message given using the site notification """
+    """ notify the receiver by his id with the message given by the site notification """
     print(f"notification -> {message} - {receiver_id}")  # for debug only
 
 
