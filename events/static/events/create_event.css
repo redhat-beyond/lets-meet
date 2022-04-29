@@ -6,6 +6,7 @@
 
 body {
   background: url("https://images.unsplash.com/photo-1570126646281-5ec88111777f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1682&q=80") no-repeat;
+  background-attachment: fixed;
   background-size: cover;
   background-repeat: repeat;
   font-family: "Montserrat", sans-serif;
@@ -18,7 +19,6 @@ a {
 
 .container-shadow {
   position: absolute;
-  /* width: 25%; */
   width: 600px;
   left: 50%;
   margin-left: -262.5px;
@@ -28,7 +28,6 @@ a {
 
 .container {
   position: absolute;
-  /* width: 25%; */
   width: 600px;
   left: 50%;
   margin-left: -262.5px;
@@ -39,14 +38,13 @@ a {
 
 .wrap {
   position: relative;
-  /* width: 75%; */
   width: 400px;
   margin: 0 auto;
 }
 
 .headings {
   position: relative;
-  /* margin: 90px auto 70px; */
+  margin: 90px auto 70px;
   margin-top: 5vh;
 }
 
