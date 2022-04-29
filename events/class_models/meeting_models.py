@@ -7,6 +7,9 @@ class PossibleMeetingsQuerySet(models.QuerySet):
     def get_all_event_dates(self, event_id):
         return self.filter(event_creator_id__event_id=event_id)
 
+    def get_meeting_dates(self, event_id):
+        return self.filter(event_creator_id__event_id=event_id)
+
     def remove_all_possible_dates(self, event_id):
         return self.get_all_event_dates(event_id).delete()
 
@@ -17,6 +20,9 @@ class PossibleMeetingManager(models.Manager):
 
     def get_all_event_dates(self, event_id):
         return self.get_queryset().get_all_event_dates(event_id)
+
+    def get_meeting_dates(self, event_id):
+        return self.get_queryset().get_meeting_dates(event_id)
 
     def remove_all_possible_dates(self, event_id):
         return self.get_queryset().remove_all_possible_dates(event_id)

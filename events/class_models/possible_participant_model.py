@@ -1,8 +1,9 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from .meeting_models import OptionalMeetingDates
-from .participant_model import EventParticipant
+from django.db.models import Q
 from .event_models import time_format
+from .participant_model import EventParticipant
+from .meeting_models import OptionalMeetingDates
+from django.core.exceptions import ValidationError
 
 
 class PossibleParticipantsQuerySet(models.QuerySet):
@@ -17,6 +18,12 @@ class PossibleParticipantsQuerySet(models.QuerySet):
         return self.filter(
             possible_meeting_id__event_creator_id__event_id=event_id
         ).values('participant_id').distinct().count()
+
+    def get_all_meeting_participants(self, possible_meeting_dates):
+        return self.filter(Q(possible_meeting_id__in=possible_meeting_dates))
+
+    def did_user_vote(self, possible_meeting_dates, user_id):
+        return self.get_all_meeting_participants(possible_meeting_dates).filter(participant_id__user_id=user_id).exists()
 
     def remove_all_possible_meeting_participants(self, meeting_id):
         return self.get_all_date_participants(meeting_id).delete()
