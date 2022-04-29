@@ -53,9 +53,12 @@ def convert_time_delta(time_delta, starting_text="You have a meeting in "):
 
 
 def check_and_get_time(time, result, field, time_delta):
-    """ get a time variable that holds amount of the time wanted to check
-        result dictionary and the field name relevent to counting the time_delta in time
-        and the time_delta """
+    """ return the amount of times that the 'time_delta' can fit inside 'time'
+
+        variables: time - the total amount to check
+                   result - a dictionary with at least the field as a key
+                   field - a key to the dictionary result
+                   time_delta - the amount to check on time """
 
     if time > time_delta:
         result[field] = 0

@@ -17,20 +17,20 @@ def pytest_configure():
     pytest.valid_method = ReminderType.EMAIL
     pytest.message = "Joined Meeting in 50 minutes"
     pytest.valid_date_time = datetime(
-        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day, 12, 0, 0, tzinfo=timezone.utc
+        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 12, 0, 0, tzinfo=timezone.utc
     )
     pytest.invalid_date_time = datetime(
         pytest.current_date.year - 1, pytest.current_date.month, pytest.current_date.day, 12, 0, 0, tzinfo=timezone.utc
     )
 
     pytest.date_time_end = datetime(
-        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day, 13, 0, 0, tzinfo=timezone.utc
+        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 13, 0, 0, tzinfo=timezone.utc
     )
     pytest.date_time_start = datetime(
-        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day, 15, 0, 0, tzinfo=timezone.utc
+        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 15, 0, 0, tzinfo=timezone.utc
     )
     pytest.reminder_date_time = datetime(
-        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day, 14, 0, 0, tzinfo=timezone.utc
+        pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 14, 0, 0, tzinfo=timezone.utc
     )
 
     pytest.reminder_creation_url = '/event/create/'

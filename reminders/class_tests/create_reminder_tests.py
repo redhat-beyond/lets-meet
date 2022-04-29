@@ -1,4 +1,5 @@
 import pytest
+from reminders.models import Reminder
 from reminders.forms import ReminderCreationForm
 from pytest_django.asserts import assertTemplateUsed
 
@@ -6,7 +7,7 @@ from pytest_django.asserts import assertTemplateUsed
 @pytest.mark.django_db
 class TestCreateReminder:
 
-    @pytest.mark.parametrize("invalid_user_credentials", [
+    @pytest.mark.parametrize("invalid_data", [
         # method cannot be None
         {'participant_id': None, 'date_time': pytest.valid_date_time,
          'messages': pytest.message, 'method': None
@@ -25,16 +26,30 @@ class TestCreateReminder:
         "date is before the current time"
         ]
     )
-    def test_create_reminder(self, get_event_participant, invalid_user_credentials):
-        invalid_user_credentials['participant_id'] = get_event_participant
-
-        form = ReminderCreationForm(data=invalid_user_credentials)
+    def test_create_invalid_reminder(self, get_event_participant, invalid_data):
+        invalid_data['participant_id'] = get_event_participant
+        form = ReminderCreationForm(data=invalid_data)
 
         with pytest.raises(ValueError):
             if form.is_valid():
                 form.save
             else:
                 raise ValueError()
+
+    def test_create_valid_reminder(self, get_event_participant):
+        valid_data = {
+            'participant_id': None, 'date_time': pytest.valid_date_time,
+            'messages': pytest.message, 'method': pytest.valid_method
+        }
+        form = ReminderCreationForm(data=valid_data)
+
+        assert form.is_valid()
+
+        instance = form.save(commit=False)
+        instance.participant_id = get_event_participant
+        instance.messages = pytest.message
+        instance.save()
+        assert instance in Reminder.objects.all()
 
     def test_reminder_creation_form(self, client, sign_in):
         response = client.get(pytest.reminder_creation_url)
