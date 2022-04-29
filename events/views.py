@@ -2,15 +2,18 @@ from users.models import User
 from django.utils import timezone
 from django.contrib import messages
 from reminders.models import Reminder
+from main.utilities import time_format
 from django.forms import formset_factory
+from reminders.views import seen_notification
 from django.views.generic import TemplateView
 from main.utilities import convert_time_delta
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
-from events.models import Event, EventParticipant, OptionalMeetingDates
+from events.models import Event, EventParticipant, OptionalMeetingDates, PossibleParticipant
 from events.forms import (
+    VoteForm,
     EventCreationForm,
     EventUpdateForm,
     OptionalMeetingDateForm,
@@ -258,3 +261,60 @@ class CreateMeetingView(TemplateView):
             event_instance.delete()
             return False
         return True
+
+
+@login_required(login_url=LOGIN_PAGE)
+def meeting_vote(request):
+
+    user_id = request.user
+    users_meetings = Event.objects.get_all_user_meetings(user_id)
+
+    chosen_event = None
+    possible_meeting_dates = None
+
+    for meeting in users_meetings:
+        possible_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(meeting)
+        did_user_vote = PossibleParticipant.objects.did_user_vote(possible_meeting_dates, user_id)
+
+        if did_user_vote:
+            chosen_meeting_dates = possible_meeting_dates
+            chosen_event = meeting
+            break
+
+    if chosen_event is None:
+        return redirect('home')
+
+    title = f"{chosen_event.title} Vote Meeting"
+    voteFormset = formset_factory(VoteForm, extra=chosen_meeting_dates.count())
+    meetings_dates = list(map(lambda meeting: f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)}", chosen_meeting_dates))
+
+    if request.method == 'POST':
+        form = voteFormset(request.POST, request.FILES)
+
+        if form.is_valid():
+            for field, meeting in zip(form, chosen_meeting_dates):
+                field_value = field.cleaned_data.get('date_vote')
+                if field_value:
+                    print(f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)} - {field_value}")
+
+                    # add possible participant to this meeting date
+                    participant = EventParticipant.objects.get(user_id=user_id, event_id=chosen_event)
+                    print(participant)
+                    PossibleParticipant(participant_id=participant, possible_meeting_id=meeting).save()
+                else:
+                    print(f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)} - False")
+
+            # send a seen request
+            seen_notification(request, chosen_event.id)
+            return redirect('home')
+        else:
+            print("error")
+            print(form.errors)
+            for line in form:
+                print(line.errors)
+
+            form = voteFormset()
+    else:
+        form = voteFormset()
+
+    return render(request, 'events/meeting_vote.html', {'form': form, 'meetings_dates': meetings_dates, 'title': title})
