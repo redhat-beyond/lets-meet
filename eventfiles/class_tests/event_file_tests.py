@@ -3,7 +3,10 @@ from eventfiles.models import EventFile
 from users.tests import user0  # noqa: F401
 from django.core.files import File
 from django.core.exceptions import ValidationError
+from events.models import EventParticipant
 from events.tests import event_participant_not_creator, new_event  # noqa: F401
+from eventfiles.form import MyEventFileCreationForm
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 TEST_FILE_PATH = 'static/test_files/testFile.txt'
 FILE_ALREADY_EXISTS = 'that file already exist in meeting'
@@ -48,3 +51,21 @@ class TestEventFile:
     def test_not_unique_event_file(self, persist_event_file):
         with pytest.raises(ValidationError, match=FILE_ALREADY_EXISTS):
             persist_event_file.save()
+
+
+@pytest.mark.django_db()
+class TestEventFileForm:
+
+    @pytest.fixture
+    def get_event_participant(self):
+        return EventParticipant.objects.get(id=1)
+
+    def test_post_file_through_form(self, get_event_participant):
+        upload_file = open(TEST_FILE_PATH, 'rb')
+        file_dict = {'file': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        form = MyEventFileCreationForm(get_event_participant, file_dict)
+        assert form.is_valid()
+        instance = form.save(commit=False)
+        instance.participant_id = get_event_participant
+        form.save()
+        assert instance in EventFile.objects.all()

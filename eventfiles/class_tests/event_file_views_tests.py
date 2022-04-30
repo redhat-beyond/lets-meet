@@ -10,7 +10,7 @@ HOME_HTML_PATH = 'user_site/home.html'
 
 
 @pytest.mark.django_db
-class TestEventFileForm:
+class TestEventFileFormView:
     @pytest.fixture
     def signed_up_user_details(self):
         return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
@@ -29,21 +29,19 @@ class TestEventFileForm:
         assert response.status_code == 200
         assertTemplateUsed(response, FILE_CREATION_HTML_PATH)
 
-    def test_invalid_event_id_in_file_url(self, client, sign_in):
-        response = client.get(f'{FILE_CREATION_URL}/8')
-        assert response.status_code == 302
-        response = client.get(response.url)
-        assert response.status_code == 200
-        assertTemplateUsed(response, HOME_HTML_PATH)
+    @pytest.mark.parametrize('url_path,status_code', [
+        (f'{FILE_CREATION_URL}/8', 404),
+        (f'{FILE_CREATION_URL}/2', 401)
 
-    def test_access_to_event_files_not_relevant_to_user(self, client, sign_in):
-        response = client.get(f'{FILE_CREATION_URL}/2')
-        assert response.status_code == 302
-        response = client.get(response.url)
-        assert response.status_code == 200
-        assertTemplateUsed(response, HOME_HTML_PATH)
+    ], ids=[
+        "event doesnt exist",
+        "user not a participant in the event",
+    ])
+    def test_invalid_event_id_in_file_url(self, client, sign_in, url_path, status_code):
+        response = client.get(url_path)
+        assert response.status_code == status_code
 
-    def test_unauthorized_user(self, client):
+    def test_unauthorized_user_redirected_to_main_pae(self, client):
         response = client.get(f'{FILE_CREATION_URL}/1')
         assert response.status_code == 302
         response = client.get(response.url)

@@ -62,14 +62,14 @@ a {
 
 #uploadFile{
     background:white;
-    color:black;
+    color: #909090;
+    margin-right: 10px;
 }
 
 .title{
     position: relative;
     margin: 90px auto 70px;
     color: rgba(255, 255, 255, 1);
-    font-size: 2.5rem;
     padding-bottom: 10px;
     display: inline-block;
     letter-spacing: 1px;
@@ -95,6 +95,7 @@ a {
 }
 
 .FileName{
+    font-weight: 700;
     padding: 26px;
     margin-top: -10%;
     font-size: 98%;
@@ -105,13 +106,16 @@ a {
     margin-left: 89%;
     margin-top: -78px;
 }
+.event_files{
+    font-family: "Montserrat", sans-serif;
+}
 
 .fa-circle-down{
-color:black
+    color:black
 }
 
 .fa-circle-down:hover {
-  color: #aae0f0;
+    color: #aae0f0;
 }
 
 .custom-file-upload {
@@ -128,22 +132,21 @@ color:black
     margin: 10px;
 }
 input {
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 1px;
-  background: transparent;
-  padding: 10px 20px;
-  border: none;
-  border-bottom: 2px solid #1d2124;
-  outline: none;
-  box-sizing: border-box;
-
-  margin-bottom: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: transparent;
+    padding: 10px 20px;
+    border: none;
+    border-bottom: 2px solid #1d2124;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 fieldset{
- border: none;
+    border: none;
 }
 
 .fileUpload input.upload {
@@ -158,30 +161,20 @@ fieldset{
     opacity: 0;
 }
 
-#upload {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
 #uploadBtn{
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  font-size: 16px;
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 16px;
 }
 #uploadBtn:hover {
-  background: #58d15d;
-  box-shadow: 0 0 10px #58d15d 0 0 30px #58d15d, 0 0 50px #58d15d;
+    background: #58d15d;
+    box-shadow: 0 0 10px #58d15d 0 0 30px #58d15d, 0 0 50px #58d15d;
 }
 #fileInput{
     visibility: hidden;
@@ -190,28 +183,28 @@ fieldset{
 
 .form-group
 {
-display: contents;
+    display: contents;
 }
 
 .button {
-  width: 100%;
-  background: #aae0f0;
-  color: #2c353e;
-  text-transform: uppercase;
-  margin-top: 2em;
-  padding: 12px;
-  font-size: 14px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  font-weight: 700;
+    width: 100%;
+    background: #aae0f0;
+    color: #2c353e;
+    text-transform: uppercase;
+    margin-top: 2em;
+    padding: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-weight: 700;
     font-size: 14px;
     letter-spacing: 1px;
 }
 .hidden{
-visibility:hidden
+    visibility:hidden
 }
 
 .button:hover {
-  background: #aae0f0;
-  box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
+    background: #aae0f0;
+    box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
 }

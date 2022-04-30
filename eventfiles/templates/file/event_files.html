@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
+{% block head-content %}
     <title>Event files</title>
-        {% load static %}
-    <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
-  <script src="{% static 'event_files/event_files.js' %}"></script>
-    {% block head-content %}
-    {% endblock %}
-</head>
-{% block content %}
-<body>
+    {% load static %}
+        <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
+        <script src="{% static 'event_files/event_files.js' %}"></script>
+
+{% endblock %}
+
+{% block body-content %}
+<div class="event_files">
 <center>
 <div class="container-shadow">
      <div class="container">
@@ -28,22 +27,19 @@
                         </a>
                 </div>
                     {% endfor %}
-                {% endif %}
             </div>
-
-            {% if not files %}
-                 <h2>No files exist</h2>
-            {% endif %}
+                {% else %}
+                     <h2>No files exist</h2>
+                {% endif %}
 
             <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
             <fieldset class="form-group">
             {% csrf_token %}
-       <input id="uploadFile" placeholder="No file selected" disabled="disabled" />
             <div class="fileUpload">
+                <input id="uploadFile" placeholder="No file selected" disabled="disabled"/>
                 <span id="uploadBtn">Upload</span>
-                <input id="fileInput" type="file" name="{{form.file.name}}" class="upload" />
+                <input id="fileInput" type="file" name="{{form.file.name}}" class="upload" style="visibility: hidden;"/>
             </div>
-
             </fieldset>
 
             <div class="form-group">
@@ -54,5 +50,5 @@
      </div>
 </div>
     </center>
-</body>
-{% endblock content %}
+</div>
+{% endblock %}

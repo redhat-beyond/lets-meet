@@ -8,23 +8,29 @@ def upload_to_function(instance, filename):
     return path.join('files', str(instance.participant_id.event_id.id), path.basename(filename))
 
 
+class EventFileQuerySet(models.QuerySet):
+    def get_files_by_participant(self, participant):
+        return self.filter(participant_id=participant)
+
+    def get_files_by_event(self, event_id):
+        participants = EventParticipant.objects.get_an_event_participants(event_id)
+        files = []
+        for participant in participants:
+            files.extend(self.get_files_by_participant(participant))
+
+        return files
+
+
 class EventFile(models.Model):
     participant_id = models.ForeignKey(EventParticipant, models.SET_NULL, null=True)
     file = models.FileField(upload_to=upload_to_function)
+
+    objects = EventFileQuerySet.as_manager()
 
     @staticmethod
     def validate_unique_file(up_file, up_participant_id):
         if EventFile.objects.filter(file=up_file, participant_id=up_participant_id):
             raise ValidationError('that file already exist in meeting')
-
-    @staticmethod
-    def get_files_by_event(event_id):
-        participants = EventParticipant.objects.filter(event_id=event_id)
-        files = []
-        for participant in participants:
-            files.extend(EventFile.objects.filter(participant_id=participant))
-
-        return files
 
     def __str__(self):
         return f"{path.basename(self.file.name)}"
@@ -36,5 +42,3 @@ class EventFile(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         return super().save(*args, **kwargs)
-
-
