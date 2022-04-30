@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
         from events.models import EventParticipant
         from reminders.models import Notification, NotificationType
 
-
         JOIN_MEETING = 'Joined Meeting in {} minutes'
 
         notification_data = [
@@ -33,7 +32,7 @@ class Migration(migrations.Migration):
 
             (EventParticipant.objects.get(event_id__title="event1", user_id__username="testUser2"),
              None,
-             datetime(2025, 1, 1, 11, 11, 11, 0, tzinfo=timezone.utc),
+             datetime(2022, 1, 1, 11, 11, 11, 0, tzinfo=timezone.utc),
              JOIN_MEETING.format(45),
              NotificationType.MEETING),
         ]

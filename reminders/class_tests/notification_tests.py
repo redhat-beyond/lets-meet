@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import IntegrityError
 from events.models import EventParticipant
 from reminders.models import Notification
+from django.core.exceptions import ValidationError
 from events.tests import (  # noqa: F401
     new_event, user0,
     event_participant_creator as participant0
@@ -18,7 +19,7 @@ SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 
 ROW_DUPLICATION_ERROR = 'notification already exists'
-PAST_DATE_TIME_ERROR = 'sent time should be bigger than the current date'
+PAST_DATE_TIME_ERROR = 'seen time cannot be earlier than time of creation.'
 
 
 @pytest.fixture
@@ -88,10 +89,10 @@ class TestNotification:
             create_notification(event_participant, date_time_read, date_time_sent, pytest.message).save()
 =======
     def test_invalid_time(self, event_participant, notification_message):
-        date_time_read = timezone.now()
-        date_time_sent = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+        date_time_read = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+        date_time_sent = timezone.now()
 
-        with pytest.raises(IntegrityError, match=PAST_DATE_TIME_ERROR):
+        with pytest.raises(ValidationError, match=PAST_DATE_TIME_ERROR):
             create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
 
     def test_duplication_of_notification(self, event_participant, notification_message):  # noqa: F811
