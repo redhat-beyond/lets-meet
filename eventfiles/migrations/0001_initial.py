@@ -6,7 +6,6 @@ import eventfiles.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,9 +18,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('file', models.FileField(upload_to=eventfiles.models.upload_to_function)),
-                ('participant_id', models.ForeignKey(null=True,
-                                                     on_delete=django.db.models.deletion.SET_NULL,
-                                                     to='events.eventparticipant')),
+                ('participant_id', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.SET_NULL, to='events.eventparticipant')
+                 ),
             ],
         ),
     ]
