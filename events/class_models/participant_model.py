@@ -12,6 +12,9 @@ class EventParticipantQuerySet(models.QuerySet):
     def get_creator_of_event(self, event):
         return self.get(event_id=event, is_creator=True)
 
+    def get_meeting_participants_of_event(self, meeting):
+        return self.filter(event_id=meeting, is_creator=False)
+
     def remove_participant_from_event(self, event, user):
         return self.get(event_id=event, user_id=user).delete()
 
