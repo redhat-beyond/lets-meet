@@ -5,6 +5,7 @@ import django.db.models.deletion
 import eventfiles.models
 
 
+
 class Migration(migrations.Migration):
     initial = True
 
