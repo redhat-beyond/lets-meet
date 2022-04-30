@@ -10,25 +10,6 @@ from events.tests import (  # noqa: F401
     event_participant_creator as participant0
 )
 
-<<<<<<< HEAD
-=======
-
-MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
-JOIN_MEETING = 'Joined Meeting in {} minutes'
-SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-
-ROW_DUPLICATION_ERROR = 'notification already exists'
-PAST_DATE_TIME_ERROR = 'seen time cannot be earlier than time of creation.'
-
-
-@pytest.fixture
-def notification_0(participant0):  # noqa: F811
-    return Notification(
-        participant_id=participant0, seen_time=SEEN_TIME_0, sent_time=SENT_TIME_0, message=MESSAGE_0
-    )
-
->>>>>>> 707a363... Comments And ForEach:
 
 @pytest.fixture
 def persist_notification(notification_0):
@@ -74,7 +55,6 @@ class TestNotification:
                 )
             )
 
-<<<<<<< HEAD
     def test_invalid_time(self, event_participant):
         date_time_read = timezone.now()
 
@@ -87,18 +67,3 @@ class TestNotification:
 
         with pytest.raises(IntegrityError, match=pytest.row_duplication_error):
             create_notification(event_participant, date_time_read, date_time_sent, pytest.message).save()
-=======
-    def test_invalid_time(self, event_participant, notification_message):
-        date_time_read = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
-        date_time_sent = timezone.now()
-
-        with pytest.raises(ValidationError, match=PAST_DATE_TIME_ERROR):
-            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
-
-    def test_duplication_of_notification(self, event_participant, notification_message):  # noqa: F811
-        date_time_sent = datetime(2032, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
-        date_time_read = datetime(2033, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
-
-        with pytest.raises(IntegrityError, match=ROW_DUPLICATION_ERROR):
-            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
->>>>>>> 707a363... Comments And ForEach:
