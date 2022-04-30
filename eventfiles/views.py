@@ -32,7 +32,7 @@ def view_all_event_files_with_upload_and_download_option_page(request, event_id)
     return render(request, "file/event_files.html", context)
 
 
-def download(request):
+def download_files(request):
     event = request.GET.get('event')
     file_name = request.GET.get('file_name')
     file_path = path.join(FILE_PATH / event, file_name)
