@@ -41,7 +41,7 @@ class TestEventFileFormView:
         response = client.get(url_path)
         assert response.status_code == status_code
 
-    def test_unauthorized_user_redirected_to_main_pae(self, client):
+    def test_unauthorized_user_redirected_to_main_page(self, client):
         response = client.get(f'{FILE_CREATION_URL}/1')
         assert response.status_code == 302
         response = client.get(response.url)
