@@ -2,10 +2,6 @@ import pytest
 from datetime import datetime
 from django.utils import timezone
 from django.db import IntegrityError
-<<<<<<< HEAD
-=======
-from users.tests import user0  # noqa: F401
->>>>>>> df3e5b0 (Working on the meeting feature)
 from events.models import OptionalMeetingDates, EventParticipant, Event
 from events.tests import (  # noqa:F811, F401
     new_event, user0,
@@ -56,7 +52,6 @@ class TestMeeting():
         persist_possible_meeting.event_creator_id.delete()
         assert persist_possible_meeting not in OptionalMeetingDates.objects.all()
 
-<<<<<<< HEAD
     def test_persist_possible_meeting_in_db(self):
         assert OptionalMeetingDates.objects.filter(event_creator_id=get_event_participant_from_db())
 
@@ -72,17 +67,6 @@ class TestMeeting():
                 date_time_end=date_time_end
             ).save()
 
-=======
-    # def test_persist_possible_meeting_Validation_Error(self, persist_possible_meeting):
-    #     with pytest.raises(ValidationError):
-    #         persist_possible_meeting.date_time_start = DATE_TIME_END
-    #         persist_possible_meeting.date_time_end = DATE_TIME_START
-    #         persist_possible_meeting.save()
-
-    def test_persist_possible_meeting_in_db(self):
-        assert OptionalMeetingDates.objects.filter(event_creator_id=get_event_participant_from_db())
-
->>>>>>> df3e5b0 (Working on the meeting feature)
     def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
         event = Event.objects.get(title=event_title)
         assert expected_meeting_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
@@ -103,4 +87,12 @@ class TestMeeting():
                 date_time_start=date_time_start,
                 date_time_end=date_time_end
             ).save()
-    
+
+    def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
+        event = Event.objects.get(title=event_title)
+        assert expected_meeting_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
+
+    def test_remove_all_possible_dates(self, expected_meeting_results, event_title="event3"):
+        event = Event.objects.get(title=event_title)
+        OptionalMeetingDates.objects.remove_all_possible_dates(event)
+        assert expected_meeting_results not in list(OptionalMeetingDates.objects.all())

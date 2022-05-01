@@ -34,10 +34,11 @@ class OptionalMeetingDates(models.Model):
     event_creator_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
     date_time_start = models.DateTimeField()
     date_time_end = models.DateTimeField()
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['event_creator_id', 'date_time_start', 'date_time_end'],
-            name='unique optional meeting')
+                                    name='unique optional meeting')
         ]
 
     class Meta:

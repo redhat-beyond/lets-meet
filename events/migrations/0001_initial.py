@@ -27,4 +27,11 @@ class Migration(migrations.Migration):
                  default='#000000', max_length=7)),
             ],
         ),
+        migrations.AddConstraint(
+            model_name='event',
+            constraint=models.UniqueConstraint(
+                fields=('title', 'location', 'description', 'date_time_start', 'date_time_end', 'color'),
+                name='unique event'
+            ),
+        ),
     ]
