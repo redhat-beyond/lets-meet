@@ -30,3 +30,8 @@ class TestMeetingvote:
     def test_post_valid_reminder_creation(self, client, sign_in, valid_meeting_vote_data):
         response = client.post(pytest.meeting_vote_url, data=valid_meeting_vote_data)
         assert response.status_code == 200
+
+    def test_remove_participant(self, client, sign_in):
+        response = client.get(pytest.remove_participant_url)
+        assert response.status_code == 302
+        assert response.url == pytest.home_url

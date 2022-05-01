@@ -9,12 +9,25 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <style>
+    #remove {
+        float: right;
+        color:red;
+        font-size: 25px;
+        cursor: pointer;
+    }
+    
+    </style>
+
 {% endblock %}
 
 {% block body-content %}
 
     <div class="container">
         <div class="header">
+            <a href="{% url 'remove_participant' %}">
+                <i class="fa fa-user-times" id="remove" aria-hidden="true"></i>
+            </a>
             <h2>{{ title }}:</h2>
         </div>
 

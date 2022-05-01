@@ -264,23 +264,30 @@ class CreateMeetingView(TemplateView):
         return True
 
 
-@login_required(login_url=LOGIN_PAGE)
-def meeting_vote(request):
-
-    user_id = request.user
-    users_meetings = Event.objects.get_all_user_meetings(user_id)
+def get_latest_meeting(user):
+    """ return the lateset meeting that the user given has not vote in """
+    users_meetings = Event.objects.get_all_user_meetings(user)
 
     chosen_event = None
     possible_meeting_dates = None
 
     for meeting in users_meetings:
         possible_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(meeting)
-        did_user_vote = PossibleParticipant.objects.did_user_vote(possible_meeting_dates, user_id)
+        did_user_vote = PossibleParticipant.objects.did_user_vote(possible_meeting_dates, user)
 
         if not did_user_vote:
             chosen_meeting_dates = possible_meeting_dates
             chosen_event = meeting
             break
+
+    return chosen_event, chosen_meeting_dates
+
+
+@login_required(login_url=LOGIN_PAGE)
+def meeting_vote(request):
+
+    user_id = request.user
+    chosen_event, chosen_meeting_dates = get_latest_meeting(user_id)
 
     if not chosen_event:
         return redirect('home')
@@ -315,3 +322,19 @@ def meeting_vote(request):
         form = voteFormset()
 
     return render(request, 'events/meeting_vote.html', {'form': form, 'meetings_dates': meetings_dates, 'title': title})
+
+
+@login_required(login_url=LOGIN_PAGE)
+def remove_participant_from_meeting(request):
+    user = request.user
+
+    try:
+        meeting_id, _ = get_latest_meeting(user)
+        participant = EventParticipant.objects.get(user_id=user, event_id=meeting_id)
+        notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
+        seen_notification(request, notification_id.id)
+        participant.delete()
+
+        return redirect('home')
+    except EventParticipant.DoesNotExist:
+        return meeting_vote(request)
