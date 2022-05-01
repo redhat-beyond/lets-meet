@@ -68,13 +68,18 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
 
         dates = []
         for form in self.forms:
-            start_date = form.cleaned_data.get('date_time_start')
-            end_date = form.cleaned_data.get('date_time_end')
-            if (start_date, end_date) in dates:
-                raise ValidationError("The optional meeting dates should be different")
-            if start_date < timezone.now or end_date < timezone.now:
-                raise ValidationError("Optional meeting dates cannot be in the past")
-            dates.append((start_date, end_date))
+            if form.cleaned_data.get('date_time_start') and form.cleaned_data.get('date_time_end'):
+                start_date = form.cleaned_data.get('date_time_start')
+                end_date = form.cleaned_data.get('date_time_end')
+                if (start_date, end_date) in dates:
+                    raise ValidationError("The optional meeting dates should be different")
+                if start_date < timezone.now() or end_date < timezone.now():
+                    raise ValidationError("Optional meeting dates cannot be in the past")
+                dates.append((start_date, end_date))
+            elif not form.cleaned_data.get('date_time_start') and not form.cleaned_data.get('date_time_end'):
+                pass
+            else:
+                raise ValidationError("Some date fields are blank")
 
 
 class OptionalMeetingDateForm(ModelForm):
@@ -92,22 +97,36 @@ class OptionalMeetingDateForm(ModelForm):
                 attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             )
-            # 'date_time_start': DataTimePickerInput(),
-            # 'date_time_end': DataTimePickerInput(),
         }
 
-# from events.models import validate_date_time
 
+class BaseParticipantFormSet(BaseFormSet):
 
-# class OptionalMeetingDateForm(forms.Form):
-#     date_time_start = forms.DateTimeField(widget=DataTimePickerInput())
-#     date_time_end = forms.DateTimeField(widget=DataTimePickerInput())
+    def __init__(self, *args, **kwargs):
+        self.user_id = kwargs.pop('user_id')
+        super(BaseParticipantFormSet, self).__init__(*args, **kwargs)
 
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         ending_date = cleaned_data.get('date_time_end')
-#         starting_date = cleaned_data.get('date_time_start')
-#         validate_date_time(starting_date, ending_date)
+    def clean(self):
+        """ Checking if there is at least one participant """
+        if any(self.errors):
+            # Don't bother validating the formset unless each form is valid on its own
+            return
+
+        num_of_prticipants = 0
+        if(len(self.forms) >= 1):
+            for form in self.forms:
+                email_participant = form.cleaned_data.get('participant_email')
+                if email_participant:
+                    try:
+                        user_instance = User.objects.get(email=email_participant)
+                        creator = User.objects.get(email=self.user_id)
+                        if user_instance == creator:
+                            raise ValidationError("You can't add yourself as participant")
+                        num_of_prticipants = 1
+                    except User.DoesNotExist:
+                        raise ValidationError(f"There is not user with the email: {email_participant}")
+        if num_of_prticipants == 0:
+            raise ValidationError("You have to enter at least one participant in the meeting")
 
 
 class ParticipantForm(forms.Form):
