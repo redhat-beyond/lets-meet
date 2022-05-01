@@ -18,7 +18,6 @@ from events.forms import (
     BaseParticipantFormSet
 )
 
-
 HOME_PAGE = 'home'
 LOGIN_PAGE = 'login'
 
