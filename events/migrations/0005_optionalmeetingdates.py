@@ -23,6 +23,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='optionalmeetingdates',
-            constraint=models.UniqueConstraint(fields=('event_creator_id', 'date_time_start', 'date_time_end'), name='unique optional meeting'),
+            constraint=models.UniqueConstraint(
+                fields=('event_creator_id', 'date_time_start', 'date_time_end'),
+                name='unique optional meeting'
+            ),
         )
     ]

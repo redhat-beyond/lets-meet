@@ -47,7 +47,10 @@ def update_event(request, pk):
     if request.method == 'POST':
         form = EventUpdateForm(request.POST, user_id=request.user, instance=event_instance)
 
-        return redirect(HOME_PAGE)
+        if form.is_valid():
+            form.save()
+
+            return redirect(HOME_PAGE)
     else:
         form = EventUpdateForm(user_id=request.user, instance=event_instance)
 

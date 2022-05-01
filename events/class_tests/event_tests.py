@@ -1,6 +1,7 @@
 import pytest
 from datetime import datetime
 from django.utils import timezone
+from django.db import IntegrityError
 from events.models import Event, time_format
 from django.core.exceptions import ValidationError
 
@@ -101,3 +102,11 @@ class TestEvent():
     def test_get_all_user_events(self):
         event2 = Event.objects.get(title='event2')
         assert [event2] == list(Event.objects.get_all_user_events(user_id=3))
+
+    def test_duplicate_event(self):
+        title = 'event1'
+        date_time_end = datetime(2022, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+        date_time_start = datetime(2022, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
+
+        with pytest.raises(IntegrityError):
+            create_event(title, date_time_start, date_time_end).save()
