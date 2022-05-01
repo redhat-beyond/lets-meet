@@ -19,7 +19,7 @@ a {
 .container-shadow {
   position: absolute;
   width: 600px;
-  /* height: 1100px; */
+  height: 900px;
   left: 48%;
   margin-left: -262.5px;
   margin-top: 8vh;
@@ -29,7 +29,8 @@ a {
 .container {
   position: absolute;
   width: 600px;
-  /* height: 1100px; */
+  height: 900px;
+  overflow: auto;
   left: 48%;
   margin-left: -262.5px;
   margin-top: 8vh;
@@ -45,7 +46,7 @@ a {
 
 .headings {
   position: relative;
-  margin: 90px auto 70px;
+  margin: 30px auto 30px;
 }
 
 .headings > a {
@@ -146,6 +147,7 @@ input[type="checkbox"] + span {
   color: #2c353e;
   text-transform: uppercase;
   margin-top: 2em;
+  margin-bottom: 4em;
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
@@ -208,8 +210,4 @@ input[type="checkbox"] + span {
 .errorlist {
   color: rgba(248, 8, 8, 0.6);
   font-size: 17px;
-}
-
-.hidden{
-  display: none
 }

@@ -1,20 +1,32 @@
 {% extends "base.html" %}
 {% block head-content %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'events/create_event.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
 
-    <title>Create Meeting Page </title>
+    <title>Create Meeting </title>
 {% endblock %}
 
+<script>
+    total_meeting_dates_forms = "{{ total_meeting_forms }}"
+    total_participant_forms = "{{ total_particpant_forms }}"
+</script>
+
 {% block body-content %}
+<div class="container-shadow"></div>
 <div class="container">
     <div class="wrap">
+        <div class="headings">
+            <a id="create-meeting" class="active"><span>{{ title }}:</span></a>
+        </div>
         <form method="POST" >
             {% csrf_token %}
             {{create_event_form.as_p}}
 
+            <br/>
             {% if optional_meetings_formset.non_form_errors %}
                 {{ optional_meetings_formset.non_form_errors }}
             {% endif %}
@@ -33,6 +45,8 @@
                 </ul>
             {% endif %}
 
+            <br/>
+            <h4>More optional meeting dates:</h4>
             {{optional_meetings_formset.management_form}}
             <div id="optional-meeting-dates-form-list">
                 {% if formset_meeting_data %}
@@ -52,9 +66,21 @@
             </div>
             
             <div id="empty-optional-meeting-dates-form" class="hidden">{{ optional_meetings_formset.empty_form.as_p }}</div>
-            <button id="add-more-optional-meeting-dates" type="button">Add more dates</button>
+            <button id="add-more-optional-meeting-dates" type="button" class="btn btn-dark">Add more dates</button>
+            
             <br/>
+            <br/>
+            {% if meeting_participants_formset.non_form_errors %}
+                {{ meeting_participants_formset.non_form_errors }}
+            {% endif %}
 
+            {% if meeting_participants_formset.errors %}
+                {% for error in meeting_participants_formset.errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
+            <br/>
+            <h4>Participants:</h4>
             {{meeting_participants_formset.management_form}}
             <div id="meeting-participants-form-list">
                 {% if formset_participant_data %}
@@ -70,7 +96,7 @@
             </div>
 
             <div id="empty-meeting-participants-form" class="hidden">{{ meeting_participants_formset.empty_form.as_p }}</div>
-            <button id="add-more-meeting-paricipants" type="button">Add more participants</button>
+            <button id="add-more-meeting-paricipants" type="button" class="btn btn-dark">Add more participants</button>
 
             <input type="submit" class="button" name="submit" value="create" />
         </form>
@@ -78,6 +104,7 @@
     </div>
 </div>
 
-<script src="{% static 'events/create_meeting.js' %}"></script>
+{% load static %}
+<script src="{% static 'meetings/create_meeting.js' %}"></script>
 
 {% endblock %}
