@@ -5,6 +5,7 @@ from django.forms import formset_factory
 from django.views.generic import TemplateView
 from main.utilities import convert_time_delta
 from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
