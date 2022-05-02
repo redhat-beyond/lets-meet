@@ -179,12 +179,12 @@ def create_meeting(request):
 
             check_optional_meeting_dates_formset(request, event_instance,
                                                  event_creator, optional_meetings_formset, is_valid_formsets)
-            if is_valid_formsets[0] is True:
+            if is_valid_formsets[0]:
                 check_participant_formset(request, event_instance, meeting_participants_formset, is_valid_formsets)
         else:
             is_valid_formsets[0] = False
 
-        if is_valid_formsets[0] is True:
+        if is_valid_formsets[0]:
             # all the forms are valid and all the data saved in the DB
             return redirect('home')
         else:

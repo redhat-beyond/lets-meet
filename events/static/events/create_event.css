@@ -19,7 +19,7 @@ a {
 .container-shadow {
   position: absolute;
   width: 600px;
-  height: 900px;
+  height: 85%;
   left: 48%;
   margin-left: -262.5px;
   margin-top: 8vh;
@@ -29,7 +29,7 @@ a {
 .container {
   position: absolute;
   width: 600px;
-  height: 900px;
+  height: 85%;
   overflow: auto;
   left: 48%;
   margin-left: -262.5px;
