@@ -112,7 +112,7 @@ class BaseParticipantFormSet(BaseFormSet):
             # Don't bother validating the formset unless each form is valid on its own
             return
 
-        num_of_prticipants = 0
+        is_at_least_one_participant = False
         if(len(self.forms) >= 1):
             for form in self.forms:
                 email_participant = form.cleaned_data.get('participant_email')
@@ -122,10 +122,10 @@ class BaseParticipantFormSet(BaseFormSet):
                         creator = User.objects.get(email=self.user_id)
                         if user_instance == creator:
                             raise ValidationError("You can't add yourself as participant")
-                        num_of_prticipants = 1
+                        is_at_least_one_participant = True
                     except User.DoesNotExist:
                         raise ValidationError(f"There is not user with the email: {email_participant}")
-        if num_of_prticipants == 0:
+        if not is_at_least_one_participant:
             raise ValidationError("You have to enter at least one participant in the meeting")
 
 
