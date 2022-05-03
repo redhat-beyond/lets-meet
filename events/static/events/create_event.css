@@ -164,7 +164,6 @@ input[type="checkbox"] + span {
 @media (max-width: 524px) {
   .container-shadow {
     width: 400px;
-    /* width: 80%; */
     margin-top: 60px;
     left: 50%;
     margin-left: -200px;
@@ -172,7 +171,6 @@ input[type="checkbox"] + span {
 
   .container {
     width: 400px;
-    /* width: 80%; */
     margin-top: 60px;
     left: 50%;
     margin-left: -200px;
