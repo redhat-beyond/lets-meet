@@ -93,8 +93,12 @@
         <div>
             <h3 id="user-name"> Welcome {{ user.username }}: </h3>
             <a href="{% url 'update-user' %}">
+<<<<<<< HEAD
                 <img id="user-profile" src="{{ user.profile_pic.url }}" width="50" height="50">
 >>>>>>> 0dcefd0... Home Improvment:
+=======
+                <img id="user-profile" src="{{ user.profile_pic.url }}">
+>>>>>>> c121dee... stash
             </a>
             <i class="fa fa-bell" aria-hidden="true" id="bell" onclick="openNav()">
                 <span class="badge" id="notification-badge"></span>
