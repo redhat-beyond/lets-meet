@@ -216,6 +216,15 @@ a {
   text-decoration: none;
 }
 .fa-file{
-margin-left: 100%;
-color:aae0f0;
+    margin-left: 100%;
+    margin-top: 5px;
+    position: absolute;
+    left: 22px;
+    top: 5%;
+    color: white;
+    cursor: pointer;
+}
+
+.fa-file:hover {
+    color: #aae0f0;
 }
