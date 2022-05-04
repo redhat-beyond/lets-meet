@@ -1,0 +1,9 @@
+#add_alert {
+  position: absolute;
+  right: 0px;
+  top: 5%;
+
+  font-size:36px;
+  color: white;
+  cursor: pointer;
+}

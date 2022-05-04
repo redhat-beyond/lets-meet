@@ -40,9 +40,9 @@ class UserAlertScheduler():
 
     def __new__(self):
         """
-        __new__ is used becuse we want to make the scheduler a singletone
+        __new__ is used because we want to make the scheduler a singletone
         there is an __instance object and it is checked every time if it has been initialized
-        if so the __instnace will be returned otherwise this is the first fime and it will be initialized
+        if so the __instance will be returned otherwise this is the first time and it will be initialized
         """
 
         if not UserAlertScheduler.__instance:
@@ -57,7 +57,7 @@ class UserAlertScheduler():
     def define_logger(file=stdout, log_level=logging.WARNING):
         """ define the __logger object.
             file: where the logger will log all his message. default is stdout
-            logger level: define which types of logger message will show up. default Warnning """
+            logger level: define which types of logger message will show up. default Warning """
 
         log_format = "%(levelname)s %(asctime)s - %(message)s"
         logging.basicConfig(filemode=file, level=log_level, format=log_format)
@@ -66,8 +66,8 @@ class UserAlertScheduler():
     @staticmethod
     def __clean_up(self):
         """ remove late reminders.
-            Each reminder that has been sceduled is deleted at the end of the action
-            if there are reminders that the scheduler didnt schedule before his initlization
+            Each reminder that has been scheduled is deleted at the end of the action
+            if there are reminders that the scheduler didn't schedule before his initialization
             then they are a late reminders, reminders that should have been scheduled but
             there time has passed, in this case the schedule will delete them all """
 
@@ -82,7 +82,7 @@ class UserAlertScheduler():
 
     @staticmethod
     def __get_time_difference(date_time):
-        """ return the time diffrence between the gievn date_time to our current time """
+        """ return the time difference between the given date_time to our current time """
 
         return date_time.timestamp() - datetime.now().timestamp()
 
@@ -116,7 +116,7 @@ class UserAlertScheduler():
         """ add a new alert.
             the schedule will check against his current reminder if the reminder
             given has a better time then his own, if so the scheduler will stop
-            the timer and replace the current remidner with the newly given remidner.
+            the timer and replace the current reminder with the newly given reminder.
 
             reminder: a reminder object as defined in the Reminder model,
                       if nothing is given as the reminder object then
@@ -135,7 +135,7 @@ class UserAlertScheduler():
                 UserAlertScheduler.__logger.debug("The DB is empty, there isn't a task waiting.")
                 return None
 
-        # get all the arguments from the remidner object
+        # get all the arguments from the reminder object
         _, message, method_type, user_id = UserAlertScheduler._get_args(reminder)
         functions = UserAlertScheduler._get_function(method_type)
 
@@ -158,7 +158,7 @@ class UserAlertScheduler():
             The scheduler needs a timer object that will go off when a specific time has been reached
             "Timer" is a class defined in Python's own threading library that gets a time and a method to invoke.
             This function set the current timer to be a new timer object with
-                time: the diffrence of the reminder time and the current time
+                time: the difference of the reminder time and the current time
                 target: the function given using the _get_function class
                 args: the argument that the function gets, a message and the user_id object
 
@@ -176,34 +176,36 @@ class UserAlertScheduler():
     @staticmethod
     def __remove_alert(reminder_id):
         """ remove the reminder with a reminder_id from the queue.
-            The scheudler will check if the remidner given is the current remidner
-            if so the scheudler will remove it and the current timer,
-            and will set a new remidner with its own timer according to the add_alert function
+            The scheduler will check if the reminder given is the current reminder
+            if so the scheduler will remove it and the current timer,
+            and will set a new reminder with its own timer according to the add_alert function
         """
 
         UserAlertScheduler.__logger.info("in remove alert")
 
-        if UserAlertScheduler.__current_reminder is not None:
+        if UserAlertScheduler.__current_reminder:
 
             if UserAlertScheduler.__current_reminder.id == reminder_id:
 
-                if UserAlertScheduler.__current_timer.is_alive():  # check if the timer is stil running
-                    UserAlertScheduler.__current_timer.cancel()
-                    UserAlertScheduler.__current_reminder = None
-                    UserAlertScheduler.__current_timer = None
+                if UserAlertScheduler.__current_timer:
+                    if UserAlertScheduler.__current_timer.is_alive():  # check if the timer is still running
+                        UserAlertScheduler.__current_timer.cancel()
+                        UserAlertScheduler.__current_reminder = None
+                        UserAlertScheduler.__current_timer = None
 
-                    UserAlertScheduler.__logger.debug(
-                        f"removed the current reminder. last reminer: {Reminder.objects.get(id=reminder_id)}"
-                    )
-                else:
-                    UserAlertScheduler.__logger.warning(
-                        f"the remidner {UserAlertScheduler.__current_reminder} is the current remidner but has no timer"
-                    )
+                        UserAlertScheduler.__logger.debug(
+                            f"removed the current reminder. last reminder: {Reminder.objects.get(id=reminder_id)}"
+                        )
+                    else:
+                        UserAlertScheduler.__logger.warning(
+                            (f"the reminder {UserAlertScheduler.__current_reminder}"
+                             " is the current reminder but has no timer")
+                        )
 
     @staticmethod
     def __modifie_alert(reminder):
         """ modifie the reminder in the queue.
-            The scheudler will check if the given reminder is the current reminder object
+            The scheduler will check if the given reminder is the current reminder object
                 if so the scheduler will check if the time has been changed,
                 if the time has been increased then the scheduler will try to add a new reminder instead
                 otherwise, the remainder will be changed in the scheduler to the reminder object given
@@ -244,7 +246,7 @@ class UserAlertScheduler():
         for method in methods:
             method(*args, **kwargs)
 
-        # Potential Send Signal - a signal can be sent for alrting that the timer has ended
+        # Potential Send Signal - a signal can be sent for alerting that the timer has ended
 
         UserAlertScheduler.__logger.debug("deleting the current task from the DB.")
 
@@ -282,7 +284,7 @@ class UserAlertScheduler():
                 UserAlertScheduler.__modifie_alert(instance)
 
             elif UserAlertScheduler.__current_reminder.date_time < instance.date_time:
-                UserAlertScheduler.__logger.debug("end post: the timer time hasnt been changed")
+                UserAlertScheduler.__logger.debug("end post: the timer time hasn't been changed")
                 return None
 
         UserAlertScheduler.__logger.debug(f"set new alert: {instance}")
@@ -293,7 +295,7 @@ class UserAlertScheduler():
     @receiver(pre_delete, sender=Reminder)
     def __check_before_delete(sender, instance, **kwargs):
         """ remove the alert from the queue.
-            The schduler will call remove alert to check if the instance (reminder)
+            The scheduler will call remove alert to check if the instance (reminder)
             is in fact the current reminder, and will schedule a new reminder if need be.
 
             ** this is a function that implements the signal pre delete
@@ -315,7 +317,7 @@ class UserAlertScheduler():
 
             The scheduler delete each reminder at the end of his time
             as a result a pre delete signal is being called, the scheduler check
-            that the reminder is the current remidnder and set it to None
+            that the reminder is the current reminder and set it to None
             Then the post delete signal is called and the scheduler will schedule a new reminder
             after the deletion of the last reminder.
 
