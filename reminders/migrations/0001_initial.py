@@ -20,15 +20,13 @@ class Migration(migrations.Migration):
             name='Reminder',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_time', models.DateTimeField(
-                    default=django.utils.timezone.now,
-                    validators=[reminders.class_models.reminder_models.validate_date]
-                    )
-                 ),
+                ('date_time', models.DateTimeField(blank=True, null=True, validators=[reminders.models.validate_date])),
                 ('messages', models.TextField(blank=True, null=True)),
-                ('method', models.CharField(
-                    choices=[('web', 'Website'), ('ema', 'Email'), ('wae', 'Website and Email')],
-                    default='web', max_length=3
+                ('method',
+                    models.CharField(
+                        choices=[('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email')],
+                        default='web',
+                        max_length=3
                     )
                  ),
                 ('participant_id', models.ForeignKey(
@@ -55,6 +53,13 @@ class Migration(migrations.Migration):
             constraint=models.UniqueConstraint(
                 fields=('participant_id', 'date_time', 'messages'),
                 name='unique reminder'
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name='reminder',
+            constraint=models.CheckConstraint(
+                check=models.Q(('date_time__gte', django.db.models.functions.datetime.Now())),
+                name='date_time__gte_current_time'
             ),
         ),
         migrations.AddConstraint(

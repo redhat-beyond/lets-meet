@@ -7,6 +7,10 @@ from django.db.models.functions import Now
 from django.core.exceptions import ValidationError
 
 
+def time_format(date_time):
+    return date_time.strftime("%Y-%m-%d %H:%M:%S")
+
+
 class ReminderQuerySet(models.QuerySet):
     def get_next_reminder(self):
         """ get the next reminder.
@@ -43,7 +47,7 @@ class Reminder(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['participant_id', 'date_time'], name='unique reminder'),
+            models.UniqueConstraint(fields=['participant_id', 'date_time', 'messages'], name='unique reminder'),
             models.CheckConstraint(check=Q(date_time__gte=Now()), name="date_time__gte_current_time")
         ]
 
@@ -54,7 +58,8 @@ class Reminder(models.Model):
         time_validation_error = "CHECK constraint failed: date_time__gte_current_time"
         row_duplication_error = ("UNIQUE constraint failed: "
                                  "reminders_reminder.participant_id_id, "
-                                 "reminders_reminder.date_time")
+                                 "reminders_reminder.date_time, "
+                                 "reminders_reminder.messages")
 
         try:
             result = super().save(*args, **kwargs)
@@ -66,12 +71,3 @@ class Reminder(models.Model):
                 raise IntegrityError("date time should be bigger than the current date_time")
             raise error
         return result
-
-
-def validate_seen_date(time_seen, time_sent):
-    if time_seen < time_sent:
-        raise ValidationError('seen time cannot be earlier than time of creation.')
-
-
-def validate_sent_date(time_sent):
-    validate_date(time_sent)
