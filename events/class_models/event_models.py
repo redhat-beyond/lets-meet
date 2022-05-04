@@ -90,13 +90,6 @@ class Event(models.Model):
 
     objects = EventQuerySet.as_manager()
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['title', 'location', 'description', 'date_time_start', 'date_time_end', 'color'],
-                name='unique event')
-        ]
-
     def clean(self):
         if not self.title:
             raise ValidationError('Title cannot be blank')

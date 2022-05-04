@@ -221,7 +221,7 @@ class CreateMeetingView(TemplateView):
                             )
                             participant.save()
                     except User.DoesNotExist:
-                        messages.warning(request, f"There is not user with the email: {participant_email}")
+                        messages.warning(request, f"There is no user with the email: {participant_email}")
                         event_instance.delete()
                         return False
                     except ValidationError:  # duplication of the same participant email
