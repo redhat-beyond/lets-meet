@@ -9,6 +9,7 @@
 
     {% load static %}
     <link href="{% static 'user_site/home.css' %}" rel="stylesheet">
+    <link href="{% static 'user_site/day_view.css' %}" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,18 +21,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <script>
+        function get_hours() {
+            return '            {% for hour in hours %}' +
+                   '                <div class="dayview-timestring-container">' + 
+                   '                    <div class="dayview-timestring">' +
+                   '                        {{ hour }}:00' +
+                   '                    </div>' +
+                   '                </div>' +
+                   '            {% endfor %}'
+        }
+
+        function get_grid() {
+            return '                {% for hour in hours %}' +
+                   '                    <div class="dayview-grid-tile"></div>' +
+                   '                {% endfor %}'
+        }
+
+    </script>
+
 {% endblock %}
 
 {% block body-content %}
 
     <div>
         <h3 id="user-name"> Welcome {{ user.username }}: </h3>
-        <a href="{% url 'update-user' %}"><img id="user-profile" src="{{ user.profile_pic.url }}" width="50" height="50">  </a>  
+        <a href="{% url 'update-user' %}">
+            <img id="user-profile" src="{{ user.profile_pic.url }}">
+        </a>  
     </div>
 
     <div id="overlay"></div>
     <div class="table-title">
-        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_year }}:</h1>
+        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_date.0 }}:</h1>
     </div>
     <div style="display: inline;">
         <div class="table-icon" id="right-arrow">
@@ -71,7 +93,7 @@
                                                    {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
                                                    {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
                         <div style="cursor: pointer;">
-                            <p class="tab" style="top: -{{ max_margin }}vh;
+                            <p class="tab"  onclick="day_view('{{ day.2 }}/{{ day.1 }}/{{ day.0 }}')" style="top: -{{ max_margin }}vh;
                                 {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
                                 {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
                                 {{ day.2 }}
@@ -83,7 +105,7 @@
                                         <a id="link" href="{% url 'update_event' pk=event.id %}"> 
                                             <div class="square"
                                                 style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
-                                                {{ event.title }} - {{ event.date_time_start.time | time:'H:i:s' }} - {{ event.date_time_end.time | time:'H:i:s' }}
+                                                {{ event.title }} - {{ event.date_time_start | time:'H:i:s' }} - {{ event.date_time_end | time:'H:i:s' }}
                                             </div>
                                         </a>
                                     {% endif %}
@@ -96,4 +118,7 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% load static %}
+    <script src="{% static 'user_site/home.js' %}"></script>
 {% endblock %}

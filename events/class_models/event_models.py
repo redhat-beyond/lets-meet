@@ -35,6 +35,16 @@ class EventQuerySet(models.QuerySet):
             start_day=day
         )
 
+    def get_all_user_day_events(self, user_id, date):
+        """ get only the events for the user at the date given """
+        year, month, day = date.year, date.month, date.day
+
+        return self.__date_filter(
+            self.get_all_user_events(user_id),
+            start_year=year, start_month=month, start_day=day,
+            end_year=year, end_month=month, end_day=day
+        )
+
     def __date_filter(self, query, start_year=None, end_year=None,
                       start_month=None, end_month=None, start_day=None, end_day=None):
         """ helper query.
@@ -42,22 +52,22 @@ class EventQuerySet(models.QuerySet):
         result = query
 
         if start_year:
-            result = result.filter(date_time_start__year__gte=start_year)
+            result = result.filter(date_time_start__year__lte=start_year)
 
             if end_year:
-                result = result.filter(date_time_end__year__lte=end_year)
+                result = result.filter(date_time_end__year__gte=end_year)
 
         if start_month:
-            result = result.filter(date_time_start__month__gte=start_month)
+            result = result.filter(date_time_start__month__lte=start_month)
 
             if end_month:
-                result = result.filter(date_time_end__month__lte=end_month)
+                result = result.filter(date_time_end__month__gte=end_month)
 
         if start_day:
-            result = result.filter(date_time_start__day__gte=start_day)
+            result = result.filter(date_time_start__day__lte=start_day)
 
             if end_day:
-                result = result.filter(date_time_end__day__lte=end_day)
+                result = result.filter(date_time_end__day__gte=end_day)
 
         return result
 
