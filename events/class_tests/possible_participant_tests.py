@@ -35,11 +35,7 @@ def get_possible_event_participants():
 
 @pytest.fixture
 def get_possible_meeting_participants():
-    possible_meeting_participants = [
-        PossibleParticipant.objects.get(id=4),
-        PossibleParticipant.objects.get(id=5)
-    ]
-    return possible_meeting_participants
+    return [PossibleParticipant.objects.get(id=i) for i in range(4, 6)]
 
 
 @pytest.mark.django_db

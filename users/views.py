@@ -28,7 +28,7 @@ def login_page(request):
         except Exception:
             messages.error(request, "user does not exist")
         user = authenticate(request, email=email, password=password)
-        if user is not None:
+        if user:
             login(request, user)
             return redirect("home")
         else:
@@ -100,11 +100,12 @@ def main_page(request, date=None):
     current_date = (datetime.now().year, datetime.now().month, datetime.now().day)
     current_events = Event.objects.filter(eventparticipant__user_id=request.user.id)
     table_measurements = get_table_measurements(current_events)
+    year = year if year else current_date[0]
     week_days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     return render(
         request, "user_site/home.html",
-        {'week_days': week_days, 'calendar': cal, 'month_name': current_month,
+        {'week_days': week_days, 'calendar': cal, 'month_name': current_month, 'current_year': year,
          'next_date': get_dates(year, month, True), 'previous_date': get_dates(year, month, False),
          'max_height': table_measurements[0], 'max_margin': table_measurements[1],
          'max_margin_events': table_measurements[2], 'max_padding': table_measurements[3],
