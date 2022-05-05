@@ -2,9 +2,9 @@ import pytest
 from datetime import datetime
 from django.utils import timezone
 from django.db import IntegrityError
+from django.forms import ValidationError
 from events.models import EventParticipant
 from reminders.models import Notification
-from django.core.exceptions import ValidationError
 from events.tests import (  # noqa: F401
     new_event, user0,
     event_participant_creator as participant0
@@ -31,14 +31,6 @@ def save_notification(notification):
 @pytest.mark.django_db
 class TestNotification:
 
-    @pytest.fixture
-    def event_participant(self):
-        return EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
-
-    @pytest.fixture
-    def notification_message(self):
-        return JOIN_MEETING.format(35)
-
     def test_persist_notification(self, persist_notification):
         assert persist_notification in Notification.objects.all()
 
@@ -58,8 +50,8 @@ class TestNotification:
     def test_invalid_time(self, event_participant):
         date_time_read = timezone.now()
 
-        with pytest.raises(IntegrityError, match=pytest.notification_past_date_time_error):
-            create_notification(event_participant, date_time_read, pytest.invalid_date_time, pytest.message).save()
+        with pytest.raises(ValidationError, match=pytest.notification_past_date_time_error):
+            create_notification(event_participant, date_time_read, pytest.date_time_end, pytest.message).save()
 
     def test_duplication_of_notification(self, event_participant):  # noqa: F811
         date_time_sent = datetime(2032, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)

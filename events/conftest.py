@@ -5,9 +5,10 @@ from events.models import EventParticipant
 # define constants
 def pytest_configure():
     pytest.home_url = "/main/"
-    pytest.meeting_vote_url = "/event/meeting_vote/"
+    pytest.login_url = "/login/"
+    pytest.meeting_vote_url = "/event/meeting_vote/{}"
     pytest.meeting_vote_html_path = "events/meeting_vote.html"
-    pytest.remove_participant_url = "/event/remove_participant/"
+    pytest.remove_participant_url = "/event/remove_participant/{}"
 
 
 @pytest.fixture

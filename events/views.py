@@ -1,3 +1,4 @@
+from django.http import HttpResponseForbidden
 from users.models import User
 from django.utils import timezone
 from django.contrib import messages
@@ -264,25 +265,6 @@ class CreateMeetingView(TemplateView):
         return True
 
 
-def get_latest_meeting(user):
-    """ return the lateset meeting that the user given has not vote in """
-    users_meetings = Event.objects.get_all_user_meetings(user)
-
-    chosen_event = None
-    possible_meeting_dates = None
-
-    for meeting in users_meetings:
-        possible_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(meeting)
-        did_user_vote = PossibleParticipant.objects.did_user_vote(possible_meeting_dates, user)
-
-        if not did_user_vote:
-            chosen_meeting_dates = possible_meeting_dates
-            chosen_event = meeting
-            break
-
-    return chosen_event, chosen_meeting_dates
-
-
 class MeetingVoteView(TemplateView):
 
     template_name = 'events/meeting_vote.html'
@@ -291,11 +273,25 @@ class MeetingVoteView(TemplateView):
         self.title = None
         self.vote_form = None
         self.VoteFormset = None
+        self.chosen_event = None
         self.meetings_dates = None
+        self.chosen_meeting_dates = None
         super().__init__(**kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, meeting_id, *args, **kwargs):
         if not request.user.is_authenticated:
+            return redirect(LOGIN_PAGE)
+
+        try:
+            user_id = request.user
+            EventParticipant.objects.get(user_id=user_id, event_id=meeting_id)
+            self.chosen_event = Event.objects.get(id=meeting_id)
+            self.chosen_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(self.chosen_event)
+            did_user_vote = PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)
+
+            if did_user_vote:
+                return redirect(LOGIN_PAGE)
+        except Exception:
             return redirect(LOGIN_PAGE)
 
         return super(MeetingVoteView, self).dispatch(request, *args, **kwargs)
@@ -303,27 +299,30 @@ class MeetingVoteView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context = {
+            'title': self.title,
             'form': self.vote_form,
+            'event': self.chosen_event,
+            'meeting_id': self.chosen_event.id,
             'meetings_dates': self.meetings_dates,
-            'title': self.title
+            'creator': EventParticipant.objects.get(event_id=self.chosen_event, is_creator=True).user_id.username
         }
         return context
 
     def get(self, request):
-        self.initialize_meeting(request)
+        self.initialize_forms()
         self.vote_form = self.VoteFormset()
         return super().get(request)
 
     def post(self, request):
-        chosen_event, chosen_meeting_dates = self.initialize_meeting(request)
+        self.initialize_forms()
         self.vote_form = self.VoteFormset(request.POST, request.FILES)
 
         if self.vote_form.is_valid():
-            for field, meeting in zip(self.vote_form, chosen_meeting_dates):
+            for field, meeting in zip(self.vote_form, self.chosen_meeting_dates):
                 field_value = field.cleaned_data.get('date_vote')
                 if field_value:
                     # add possible participant to this meeting date
-                    participant = EventParticipant.objects.get(user_id=request.user, event_id=chosen_event)
+                    participant = EventParticipant.objects.get(user_id=request.user, event_id=self.chosen_event)
                     PossibleParticipant(participant_id=participant, possible_meeting_id=meeting).save()
                 else:
                     print(f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)} - False")
@@ -337,34 +336,34 @@ class MeetingVoteView(TemplateView):
 
         return self.render_to_response(self.get_context_data())
 
-    def initialize_meeting(self, request):
+    def check_user_auth(self, request, meeting_id):
         user_id = request.user
-        chosen_event, chosen_meeting_dates = get_latest_meeting(user_id)
+        self.chosen_event = Event.objects.get(id=meeting_id)
+        self.chosen_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(self.chosen_event)
+        did_user_vote = PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)
 
-        if not chosen_event:
-            return redirect('home')
+        if did_user_vote:
+            return False
+        return True
 
-        self.title = f"{chosen_event.title} Vote Meeting"
-        self.VoteFormset = formset_factory(VoteForm, extra=chosen_meeting_dates.count())
+    def initialize_forms(self):
+        self.title = f"{self.chosen_event.title} Vote Meeting"
+        self.VoteFormset = formset_factory(VoteForm, extra=self.chosen_meeting_dates.count())
         self.meetings_dates = list(
             map(lambda meeting: f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)}",
-                chosen_meeting_dates)
+                self.chosen_meeting_dates)
         )
-
-        return chosen_event, chosen_meeting_dates
 
 
 @login_required(login_url=LOGIN_PAGE)
-def remove_participant_from_meeting(request):
+def remove_participant_from_meeting(request, meeting_id):
     user = request.user
 
     try:
-        meeting_id, _ = get_latest_meeting(user)
         participant = EventParticipant.objects.get(user_id=user, event_id=meeting_id)
         notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
         seen_notification(request, notification_id.id)
         participant.delete()
-
         return redirect('home')
     except EventParticipant.DoesNotExist:
-        return MeetingVoteView.get(request)
+        return HttpResponseForbidden()

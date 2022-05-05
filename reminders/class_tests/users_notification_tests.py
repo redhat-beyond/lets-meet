@@ -7,7 +7,9 @@ from reminders.models import Notification
 class TestUserNotification:
 
     def test_get_notification(self, client, sign_in):
-        expected_response = list(Notification.objects.filter(id=3).values('id', 'message', 'notification_type'))
+        expected_response = list(
+            Notification.objects.filter(id=3).values('id', 'message', 'notification_type', 'participant_id__event_id')
+        )
 
         response = client.get(pytest.get_notification_url)
         assert response.status_code == 200

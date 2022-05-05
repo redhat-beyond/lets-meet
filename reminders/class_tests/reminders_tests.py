@@ -1,8 +1,8 @@
-from django.forms import ValidationError
 import pytest
 from django.core import mail
 from datetime import datetime
 from django.utils import timezone
+from django.forms import ValidationError
 from events.models import EventParticipant
 from django.db.utils import IntegrityError
 from main.utilities import send_reminder_email

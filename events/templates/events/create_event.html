@@ -22,10 +22,11 @@
                 <div class="headings">
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
+
                     {% if event_id %}
-                    <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
-                        <i class="fa-solid fa-file fa-2x"></i>
-                    </a>
+                        <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
+                            <i class="fa-solid fa-file fa-2x" id="add_file"></i>
+                        </a>
                     {% endif %}
                 </div>
 
@@ -45,6 +46,7 @@
                 </div>
             </div>
         </div>
+
 
         {% load static %}
         <script src="{% static 'reminders/reminder_form.js' %}"></script>

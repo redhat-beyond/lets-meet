@@ -2,6 +2,7 @@ let vote_url = "";
 let get_notification = "";
 let seen_notification = "";
 
+
 function build_table() {
 	const id = "#notification-table";
 
@@ -25,8 +26,21 @@ function build_table() {
 			let line =  "<div class='list-item noti' id=row" + String(element.id) + ">";
 				line += "<div class='image fl'><i class='fa fa-user' aria-hidden='true' style='color: #0575E6;'></i></div>";
 				line += "<div class='text fl'>" + element.message + "</div>";
-				line += "				<div class='cls' onclick=remove_from_list('" + String(element.id) + "')><i class='fa fa-times-circle' style='color: red;'></i></div>";
-				line += "		</div>";
+
+			if (element.notification_type === "meeting" ) {
+				console.log(element.message);
+				// const message = element.message.split(" | ")[0];
+				// const meeting_id = element.message.split(" | ")[1];
+				const meeting_id = element.participant_id__event_id;
+				const url = vote_url.slice(0, -1) + meeting_id;
+				line += "<div class='text fl'>" + element.message + "&nbsp&nbsp&nbsp&nbsp<a href='" + String(url) + "'><i class='fa fa-link' aria-hidden='true' style='color: blue;'></i></a></div>";
+			}
+			else {
+				line += "<div class='text fl'>" + element.message + "</div>";
+			}
+
+			line += "				<div class='cls' onclick=remove_from_list('" + String(element.id) + "')><i class='fa fa-times-circle' style='color: red;'></i></div>";
+			line += "		</div>";
 
 			$(id).append(line);
 		});

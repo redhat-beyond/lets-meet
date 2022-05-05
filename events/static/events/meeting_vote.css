@@ -23,17 +23,18 @@ body {
     overflow: hidden;
     width: 600px;
     max-width: 100%;
+    background: linear-gradient(#D7DDE8, #757F9A);
 }
 
 .header {
     border-bottom: 1px solid #f0f0f0;
-    background-color: #f7f7f7;
+    /* background-color: #f7f7f7; */
     padding: 20px 40px;
-    text-decoration: underline;
 }
 
 .header h2 {
     margin: 0;
+    text-decoration: underline;
 }
 
 .form {

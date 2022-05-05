@@ -7,23 +7,10 @@ from django.db.models.functions import Now
 from django.core.exceptions import ValidationError
 
 
-class ReminderQuerySet(models.QuerySet):
-    def get_next_reminder(self):
-        """ get the next reminder.
-            Using an order function on the Reminder table with the key date_time
-            and returning the first instance
-        """
-        return self.order_by('date_time').first()
-
-
 def validate_date(date_time):
     if date_time:
         if timezone.now() > date_time:
             raise ValidationError('date time should be bigger than the current date_time')
-
-
-def time_format(date_time):
-    return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def time_format(date_time):
@@ -64,16 +51,11 @@ class Reminder(models.Model):
             models.CheckConstraint(check=Q(date_time__gte=Now()), name="date_time__gte_current_time")
         ]
 
-
     def __str__(self):
         return f"{self.participant_id} - {time_format(self.date_time)}"
 
     def clean(self):
         validate_date(self.date_time)
-        return super().clean()
-
-    def save(self, *args, **kwargs):
-        
         return super().clean()
 
     def save(self, *args, **kwargs):

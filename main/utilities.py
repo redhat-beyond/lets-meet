@@ -12,15 +12,8 @@ def send_mail_notification(title, message, receiver_email):
 
 def create_notification(message, receiver_id, notification_type=NotificationType.WEBSITE):
     """ create a notification with the receiver id the message given using the site notification """
-    Notification(participant_id=receiver_id, sent_time=timezone.now(),  message=message).save()
-
-
-def create_notification(message, receiver_id):
-    """ create a notification with the receiver id the message given using the site notification """
-    print(f"notification -> {message}  -  {receiver_id}")  # for debug only
     Notification(
-        participant_id=receiver_id, sent_time=timezone.now(),
-        message=message, notification_type=notification_type
+        participant_id=receiver_id, sent_time=timezone.now(),  message=message, notification_type=notification_type
     ).save()
 
 

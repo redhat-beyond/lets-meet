@@ -131,5 +131,7 @@ class BaseParticipantFormSet(BaseFormSet):
 
 class ParticipantForm(forms.Form):
     participant_email = forms.EmailField()
+
+
 class VoteForm(forms.Form):
     date_vote = forms.BooleanField()
