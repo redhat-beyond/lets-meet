@@ -123,7 +123,7 @@ class MainPageView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
-        
+
         return super(MainPageView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -220,7 +220,6 @@ class MainPageView(TemplateView):
                 events_count[event.date_time_start.date()] += 1
 
         return max(events_count.values())
-
 
     def get_table_measurements(self, events):
         """ get each tab in the table a measurement for the positioning
