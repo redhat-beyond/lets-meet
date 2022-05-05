@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 from django.core.mail import send_mail
 
 
@@ -21,7 +22,7 @@ def send_reminder_email(message, receiver_email):
 
 
 def time_format(date_time):
-    return date_time.strftime("%Y-%m-%d %H:%M:%S")
+    return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def convert_time_delta(time_delta, starting_text="You have a meeting in "):
