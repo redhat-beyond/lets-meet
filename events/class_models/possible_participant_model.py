@@ -13,6 +13,10 @@ class PossibleParticipantsQuerySet(models.QuerySet):
     def get_all_possible_participants(self, event_id):
         return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)
 
+    def get_all_possible_participants_amount(self, event_id):
+        return self.filter(possible_meeting_id__event_creator_id__event_id=event_id
+                           ).values('participant_id').distinct().count()
+
     def remove_all_possible_meeting_participants(self, meeting_id):
         return self.get_all_date_participants(meeting_id).delete()
 
@@ -37,7 +41,7 @@ class PossibleParticipant(models.Model):
 
     def __str__(self) -> str:
         return (f"participant: {self.participant_id.user_id.email}"
-                f" event: {self.possible_meeting_id.participant_id.event_id.title}"
+                f" event: {self.possible_meeting_id.event_creator_id.event_id.title}"
                 f" {time_format(self.possible_meeting_id.date_time_start)} -"
                 f" {time_format(self.possible_meeting_id.date_time_end)} ")
 

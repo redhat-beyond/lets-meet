@@ -32,6 +32,11 @@ class Migration(migrations.Migration):
              ),
             (EventParticipant.objects.get(
                 event_id__title='event3',
+                user_id__username='testUser1'),
+                possible_meetings_arr_for_event3[1]
+             ),
+            (EventParticipant.objects.get(
+                event_id__title='event3',
                 user_id__username='testUser2'),
                 possible_meetings_arr_for_event3[1]
              ),

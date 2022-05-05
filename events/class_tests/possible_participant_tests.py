@@ -30,12 +30,12 @@ def get_event():
 
 @pytest.fixture
 def get_possible_event_participants():
-    return [PossibleParticipant.objects.get(id=f'{id}') for id in range(3, 7)]
+    return [PossibleParticipant.objects.get(id=f'{id}') for id in range(3, 8)]
 
 
 @pytest.fixture
 def get_possible_meeting_participants():
-    return [PossibleParticipant.objects.get(id=i) for i in range(4, 6)]
+    return [PossibleParticipant.objects.get(id=i) for i in range(4, 7)]
 
 
 @pytest.mark.django_db
