@@ -2,8 +2,11 @@
   position: absolute;
   right: 0px;
   top: 5%;
-
   font-size:36px;
   color: white;
   cursor: pointer;
+}
+
+#add_alert:hover {
+    color: #aae0f0;
 }
