@@ -5,14 +5,9 @@ let seen_notification = "";
 function build_table() {
 	const id = "#notification-table";
 
-	let header = "<tr>";
-		header += "<th class='message' style='text-align: center;' colspan='3'>message</th>";
-		header += "</tr>";
-
-	$(id).empty();
-	$(id).append(header);
-
 	$.get(get_notification, {}, function(data, status) {
+		
+		$(id).empty();
 
 		let length = data.length;
 		if (length === 0) {
@@ -22,16 +17,28 @@ function build_table() {
 		$("#notification-badge").text(length);  // change the icon to the amount of notification
 
 		data.forEach((element, index) => {
-			let line = "<tr id=row" + String(element.id);
-				line += ">";
-				line += "<td class='message' colspan='2'>" + element.message + "</td>";
-				line += "<td class='remove_btn' onclick=remove_from_list('#row" + String(element.id) + "')> dismiss </td>";
-				line += "</tr>";
+			let line =  "<div class='list-item noti' id=row" + String(element.id) + ">";
+				line += "<div class='image fl'><i class='fa fa-user' aria-hidden='true' style='color: #0575E6;'></i></div>";
+				line += "<div class='text fl'>" + element.message + "</div>";
+				line += "				<div class='cls' onclick=remove_from_list('" + String(element.id) + "')><i class='fa fa-times-circle' style='color: red;'></i></div>";
+				line += "		</div>";
 
 			$(id).append(line);
 		});
-		
 	})
+}
+
+function open_notification_bar() {
+	console.log(" in open");
+	if (!$("#dropdown").hasClass('dd')) {
+		console.log("in dropdown if");
+		$("#dropdown").removeClass('dropdown-transition').addClass('dd')
+        $("#dropdown").find('.list-item').addClass('background-white')
+	}
+	else {
+		console.log("in dropdown else");
+		$('.notification-dropdown').removeClass('dd').addClass('dropdown-transition');
+	}
 }
 
 function remove_from_list(id) {
@@ -42,22 +49,7 @@ function remove_from_list(id) {
 	}
 
 	$("#notification-badge").text(notification_counter);  // remove a notification counter
-	$(id).remove();
+	$("#row" + id).remove();
 
-	const url = seen_notification;
-	console.log(url.slice(0, -1) + id.slice(-1));
-	$.get(url.slice(0, -1) + id.slice(-1), {});           // send a seen notification to django
-}
-
-function openNav() {
-	const width = "400px";
-	document.getElementById("notification_bar").style.width = width;
-	document.getElementById("main").style.marginRight = width;
-	document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-}
-
-function closeNav() {
-	document.getElementById("notification_bar").style.width = "0";
-	document.getElementById("main").style.marginRight= "0";
-	document.body.style.backgroundColor = "white";
+	$.get(seen_notification.slice(0, -1) + id, {});       // send a seen notification to django
 }

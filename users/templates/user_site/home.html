@@ -35,94 +35,103 @@
         });
     </script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
 {% endblock %}
 
 {% block body-content %}
 
-    <div id="notification_bar" class="bar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" id="x_botton"><i class="fa fa-window-close" aria-hidden="true"></i></a>
-        <h2 class="title-bar">Notification Bar: </h2>
-        <table style="width: 90%; margin-left: 7%;" id="notification-table"></table>
+    <div>
+        <h3 id="user-name"> Welcome {{ user.username }}: </h3>
+        <a href="{% url 'update-user' %}">
+            <img id="user-profile" src="{{ user.profile_pic.url }}" width="50" height="50">
+        </a>
+        <div class="wrapper">
+            <div class="notification">
+                <i class="fa fa-bell-o" onclick="open_notification_bar()" id="bell">
+                    <span class="badge" id="notification-badge"></span>
+                </i>
+            </div>
+            <div class="notification-dropdown dd" id="dropdown">
+                <div class="arrow-up"></div>
+                <div class="header">
+                    <div class="container">
+                        <div class="text fl">Notifications</div>
+                    </div>
+                </div>
+                <div class="items" id="notification-table">
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div id="main">
-        <div>
-            <h3 id="user-name"> Welcome {{ user.username }}: </h3>
-            <a href="{% url 'update-user' %}">
-                <img id="user-profile" src="{{ user.profile_pic.url }}" width="50" height="50">
+    <div id="overlay"></div>
+    <div class="table-title">
+        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_year }}:</h1>
+    </div>
+    <div style="display: inline;">
+        <div class="table-icon" id="right-arrow">
+            <a href="/main/{{ next_date }}" style="color: white;">
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </a>
-            <i class="fa fa-bell" aria-hidden="true" id="bell" onclick="openNav()">
-                <span class="badge" id="notification-badge"></span>
-            </i>
         </div>
-        <div id="overlay"></div>
-        <div class="table-title">
-            <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_year }}:</h1>
+        <div class="table-icon" id="left-arrow">
+            <a href="/main/{{ previous_date }}" style="color: black;">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
         </div>
-        <div style="display: inline;">
-            <div class="table-icon" id="right-arrow">
-                <a href="/main/{{ next_date }}" style="color: white;">
-                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </a>
-            </div>
-            <div class="table-icon" id="left-arrow">
-                <a href="/main/{{ previous_date }}" style="color: black;">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                </a>
-            </div>
-            <div class="table-icon" id="plus">
-                <a href="{% url 'create_event' %}" style="color: black;">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                </a>
-            </div>
-            <div class="table-icon" id="credit">
-                <a href="/admin" style="color: white;">
-                    <i class="fa fa-user-secret" aria-hidden="true"></i>
-                </a>
-            </div>
+        <div class="table-icon" id="plus">
+            <a href="{% url 'create_event' %}" style="color: black;">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
         </div>
-        <table class="table-fill">
-            <thead>
+        <div class="table-icon" id="credit">
+            <a href="/admin" style="color: white;">
+                <i class="fa fa-user-secret" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <table class="table-fill">
+        <thead>
+            <tr>
+                {% for day in week_days %}
+                    <th class="text-center" style="width: 14.28%;">{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-hover" id="tbody-main">
+            {% for row in calendar %}
                 <tr>
-                    {% for day in week_days %}
-                        <th class="text-center" style="width: 14.28%;">{{ day }}</th>
+                    {% for day in row %}
+                        <td class="text-center" style="position: relative; height: {{ max_height }}vh; 
+                                                    {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
+                                                    {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
+                            <div style="cursor: pointer;">
+                                <p class="tab" style="top: -{{ max_margin }}vh;
+                                    {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
+                                    {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
+                                    {{ day.2 }}
+                                </p>
+
+                                {% for event in current_events %}
+                                    {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
+                                        {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
+                                            <a id="link" href=" {% url 'update_event' event_id=event.id %}"> 
+                                                <div class="square"
+                                                    style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                                    {{ event.title }} - {{ event.date_time_start | time:'H:i:s' }} - {{ event.date_time_end | time:'H:i:s' }}
+                                                </div>
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div> 
+                        </td>
                     {% endfor %}
                 </tr>
-            </thead>
-            <tbody class="table-hover" id="tbody-main">
-                {% for row in calendar %}
-                    <tr>
-                        {% for day in row %}
-                            <td class="text-center" style="position: relative; height: {{ max_height }}vh; 
-                                                        {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
-                                                        {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
-                                <div style="cursor: pointer;">
-                                    <p class="tab" style="top: -{{ max_margin }}vh;
-                                        {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
-                                        {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
-                                        {{ day.2 }}
-                                    </p>
-
-                                    {% for event in current_events %}
-                                        {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
-                                            {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
-                                                <a id="link" href=" {% url 'update_event' event_id=event.id %}"> 
-                                                    <div class="square"
-                                                        style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
-                                                        {{ event.title }} - {{ event.date_time_start | time:'H:i:s' }} - {{ event.date_time_end | time:'H:i:s' }}
-                                                    </div>
-                                                </a>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div> 
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 
     {% load static %}
     <script src="{% static 'site_notification/notification.js' %}"></script>
