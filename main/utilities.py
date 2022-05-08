@@ -19,7 +19,7 @@ def create_notification(message, receiver_id):
 def send_reminder_email(message, receiver_id):
     """ default reminder email message for calendar alert """
     title = "Lets Meet Calendar Alert"
-    receiver_email = receiver_id.email
+    receiver_email = receiver_id.user_id.email
     send_mail_notification(title, message, receiver_email)
 
 

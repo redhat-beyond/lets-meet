@@ -1,11 +1,13 @@
+from users.models import User
+from datetime import timedelta
 from django.utils import timezone
 from django.contrib import messages
 from reminders.models import Reminder
+from events.planner import EventPlanner
 from django.forms import formset_factory
 from django.views.generic import TemplateView
 from main.utilities import convert_time_delta
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
@@ -39,9 +41,6 @@ def create_event(request):
                 reminder.participant_id = participant
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
-
-            title = event_form.cleaned_data.get('title')
-            messages.success(request, f'Event: {title} created!')
             return redirect(HOME_PAGE)
     else:
         event_form = EventCreationForm(user_id=request.user)
@@ -146,10 +145,18 @@ class CreateMeetingView(TemplateView):
             event_creator = EventParticipant.objects.get(event_id=event_instance, user_id=request.user, is_creator=True)
 
             if self.check_optional_meeting_dates_formset(
-               request, event_instance, event_creator, self.optional_meetings_formset):
+               event_instance, event_creator, self.optional_meetings_formset):
                 if self.check_participant_formset(request, event_instance, self.meeting_participants_formset):
                     # all the forms are valid and all the data saved in the DB
                     is_valid_formsets = True
+
+                    timeout = EventPlanner.get_timeout(event_instance)
+                    print("in views: ", timeout)
+                    EventPlanner.creating_meeting_reminders(event_creator, timeout)
+                    for message in EventPlanner.get_timeout_message(timeout).split("\n"):
+                        messages.success(request, message)
+                    # EventPlanner.send_invite_notification(event_instance)
+                    EventPlanner.send_meeting_invitation_email_to_participants(event_instance, event_creator)
                     return redirect('home')
             if not is_valid_formsets:
                 # getting all the data that the user entered in the forms
@@ -168,21 +175,26 @@ class CreateMeetingView(TemplateView):
         instance.event_creator_id = event_participant
         instance.save()
 
-    @staticmethod
-    def check_dates_constraint(form, event_instance, request):
-        """ checking if the event dates are the same as one of the optional meeting dates
-            and if the chosen event dates are not in the past """
+    # @staticmethod
+    # def check_dates_constraint(form, event_instance, request):
+    #     """ checking if the event dates are the same as one of the optional meeting dates
+    #         and if the chosen event dates are not in the past """
 
-        form_start_time = form.cleaned_data.get('date_time_start')
-        form_end_time = form.cleaned_data.get('date_time_end')
+    #     min_time_to_set_meeting = timezone.now() + timedelta(minutes=5)
+    #     # min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
+    #     form_start_time = form.cleaned_data.get('date_time_start')
+    #     form_end_time = form.cleaned_data.get('date_time_end')
 
-        if(event_instance.date_time_start, event_instance.date_time_end) == (form_start_time, form_end_time):
-            messages.warning(request, "The optional meeting dates should be different")
-            return True
-        if event_instance.date_time_start < timezone.now() or event_instance.date_time_end < timezone.now():
-            messages.warning(request, "Optional meeting dates cannot be in the past")
-            return True
-        return False
+    #     if(event_instance.date_time_start, event_instance.date_time_end) == (form_start_time, form_end_time):
+    #         messages.warning(request, "The optional meeting dates should be different")
+    #         return True
+    #     if event_instance.date_time_start < timezone.now() or event_instance.date_time_end < timezone.now():
+    #         messages.warning(request, "Optional meeting dates cannot be in the past")
+    #         return True
+    #     if event_instance.date_time_start < min_time_to_set_meeting: # check min time of 1 hour to a new meeting date
+    #         messages.warning(request, "Meeting can be set only one hour later from now")
+    #         return True
+    #     return False
 
     @staticmethod
     def get_formset_meeting_date(formset):
@@ -217,18 +229,10 @@ class CreateMeetingView(TemplateView):
             date_time_start=event_instance.date_time_start,
             date_time_end=event_instance.date_time_end).save()
 
-    def check_optional_meeting_dates_formset(self, request, event_instance, event_creator, optional_meetings_formset):
+    def check_optional_meeting_dates_formset(self, event_instance, event_creator, optional_meetings_formset):
+        optional_meetings_formset.set_event_instance(event_instance)
         if optional_meetings_formset.is_valid():
-            is_meeting_formset_invalid = False
-            for form in optional_meetings_formset:
-                is_meeting_formset_invalid = self.check_dates_constraint(form, event_instance, request)
-                if is_meeting_formset_invalid:
-                    break
-            if is_meeting_formset_invalid:
-                event_instance.delete()
-                return False
-            else:
-                self.saving_all_optional_meeting_dates(event_creator, event_instance, optional_meetings_formset)
+            self.saving_all_optional_meeting_dates(event_creator, event_instance, optional_meetings_formset)
         else:
             event_instance.delete()
             return False

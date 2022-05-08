@@ -3,6 +3,7 @@ from sys import stdout
 from datetime import datetime
 from threading import Timer, Thread
 from django.dispatch import receiver
+from events.planner import EventPlanner
 from reminders.models import Reminder, ReminderType
 from main.utilities import send_reminder_email, create_notification
 from django.db.models.signals import post_save, pre_delete, post_delete
@@ -54,7 +55,7 @@ class UserAlertScheduler():
         return UserAlertScheduler.__instance
 
     @staticmethod
-    def define_logger(file=stdout, log_level=logging.WARNING):
+    def define_logger(file=stdout, log_level=logging.INFO):
         """ define the __logger object.
             file: where the logger will log all his message. default is stdout
             logger level: define which types of logger message will show up. default Warning """
@@ -108,6 +109,12 @@ class UserAlertScheduler():
 
         if method_type in (ReminderType.WEBSITE, ReminderType.WEBSITE_EMAIL):
             function_to_invoke.append(create_notification)
+
+        if method_type in ReminderType.RUN_ALGORITHM:
+            function_to_invoke.append(EventPlanner.invoke_meeting_algorithm)
+
+        if method_type in ReminderType.EXPIRATION_VOTING_TIME:
+            function_to_invoke.append(EventPlanner.send_timeout_voting_notification_email_for_participants)
 
         return function_to_invoke
 
