@@ -13,10 +13,15 @@ class PossibleParticipantsQuerySet(models.QuerySet):
     def get_all_possible_participants(self, event_id):
         return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)
 
-    def get_all_possible_participants_count(self, event_id):
+    # def get_all_possible_participants_amount(self, event_id):
+    #     return self.filter(
+    #         possible_meeting_id__event_creator_id__event_id=event_id
+    #     ).values('participant_id').distinct().count()
+
+    def get_all_possible_participants_of_event(self, event_id):
         return self.filter(
             possible_meeting_id__event_creator_id__event_id=event_id
-        ).values('participant_id').distinct().count()
+        ).values('participant_id').distinct()
 
     def remove_all_possible_meeting_participants(self, meeting_id):
         return self.get_all_date_participants(meeting_id).delete()
