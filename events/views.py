@@ -3,13 +3,9 @@ from django.utils import timezone
 from django.contrib import messages
 from reminders.models import Reminder
 from django.forms import formset_factory
-from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from events.models import Event, EventParticipant
-from django.contrib.auth.decorators import login_required
-from events.forms import EventCreationForm, EventUpdateForm
-from reminders.forms import ReminderCreationForm, ReminderUpdateForm
 from main.utilities import convert_time_delta
+from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
