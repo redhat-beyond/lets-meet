@@ -5,6 +5,10 @@ from reminders.models import Reminder
 from django.forms import formset_factory
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
+from events.models import Event, EventParticipant
+from django.contrib.auth.decorators import login_required
+from events.forms import EventCreationForm, EventUpdateForm
+from reminders.forms import ReminderCreationForm, ReminderUpdateForm
 from main.utilities import convert_time_delta
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
@@ -26,7 +30,6 @@ LOGIN_PAGE = 'login'
 
 @login_required(login_url=LOGIN_PAGE)
 def create_event(request):
-
     if request.method == 'POST':
         event_form = EventCreationForm(request.POST, user_id=request.user)
         reminder_form = ReminderCreationForm(request.POST)
@@ -50,12 +53,12 @@ def create_event(request):
         reminder_form = ReminderCreationForm()
 
     return render(request, 'events/create_event.html',
-                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Create Event'})
+                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Create Event', 'event_id': None})
 
 
 @login_required(login_url=LOGIN_PAGE)
-def update_event(request, pk):
-    event_instance = Event.objects.get(id=pk)
+def update_event(request, event_id):
+    event_instance = Event.objects.get(id=event_id)
 
     try:
         participant = EventParticipant.objects.get(user_id=request.user, event_id=event_instance)
@@ -85,7 +88,8 @@ def update_event(request, pk):
         event_form = EventUpdateForm(user_id=request.user, instance=event_instance)
 
     return render(request, 'events/create_event.html',
-                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Update Event'})
+                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Update Event',
+                   'event_id': event_id})
 
 
 class CreateMeetingView(TemplateView):

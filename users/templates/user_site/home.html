@@ -85,7 +85,7 @@
                             {% for event in current_events %}
                                 {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
                                     {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
-                                        <a id="link" href="{% url 'update_event' pk=event.id %}"> 
+                                        <a id="link" href="{% url 'update_event' event_id=event.id %}">
                                             <div class="square"
                                                 style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
                                                 {{ event.title }} - {{ event.date_time_start.time | time:'H:i:s' }} - {{ event.date_time_end.time | time:'H:i:s' }}
