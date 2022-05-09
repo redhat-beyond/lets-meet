@@ -42,7 +42,9 @@ function day_view(date) {
 			day_events += '</div>'
 		});
 
-		const html_text = '<div class="dayview-container">' + 
+		const html_text = 
+			' <a href="/event/create/' + date + '" id="plus_link"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>' +
+			'<div class="dayview-container">' +
 			'    <div class="dayview-timestrings">' +
 			'        <div class="dayview-timestrings">' +
 			get_hours() +
@@ -68,7 +70,6 @@ function day_view(date) {
 		Swal.fire({
 			title: "<strong style='color:white'><u>" + date + "</u></strong>",
 			width: '40rem',
-			// background: "url('https://images.unsplash.com/photo-1605436247078-f0ef43ee8d5c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80')",
 			background: "linear-gradient(#292E49, #536976)",
 			html: html_text,
 			showCloseButton: true,

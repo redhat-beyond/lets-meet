@@ -133,6 +133,9 @@ class MainPageView(TemplateView):
             Event.objects.filter(eventparticipant__user_id=self.user)
         )
 
+        if not self.year:
+            self.year = datetime.now().year
+
         context = {
             'hours': range(0, 24),
             'current_year': self.year,
@@ -152,12 +155,11 @@ class MainPageView(TemplateView):
 
         return context
 
-    def get(self, request, date=None):
+    def get(self, request, month=None, year=None):
         self.user = request.user
-        if not date:
-            self.year, self.month = None, None
-        else:
-            year, month = date.split("|")
+        self.year, self.month = year, month
+
+        if month and year:
             self.year = int(year)
             self.month = int(month)
 
@@ -186,7 +188,7 @@ class MainPageView(TemplateView):
         else:
             month += action
 
-        return f"{year}|{month}"
+        return f"{year}/{month}"
 
     @staticmethod
     def get_max_day_events(events):

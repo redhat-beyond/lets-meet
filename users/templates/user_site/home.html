@@ -124,10 +124,10 @@
         <tbody class="table-hover" id="tbody-main">
             {% for row in calendar %}
                 <tr>
-                    {% for day in row %} 
+                    {% for day in row %}
                     <td class="text-center" style="position: relative; height: {{ max_height }}vh; 
-                                                {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
-                                                {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
+                                                   {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
+                                                   {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
                         <div style="cursor: pointer;">
                             <p class="tab"  onclick="day_view('{{ day.2 }}/{{ day.1 }}/{{ day.0 }}')" style="top: -{{ max_margin }}vh;
                                 {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}

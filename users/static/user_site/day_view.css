@@ -1,4 +1,3 @@
-
 .dayview-container {
     position: relative;
     display: flex;
@@ -163,4 +162,11 @@
     white-space: normal;
     overflow-wrap: break-word;
     word-wrap: break-word;
+}
+#plus_link {
+    color: white;
+    position: absolute;
+    top: 2%;
+    left: 3%;
+    font-size:30px;
 }
