@@ -4,7 +4,7 @@ from datetime import datetime
 from threading import Timer, Thread
 from django.dispatch import receiver
 from reminders.models import Reminder, ReminderType
-from main.utilities import send_reminder_email, send_site_notification
+from main.utilities import send_reminder_email, create_notification
 from django.db.models.signals import post_save, pre_delete, post_delete
 
 
@@ -107,7 +107,7 @@ class UserAlertScheduler():
             function_to_invoke.append(send_reminder_email)
 
         if method_type in (ReminderType.WEBSITE, ReminderType.WEBSITE_EMAIL):
-            function_to_invoke.append(send_site_notification)
+            function_to_invoke.append(create_notification)
 
         return function_to_invoke
 

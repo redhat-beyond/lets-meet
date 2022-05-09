@@ -7,9 +7,9 @@ def send_mail_notification(title, message, receiver_email):
     send_mail(title, message, settings.EMAIL_HOST_USER, [receiver_email])
 
 
-def send_site_notification(message, receiver_id):
-    """ notify the receiver by his id with the message given by the site notification """
-    print(f"notification -> {message} - {receiver_id}")  # for debug only
+def create_notification(message, receiver_id):
+    """ create a notification with the receiver id the message given using the site notification """
+    print(f"notification -> {message}  -  {receiver_id}")  # for debug only
 
 
 # pre built notifications

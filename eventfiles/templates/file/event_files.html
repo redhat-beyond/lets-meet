@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block head-content %}
+    <title>Event files</title>
+    {% load static %}
+        <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
+        <script src="{% static 'event_files/event_files.js' %}"></script>
+
+{% endblock %}
+
+{% block body-content %}
+<div class="event_files">
+<center>
+<div class="container-shadow">
+     <div class="container">
+        <div class="wrap">
+            <h1 class="title" > {{title}} files:</h1>
+
+            <div class="file-list">
+                {% if files %}
+                    {% for post in files %}
+                <div class='PostContent'>
+                        <h2 class="FileName" >{{post}}</h2>
+                        <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}" class="DownloadButton">
+                             <i class="fa-solid fa-circle-down fa-2x" aria-hidden="true"></i>
+                        </a>
+                </div>
+                    {% endfor %}
+            </div>
+                {% else %}
+                     <h2>No files exist</h2>
+                {% endif %}
+
+            <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+            <fieldset class="form-group">
+            {% csrf_token %}
+            <div class="fileUpload">
+                <input id="uploadFile" placeholder="No file selected" disabled="disabled"/>
+                <span id="uploadBtn">Upload</span>
+                <input id="fileInput" type="file" name="{{form.file.name}}" class="upload" style="visibility: hidden;"/>
+            </div>
+            </fieldset>
+
+            <div class="form-group">
+            <button id="submitBtn" class="hidden" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+     </div>
+</div>
+    </center>
+</div>
+{% endblock %}
