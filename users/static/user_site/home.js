@@ -12,6 +12,10 @@ function get_time_height(hours, minutes) {
 	return Math.round((961 / 24) * (hours + minutes / 60) / 9.8);
 }
 
+function move(id) {
+	document.location.href = "/event/update/" + id;
+}
+
 function day_view(date) {
 	let day_events = "";
 	$.get("/get_day_events/" + date, {}, function(data, status) {
@@ -27,7 +31,7 @@ function day_view(date) {
 			console.log(element.date_time_end);
 
 			day_events += "                        "
-			day_events += '<div class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' ">'
+			day_events += '<div class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' " onclick=move(' + element.id + ')>'
 			day_events += "                        "
 			day_events += '    <div class="dayview-cell-title">' + element.title + '</div>'
 			day_events += "                        "

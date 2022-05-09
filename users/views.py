@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from users.forms import MyUserCreationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
 
-# from events.models import OptionalMeetingDates
 
 cal = Calendar(6)  # 6 => means that the week start with Sunday
 
@@ -96,7 +95,7 @@ def get_day_events(request, day, month, year):
     result = list(
         Event.objects.get_all_user_day_events(
             request.user, datetime(year, month, day)
-        ).values('title', 'date_time_start', 'date_time_end', 'color', 'description')
+        ).values('id', 'title', 'date_time_start', 'date_time_end', 'color', 'description')
     )
 
     for event in result:
@@ -136,6 +135,7 @@ class MainPageView(TemplateView):
 
         context = {
             'hours': range(0, 24),
+            'current_year': self.year,
             'max_height': table_measurements[0],
             'max_margin': table_measurements[1],
             'max_padding': table_measurements[3],
@@ -146,7 +146,6 @@ class MainPageView(TemplateView):
             'calendar': self.get_calendar_days(self.year, self.month),
             'previous_date': self.get_dates(self.year, self.month, False),
             'current_events': Event.objects.get_all_user_events(self.user),
-            # 'all_possible_dates': self.get_optional_meetings(current_meetings),
             'current_date': (datetime.now().year, datetime.now().month, datetime.now().day),
             'week_days': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         }
@@ -163,22 +162,6 @@ class MainPageView(TemplateView):
             self.month = int(month)
 
         return super().get(request)
-
-    # @staticmethod
-    # def get_optional_meetings(current_meetings):
-    #     all_possible_dates = []
-
-    #     for meeting in current_meetings:
-    #         optional_meetings = OptionalMeetingDates.objects.get_all_event_dates(meeting)
-    #         for optional_meeting in optional_meetings:
-    #             event_dict = {'id': optional_meeting.event_creator_id.event_id.id,
-    #                           'title': optional_meeting.event_creator_id.event_id.title,
-    #                           'date_time_start': optional_meeting.date_time_start,
-    #                           'date_time_end': optional_meeting.date_time_end,
-    #                           'color': optional_meeting.event_creator_id.event_id.color }
-    #             all_possible_dates.append(event_dict)
-
-    #     return all_possible_dates
 
     @staticmethod
     def get_dates(year=None, month=None, next=True):
