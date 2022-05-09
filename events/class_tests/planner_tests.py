@@ -7,7 +7,7 @@ planner = EventPlanner()
 
 
 @pytest.mark.django_db
-class TestEventPanner:
+class TestEventPlanner:
 
     @pytest.mark.parametrize(
         'event_title, expected_meeting_id',

@@ -3,6 +3,16 @@ from events.models import OptionalMeetingDates, PossibleParticipant, Event
 
 class EventPlanner():
 
+    def run(self, event):
+        """ run the planner in an event.
+            Find the best possible date for the meeting,
+            then excute the choice and change the DB rows accordingly.
+        """
+        meetings_possibilities = self.find_meeting(event)
+
+        if len(meetings_possibilities) >= 1:
+            self.execute_choice(meetings_possibilities[0])
+
     def find_meeting(self, event_id):
         """ Find a meeting date with all the participants if possible.
             The planner will look over all the possible dates and
@@ -31,15 +41,3 @@ class EventPlanner():
         original_event.save()
         PossibleParticipant.objects.remove_all_event_participants(event_id)
         OptionalMeetingDates.objects.remove_all_possible_dates(event_id)
-
-    def run(self, event):
-        """ run the planner in an event.
-            Find the best possible date for the meeting,
-            then excute the choice and change the DB rows accordingly.
-        """
-        meetings_possibilities = self.find_meeting(event)
-
-        if len(meetings_possibilities) == 0:
-            return None
-        elif len(meetings_possibilities) >= 1:
-            self.execute_choice(meetings_possibilities[0])
