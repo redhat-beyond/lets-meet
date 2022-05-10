@@ -8,9 +8,10 @@ from django.contrib.auth.decorators import login_required
 from eventfiles.form import MyEventFileCreationForm
 
 FILE_PATH = settings.MEDIA_ROOT / "files"
+LOGIN_PAGE = 'login'
 
 
-@login_required(login_url='welcome_page')
+@login_required(login_url=LOGIN_PAGE)
 def view_all_event_files_with_upload_and_download_option_page(request, event_id):
     """ if the user is logged in, render all files relevant to the event with the option to upload and download  """
     try:
@@ -33,7 +34,7 @@ def view_all_event_files_with_upload_and_download_option_page(request, event_id)
     return render(request, "file/event_files.html", context)
 
 
-@login_required(login_url='welcome_page')
+@login_required(login_url=LOGIN_PAGE)
 def download_files(request):
     event = request.GET.get('event')
     file_name = request.GET.get('file_name')
@@ -46,7 +47,7 @@ def download_files(request):
     raise Http404
 
 
-@login_required(login_url='welcome_page')
+@login_required(login_url=LOGIN_PAGE)
 def delete_file(request, event_id, file_id):
     try:
         current_event = get_object_or_404(Event, pk=event_id)

@@ -9,10 +9,11 @@ from eventfiles.models import EventFile
 FILE_CREATION_URL = '/file/event_file'
 INVALID_FILE_CREATION_URL = '/file/event_file/8'
 FILE_CREATION_HTML_PATH = "file/event_files.html"
-HOME_HTML_PATH = 'user_site/home.html'
 FILE_DELETE_URL = "/file/event_file/1/delete"
 FILE_CREATED_BY_USER2 = 3
 FILE_CREATED_BY_EVENT_CREATOR = 1
+DELETE_USER2_FILE_URL = f'{FILE_DELETE_URL}/{FILE_CREATED_BY_USER2}'
+DELETE_EVENT_CREATOR_FILE_URL = f'{FILE_DELETE_URL}/{FILE_CREATED_BY_EVENT_CREATOR}'
 
 
 @pytest.mark.django_db
@@ -60,7 +61,7 @@ class TestEventFileFormView:
         assert response.status_code == 302
         response = client.get(response.url)
         assert response.status_code == 200
-        assertTemplateUsed(response, 'main/index.html')
+        assertTemplateUsed(response, 'login/register_login.html')
 
     def test_delete_button_visible_for_file_user_created(self, sign_in_with_user2, client):
         """ test that an ordinary user can delete only files he created """
@@ -72,11 +73,11 @@ class TestEventFileFormView:
         assert found_file3 and not found_file1
 
     def test_unauthorized_user_delete(self, sign_in_with_user2, client):
-        response = client.get(f'{FILE_DELETE_URL}/{FILE_CREATED_BY_EVENT_CREATOR}')
+        response = client.get(DELETE_EVENT_CREATOR_FILE_URL)
         assert response.status_code == 401
 
     def test_delete_file_created_by_user(self, sign_in_with_user2, client):
-        client.get(f'{FILE_DELETE_URL}/{FILE_CREATED_BY_USER2}')
+        client.get(DELETE_USER2_FILE_URL)
         assert not EventFile.objects.all().filter(id=FILE_CREATED_BY_USER2).exists()
 
     def test_all_delete_buttons_visible_for_event_creator(self, sign_in_with_creator, client):
@@ -88,18 +89,18 @@ class TestEventFileFormView:
         assert found_file3 and found_file1
 
     def test_event_creator_delete_any_file(self, sign_in_with_creator, client):
-        client.get(f'{FILE_DELETE_URL}/{FILE_CREATED_BY_USER2}')
+        client.get(DELETE_USER2_FILE_URL)
         assert not EventFile.objects.all().filter(id=FILE_CREATED_BY_USER2).exists()
 
     def test_unsigned_user_delete(self, client):
-        response = client.get(f'{FILE_DELETE_URL}/{FILE_CREATED_BY_USER2}')
+        response = client.get(DELETE_USER2_FILE_URL)
         assert response.status_code == 302
         response = client.get(response.url)
         assert response.status_code == 200
-        assertTemplateUsed(response, 'main/index.html')
+        assertTemplateUsed(response, 'login/register_login.html')
 
     def test_redirection_to_file_page_after_delete(self, sign_in_with_user2, client):
-        response = client.get(f'{FILE_DELETE_URL}/{FILE_CREATED_BY_USER2}')
+        response = client.get(DELETE_USER2_FILE_URL)
         assert response.status_code == 302
         response = client.get(response.url)
         assert response.status_code == 200
