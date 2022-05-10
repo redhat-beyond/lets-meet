@@ -1,15 +1,16 @@
-from email import message
-from events.models import OptionalMeetingDates, PossibleParticipant, Event, EventParticipant
-from main.utilities import send_mail_notification
+from functools import reduce
+from datetime import datetime, timedelta
 from reminders.models import Reminder, ReminderType
+from events.models import OptionalMeetingDates, PossibleParticipant, Event, EventParticipant
+from main.utilities import send_mail_notification, time_format  # create_notification
 
 
 class EventPlanner():
 
-    def __init__(self, event_id):
+    def __init__(self):
         self.participants_ids_that_can_meet = []
         self.participants_ids_that_can_not_meet = []
-        self.all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(event_id)
+        self.all_meeting_participants = None # EventParticipant.objects.get_an_event_participants_without_creator(event_id)
 
     def update_which_participants_can_and_cant_meet(self, chosen_meeting):
         self.participants_ids_that_can_meet = PossibleParticipant.objects.get_all_date_participants(chosen_meeting)
@@ -22,6 +23,7 @@ class EventPlanner():
         """
 
         chosen_meeting = None
+        self.all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(event_id)
         """ maybe we can use get_all_possible_participants and convert the returning string to set
         instead of creating new query set as "get_all_possible_participants_of_event" in line 23 """
         participants_ids_that_can_meet = PossibleParticipant.objects.get_all_possible_participants_of_event(event_id)
@@ -77,39 +79,72 @@ class EventPlanner():
         chosen_meeting = self.find_meeting(event)
 
         if not chosen_meeting:
-            return None  # return an exception-> "someting went wrong"
+            return None  # return an email to the creator that there is no suitable date for a meeting
         else:
             self.execute_choice(chosen_meeting)
 
     @staticmethod
-    def send_timeout_voting_notification_email_for_participats():
-        pass
+    def send_timeout_voting_notification_email_for_participants(message, meeting_creator_id):
+        meeting_id = meeting_creator_id.event_id
+        all_possible_meetings = OptionalMeetingDates.objects.get_all_event_dates(meeting_id)
+        all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
+        email_title = "Voting for a meeting is about to end"
+        message = (f"The voting for the event {meeting_id.title} is about to end.\n"
+                    "Please finish your vote.\n"
+                    "If you did not vote for the meeting, you will not be able to attend.")
+        for participant in all_meeting_participants:
+            if PossibleParticipant.objects.did_user_vote(all_possible_meetings, participant.user_id):
+                send_mail_notification(email_title, message, participant.user_id)
+                # create_notification(message, participant.user_id)
+
+    def get_message(self, meeting_id, meeting_creator_id):
+        participants_who_can_meet = "\n".join([participant.user_id.username for participant in self.participants_ids_that_can_meet])
+        participants_who_cant_meet = "\n".join([participant.user_id.username for participant in self.participants_ids_that_can_not_meet])
+        message = (f"Hi {meeting_creator_id.user_id.username}! The meeting results are here!!!"
+                   f"Meeting title: {meeting_id.title}\n"
+                   f"Meeting description: {meeting_id.description}\n" if meeting_id.description != "" else ""
+                   f"Meeting location: {meeting_id.location}\n" if meeting_id.location != "" else ""
+                   "The chosen meeting date is:\n"
+                   f"Strting date: {time_format(meeting_id.date_time_start)}\n"
+                   f"Ending date: {time_format(meeting_id.date_time_end)}\n"
+                   "The participant that will take part in the meeting:\n"
+                   f"{participants_who_can_meet}\n"
+                   "The participant that will not take part in the meeting:\n"
+                   f"{participants_who_cant_meet}\n")
+        return message
+
+    def send_email_about_algorithm_results_to_the_creator(self, message, meeting_creator_id):
+        meeting_id = meeting_creator_id.event_id
+        email_title = f"Meeting {meeting_id.title} results"
+        message = self.get_message(meeting_id, meeting_creator_id)
+        send_mail_notification(email_title, message, meeting_creator_id.user_id)
 
     @staticmethod
-    def send_email_about_algorithm_results_to_the_creator():
-        pass
+    def calc_last_notification(voting_timeout):
+        minutes_before_timeout = 15
+        return voting_timeout - timedelta(seconds=minutes_before_timeout * 60)
 
     @staticmethod
-    def calc_last_notifiction(voting_timeout):
-        return None
+    def get_timeout(meeting_id):
+        possible_dates = OptionalMeetingDates.objects.get_all_event_dates(meeting_id)
+
+        min_possible_date = reduce(
+            lambda datetime1, datetime2: datetime1 if datetime1.date_time_start < datetime2.date_time_start else datetime2,
+            possible_dates
+        )
+
+        difference = min_possible_date.date_time_start.timestamp() - datetime.now().timestamp()
+        return datetime.fromtimestamp(datetime.now().timestamp() + (difference / 2.0))
 
     @staticmethod
-    def creating_meeting_reminders(meeting_creator, voting_timeout, meeting_id): # how do we save the meeting id
-        # this function will be call from the view of the meeting, after all the validation have paased
-        last_notification_time = EventPlanner.calc_last_notifiction(voting_timeout)
-        Reminder(
-            participant_id=meeting_creator, datetime=voting_timeout,
-            method=ReminderType.ALGORITHM_RESULTS
-        ).save()
+    def creating_meeting_reminders(meeting_creator, voting_timeout):
+        # this function will be call from the view of the meeting, after all the validation have passed
+        last_notification_time = EventPlanner.calc_last_notification(voting_timeout)
         Reminder(
             participant_id=meeting_creator, datetime=last_notification_time,
             method=ReminderType.EXPIRATION_VOTING_TIME
         ).save()
         Reminder(
             participant_id=meeting_creator, datetime=voting_timeout,
-            method=ReminderType.MEETING_VOTE
+            method=ReminderType.RUN_ALGORITHM
         ).save()
-
-
-# i think we should save somewhere the event_id in the reminder,
-# so we could know which participants belong to this meeting

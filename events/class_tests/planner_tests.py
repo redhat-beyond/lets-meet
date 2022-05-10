@@ -24,7 +24,7 @@ class TestEventPlanner:
     def test_find_meeting(self, event_title, expected_meeting_id):
         event = Event.objects.get(title=event_title)
         expected_meeting_date = OptionalMeetingDates.objects.get(id=expected_meeting_id)
-        assert [expected_meeting_date] == list(planner.find_meeting(event))
+        assert expected_meeting_date == planner.find_meeting(event)
 
     @pytest.mark.parametrize(
         ('original_event_title, chosen_meeting_id, '

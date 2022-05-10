@@ -93,7 +93,7 @@ class UserAlertScheduler():
         message = reminder.messages
         method_type = reminder.method
         date_time = reminder.date_time
-        user_id = reminder.participant_id.user_id
+        user_id = reminder.participant_id
 
         return date_time, message, method_type, user_id
 
