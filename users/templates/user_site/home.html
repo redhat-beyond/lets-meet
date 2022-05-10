@@ -28,7 +28,7 @@
             const TIMEOUT = 10000;
 
             get_notification = "{% url 'get_notification' %}";
-            seen_notification = "{% url 'seen_notification' pk=1 %}";
+            seen_notification = "{% url 'seen_notification' notification_id=1 %}";
 
             build_table();
             setInterval(build_table, TIMEOUT);

@@ -12,6 +12,11 @@ function build_table() {
 		let length = data.length;
 		if (length === 0) {
 			length = "";
+
+			line =  "<div class='list-item noti'>";
+			line += "<div class='text fl'> There are no new notifications </div>";
+			line += "</div>";
+			$(id).append(line);
 		}
 
 		$("#notification-badge").text(length);  // change the icon to the amount of notification
@@ -29,14 +34,11 @@ function build_table() {
 }
 
 function open_notification_bar() {
-	console.log(" in open");
 	if (!$("#dropdown").hasClass('dd')) {
-		console.log("in dropdown if");
 		$("#dropdown").removeClass('dropdown-transition').addClass('dd')
         $("#dropdown").find('.list-item').addClass('background-white')
 	}
 	else {
-		console.log("in dropdown else");
 		$('.notification-dropdown').removeClass('dd').addClass('dropdown-transition');
 	}
 }
