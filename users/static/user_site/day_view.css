@@ -166,7 +166,14 @@
 #plus_link {
     color: white;
     position: absolute;
-    top: 2%;
-    left: 3%;
+    top: 1.7%;
+    left: 8%;
+    font-size:30px;
+}
+#date_plus_link {
+    color: white;
+    position: absolute;
+    top: 1.5%;
+    left: 15%;
     font-size:30px;
 }

@@ -1,11 +1,25 @@
 
-function set_line() {
+function set_line(current_date) {
 	const d = new Date();
-	document.querySelector(".dayview-now-marker").style.top =
-	(document
-		.querySelector(".dayview-gridcell-container")
-		.getBoundingClientRect().height / 24) *
-		(d.getHours() + d.getMinutes() / 60) + "px";
+
+	date_list = current_date.split("/");
+	day = date_list[0];
+	month = date_list[1];
+	year = date_list[2];
+
+	if (String(year) === String(d.getFullYear()) && String(month) === String(d.getMonth() + 1) && String(day) === String(d.getDate())) {
+		
+		document.querySelector(".dayview-now-marker").style.visibility = "visible";
+		document.querySelector(".dayview-now-marker").style.top =
+		(document
+			.querySelector(".dayview-gridcell-container")
+			.getBoundingClientRect().height / 24) *
+			(d.getHours() + d.getMinutes() / 60) + "px";
+	}
+	else {
+		document.querySelector(".dayview-now-marker").style.top = "0px";
+		document.querySelector(".dayview-now-marker").style.visibility = "hidden";
+	}
 }
 
 function get_time_height(hours, minutes) {
@@ -42,8 +56,10 @@ function day_view(date) {
 			day_events += '</div>'
 		});
 
+		// /event/meeting/
 		const html_text = 
 			' <a href="/event/create/' + date + '" id="plus_link"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>' +
+			' <a href="/event/create/' + date + '" id="date_plus_link"> <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> </a>' +
 			'<div class="dayview-container">' +
 			'    <div class="dayview-timestrings">' +
 			'        <div class="dayview-timestrings">' +
@@ -76,6 +92,6 @@ function day_view(date) {
 			showConfirmButton: false,
 		})
 
-		set_line();
+		set_line(date);
 	})
 }

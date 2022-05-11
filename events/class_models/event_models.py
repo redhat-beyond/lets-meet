@@ -1,13 +1,17 @@
 from django.db import models
+from django.utils import timezone
 from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 class EventQuerySet(models.QuerySet):
     def get_all_meetings(self):
         """ get all the meetings from all the users """
         return self.alias(participant_amount=Count('eventparticipant__event_id')).filter(participant_amount__gte=2)
+
+    def get_all_events(self):
+        """ get all the events from all the users """
+        return self.alias(participant_amount=Count('eventparticipant__event_id')).filter(participant_amount=1)
 
     def get_all_user_events(self, user_id):
         """ get all the events that the user_id is part of """
@@ -22,6 +26,13 @@ class EventQuerySet(models.QuerySet):
         """ get only the meetings for the user given in the month given """
         return self.__date_filter(
             self.get_all_user_meetings(user_id),
+            start_year=year, start_month=month
+        )
+
+    def get_all_user_month_events(self, user_id, year, month):
+        """ get only the events for the user given in the month given """
+        return self.__date_filter(
+            self.get_all_user_events(user_id),
             start_year=year, start_month=month
         )
 

@@ -32,7 +32,7 @@ def login_page(request):
         except Exception:
             messages.error(request, "user does not exist")
         user = authenticate(request, email=email, password=password)
-        if user is not None:
+        if user:
             login(request, user)
             return redirect("home")
         else:
