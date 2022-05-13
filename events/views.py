@@ -2,6 +2,7 @@ from datetime import datetime
 from users.models import User
 from django.utils import timezone
 from django.contrib import messages
+from django.http import JsonResponse
 from reminders.models import Reminder
 from django.forms import formset_factory
 from django.views.generic import TemplateView
@@ -270,3 +271,16 @@ class CreateMeetingView(TemplateView):
             event_instance.delete()
             return False
         return True
+
+
+@login_required(login_url=LOGIN_PAGE)
+def delete_event(request, event_id):
+    user = request.user
+    event_instance = Event.objects.get(id=event_id)
+
+    try:
+        EventParticipant.objects.get(event_id=event_instance, user_id=user, is_creator=True)
+        event_instance.delete()
+        return JsonResponse({"result": "success"}, safe=False)
+    except EventParticipant.DoesNotExist:
+        return JsonResponse({"result": "fail"}, safe=False)

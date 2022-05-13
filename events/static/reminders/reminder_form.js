@@ -7,3 +7,15 @@ $(document).ready(function(){
 		}
 	)
 });
+
+
+function delete_event(event_id) {
+	$.get("/event/delete_event/" + event_id, {}, function(data, status) {
+		if (data.result === "success") {
+			alert("yes");
+		}
+		else {
+			alert("no");
+		}
+	});
+}

@@ -30,6 +30,10 @@ function move(id) {
 	document.location.href = "/event/update/" + id;
 }
 
+function delete_event(event_id) {
+	$.get("/delete_event/" + event_id, {});
+}
+
 function day_view(date) {
 	let day_events = "";
 	$.get("/get_day_events/" + date, {}, function(data, status) {
@@ -49,7 +53,8 @@ function day_view(date) {
 			day_events += "                        "
 			day_events += '    <div class="dayview-cell-title">' + element.title + '</div>'
 			day_events += "                        "
-			day_events += '    <div class="dayview-cell-time"> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
+			day_events += '    <div class="dayview-cell-time"> ' + element.date_time_start + ' - ' + element.date_time_end + 
+						  '<i class="fa fa-trash-o" aria-hidden="true" style="color: red; margin-left: 10px; font-size: 20px;" onclick="delete_event(' + element.id + ')"></i></div>'
 			day_events += "                        "
 			day_events += '    <div class="dayview-cell-desc">' + element.description + '</div>'
 			day_events += "                        "
