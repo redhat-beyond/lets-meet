@@ -19,7 +19,7 @@ class EventPlanner():
             will check if there is a possible date that works for everyone
         """
         results = list()
-        all_participants = PossibleParticipant.objects.get_all_possible_participants_amount(event_id)
+        all_participants = PossibleParticipant.objects.get_all_possible_participants_count(event_id)
         for possible_date in OptionalMeetingDates.objects.get_all_event_dates(event_id):
             participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
             if all_participants == participants_amount:

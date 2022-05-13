@@ -13,7 +13,7 @@ class PossibleParticipantsQuerySet(models.QuerySet):
     def get_all_possible_participants(self, event_id):
         return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)
 
-    def get_all_possible_participants_amount(self, event_id):
+    def get_all_possible_participants_count(self, event_id):
         return self.filter(
             possible_meeting_id__event_creator_id__event_id=event_id
         ).values('participant_id').distinct().count()
