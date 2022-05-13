@@ -58,8 +58,8 @@ function day_view(date) {
 
 		// /event/meeting/
 		const html_text = 
-			' <a href="/event/create/' + date + '" id="plus_link"> <i class="fa fa-plus-circle" aria-hidden="true"></i> </a>' +
-			' <a href="/event/create/' + date + '" id="date_plus_link"> <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> </a>' +
+			' <a href="/event/create/' + date + '" id="plus_link"> <i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="tooltiptext">Create New Event</span></a>' +
+			' <a href="/event/create/' + date + '" id="date_plus_link"> <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> <span class="tooltiptext">Create New Meeting</span></a>' +
 			'<div class="dayview-container">' +
 			'    <div class="dayview-timestrings">' +
 			'        <div class="dayview-timestrings">' +

@@ -91,16 +91,19 @@
             <a href="/main/{{ next_date }}" style="color: white;">
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </a>
+            <span class="tooltiptext">Next Month</span>
         </div>
         <div class="table-icon" id="left-arrow">
             <a href="/main/{{ previous_date }}" style="color: black;">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
+            <span class="tooltiptext">Previous Month</span>
         </div>
         <div class="table-icon" id="plus">
             <a href="{% url 'create_event' %}" style="color: black;">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </a>
+            <span class="tooltiptext">Create New Event</span>
         </div>
         <div class="table-icon" id="plus">
             <a href="{% url 'create_meeting' %}" style="color: black;">
