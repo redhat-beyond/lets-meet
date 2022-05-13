@@ -5,13 +5,20 @@ from events.models import OptionalMeetingDates, PossibleParticipant, Event
 
 planner = EventPlanner()
 
+MEETING_ID = 4
+EVENT_TITLE = "event3"
+MIN_OPTIONAL_MEETING_ID_TO_DELETE = 3
+MAX_OPTIONAL_MEETING_ID_TO_DELETE = 6
+MIN_POSSIBLE_PARTICIPANT_ID_TO_DELETE = 3
+MAX_POSSIBLE_PARTICIPANT_ID_TO_DELETE = 7
+
 
 @pytest.mark.django_db
 class TestEventPlanner:
 
     @pytest.mark.parametrize(
         'event_title, expected_meeting_id',
-        [("event3", 4)],
+        [(EVENT_TITLE, MEETING_ID)],
         ids=["find event3"]
     )
     def test_find_meeting(self, event_title, expected_meeting_id):
@@ -22,7 +29,9 @@ class TestEventPlanner:
     @pytest.mark.parametrize(
         ('original_event_title, chosen_meeting_id, '
          'expected_meeting_deleted_ids, expected_possible_participants_deleted_ids'),
-        [("event3", 4, range(3, 6), range(3, 7))],
+        [(EVENT_TITLE, MEETING_ID,
+          range(MIN_OPTIONAL_MEETING_ID_TO_DELETE, MAX_OPTIONAL_MEETING_ID_TO_DELETE),
+          range(MIN_POSSIBLE_PARTICIPANT_ID_TO_DELETE, MAX_POSSIBLE_PARTICIPANT_ID_TO_DELETE))],
         ids=["excute event3"]
     )
     def test_execute_choice(self, original_event_title, chosen_meeting_id,
@@ -50,7 +59,9 @@ class TestEventPlanner:
     @pytest.mark.parametrize(
         ('original_event_title, chosen_meeting_id, '
          'expected_meeting_deleted_ids, expected_possible_participants_deleted_ids'),
-        [("event3", 4, range(3, 6), range(3, 7))],
+        [(EVENT_TITLE, MEETING_ID,
+          range(MIN_OPTIONAL_MEETING_ID_TO_DELETE, MAX_OPTIONAL_MEETING_ID_TO_DELETE),
+          range(MIN_POSSIBLE_PARTICIPANT_ID_TO_DELETE, MAX_POSSIBLE_PARTICIPANT_ID_TO_DELETE))],
         ids=["run on event 3"]
     )
     def test_run(self, original_event_title, chosen_meeting_id,

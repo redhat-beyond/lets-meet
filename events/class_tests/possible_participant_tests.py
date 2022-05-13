@@ -5,8 +5,13 @@ from django.core.exceptions import ValidationError
 from events.models import OptionalMeetingDates, EventParticipant, PossibleParticipant, Event
 
 
+EVENT_3_TITLE = "event3"
 ROW_DUPLICATION_ERROR = "The User is already registered in this possible meeting date"
 INVALID_PARTICIPANT_REGISTRATION = "The participant is not part of this event"
+MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 3
+MAX_POSSIBLE_EVENT_PARTICIPANT_ID = 8
+MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 4
+MAX_POSSIBLE_MEETING_PARTICIPANT_ID = 7
 
 
 def create_possible_participant(participant_id, possible_meeting_id):
@@ -17,25 +22,27 @@ def create_possible_participant(participant_id, possible_meeting_id):
 def get_possible_meeting():
     possible_meeting = OptionalMeetingDates.objects.get(
         date_time_start=datetime(2023, 1, 25, 18, 0, 0, 0, tzinfo=timezone.utc),
-        event_creator_id__event_id__title="event3"
+        event_creator_id__event_id__title=EVENT_3_TITLE
     )
     return possible_meeting
 
 
 @pytest.fixture
 def get_event():
-    event = Event.objects.filter(title='event3').first()
+    event = Event.objects.filter(title=EVENT_3_TITLE).first()
     return event
 
 
 @pytest.fixture
 def get_possible_event_participants():
-    return [PossibleParticipant.objects.get(id=f'{id}') for id in range(3, 8)]
+    return [PossibleParticipant.objects.get(id=f'{id}') for id in
+            range(MIN_POSSIBLE_EVENT_PARTICIPANT_ID, MAX_POSSIBLE_EVENT_PARTICIPANT_ID)]
 
 
 @pytest.fixture
 def get_possible_meeting_participants():
-    return [PossibleParticipant.objects.get(id=i) for i in range(4, 7)]
+    return [PossibleParticipant.objects.get(id=i) for i in
+            range(MIN_POSSIBLE_MEETING_PARTICIPANT_ID, MAX_POSSIBLE_MEETING_PARTICIPANT_ID)]
 
 
 @pytest.mark.django_db
