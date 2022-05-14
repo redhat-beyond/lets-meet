@@ -130,26 +130,25 @@
                     {% for day in row %}
                     <td class="text-center" style="position: relative; height: {{ max_height }}vh; 
                                                    {% if current_date.1 == day.1 and current_date.2 == day.2 %} border-style:solid; border-color: red; 
-                                                   {% else %} border-right: 1px solid #C1C3D1; {% endif %}">
+                                                   {% else %} border-right: 1px solid #C1C3D1; {% endif %}"
+                                                   onclick="day_view('{{ day.2 }}/{{ day.1 }}/{{ day.0 }}')">
                         <div style="cursor: pointer;">
-                            <p class="tab"  onclick="day_view('{{ day.2 }}/{{ day.1 }}/{{ day.0 }}')" style="top: -{{ max_margin }}vh;
+                            <p class="tab" style="top: -{{ max_margin }}vh;
                                 {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
                                 {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
                                 {{ day.2 }}
                             </p>
 
-                                {% for event in current_events %}
-                                    {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
-                                        {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
-                                            <a id="link" href=" {% url 'update_event' event_id=event.id %}"> 
-                                                <div class="square"
-                                                    style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
-                                                    {{ event.title }} - {{ event.date_time_start | time:'H:i:s' }} - {{ event.date_time_end | time:'H:i:s' }}
-                                                </div>
-                                            </a>
-                                        {% endif %}
+                            {% for event in current_events %}
+                                {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
+                                    {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
+                                        <div class="square" id="event{{ event.id }}"
+                                            style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                            {{ event.title }}
+                                        </div>
                                     {% endif %}
-                                {% endfor %}
+                                {% endif %}
+                            {% endfor %}
                             </div> 
                         </td>
                     {% endfor %}
