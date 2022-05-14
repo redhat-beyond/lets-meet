@@ -144,7 +144,7 @@
 .dayview-cell {
     padding: 3px;
     color: white;
-    font-size: 15px;
+    font-size: 1.2em;
     display: flex;
 }
 .dayview-cell:not(.dayview-cell-extended) .dayview-cell-title:after {
@@ -162,6 +162,11 @@
     white-space: normal;
     overflow-wrap: break-word;
     word-wrap: break-word;
+}
+#delete_event {
+    color: red;
+    margin-left: 10px;
+    font-size: 1.4em;
 }
 #plus_link {
     color: white;

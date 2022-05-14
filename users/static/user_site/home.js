@@ -31,7 +31,39 @@ function move(id) {
 }
 
 function delete_event(event_id) {
-	$.get("/delete_event/" + event_id, {});
+
+	Swal.fire({
+        heightAuto: false,
+		title: 'Are you sure?',
+		text: "You won't be able to revert this!",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!'
+	  }).then((result) => {
+		if (result.isConfirmed) {
+			$.get("/event/delete_event/" + event_id, {}, function(data, status) {
+				if (data.result === "success") {
+					Swal.fire(
+						'Deleted!',
+						'Your file has been deleted.',
+						'success'
+					)
+
+					$("#item" + String(event_id)).remove();
+					$("#event" + String(event_id)).remove();
+				}
+				else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Meeting Deletion Failed',
+						text: 'Sorry you are not the creator of this meeting. You cant delete is.'
+					})
+				}
+			});
+		}
+	  })
 }
 
 function day_view(date) {
@@ -45,16 +77,13 @@ function day_view(date) {
 				end_hour += 3;
 			}
 
-			console.log(element.date_time_start);
-			console.log(element.date_time_end);
-
 			day_events += "                        "
-			day_events += '<div class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' " onclick=move(' + element.id + ')>'
+			day_events += '<div id="item' + element.id + '" class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' " >'
 			day_events += "                        "
-			day_events += '    <div class="dayview-cell-title">' + element.title + '</div>'
+			day_events += '    <div class="dayview-cell-title" onclick=move(' + element.id + ')>' + element.title + '</div>'
 			day_events += "                        "
-			day_events += '    <div class="dayview-cell-time"> ' + element.date_time_start + ' - ' + element.date_time_end + 
-						  '<i class="fa fa-trash-o" aria-hidden="true" style="color: red; margin-left: 10px; font-size: 20px;" onclick="delete_event(' + element.id + ')"></i></div>'
+			day_events += '    <div class="dayview-cell-time" onclick=move(' + element.id + ')> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
+			day_events += '    <div class="dayview-cell-time" style="padding-left: 5px;"> <i class="fa fa-trash-o" aria-hidden="true" id="delete_event" onclick="delete_event(' + element.id + ')"></i></div>'
 			day_events += "                        "
 			day_events += '    <div class="dayview-cell-desc">' + element.description + '</div>'
 			day_events += "                        "

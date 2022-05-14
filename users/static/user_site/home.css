@@ -262,7 +262,7 @@ body > * {
     cursor: pointer; /* Add a pointer on hover */
 }
 
-#link {
+.link {
     color: #FFFFFF;
     text-decoration: none;
 }

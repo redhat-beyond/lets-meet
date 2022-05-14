@@ -26,7 +26,7 @@ class ReminderUpdateForm(ModelForm):
         fields = '__all__'
         widgets = {
             'date_time': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             )
         }
