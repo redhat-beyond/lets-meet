@@ -80,9 +80,9 @@ function day_view(date) {
 			day_events += "                        "
 			day_events += '<div id="item' + element.id + '" class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' " >'
 			day_events += "                        "
-			day_events += '    <div class="dayview-cell-title" onclick=move(' + element.id + ')>' + element.title + '</div>'
+			day_events += '    <div id="event_title" class="dayview-cell-title" onclick=move(' + element.id + ')>' + element.title + '</div>'
 			day_events += "                        "
-			day_events += '    <div class="dayview-cell-time" onclick=move(' + element.id + ')> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
+			day_events += '    <div id="event_date" class="dayview-cell-time" onclick=move(' + element.id + ')> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
 			day_events += '    <div class="dayview-cell-time" style="padding-left: 5px;"> <i class="fa fa-trash-o" aria-hidden="true" id="delete_event" onclick="delete_event(' + element.id + ')"></i></div>'
 			day_events += "                        "
 			day_events += '    <div class="dayview-cell-desc">' + element.description + '</div>'
@@ -92,8 +92,8 @@ function day_view(date) {
 
 		// /event/meeting/
 		const html_text = 
-			' <a href="/event/create/' + date + '" id="plus_link"> <i class="fa fa-plus-circle" aria-hidden="true"></i> <span class="tooltiptext">Create New Event</span></a>' +
-			' <a href="/event/create/' + date + '" id="date_plus_link"> <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> <span class="tooltiptext">Create New Meeting</span></a>' +
+			' <a href="/event/create/' + date + '" id="plus_link"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>' +
+			' <a href="/event/create/' + date + '" id="date_plus_link"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></a>' +
 			'<div class="dayview-container">' +
 			'    <div class="dayview-timestrings">' +
 			'        <div class="dayview-timestrings">' +
@@ -127,5 +127,21 @@ function day_view(date) {
 		})
 
 		set_line(date);
+
+		tippy('#plus_link', {
+			content: 'Create New Event',
+		});
+		tippy('#date_plus_link', {
+			content: 'Create New Meeting',
+		});
+		tippy('#delete_event', {
+			content: 'Delete Event',
+		});
+		tippy('#event_title', {
+			content: 'Edit Event',
+		});
+		tippy('#event_date', {
+			content: 'Edit Event',
+		});
 	})
 }

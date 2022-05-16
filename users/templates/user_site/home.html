@@ -88,22 +88,19 @@
     </div>
     <div style="display: inline;">
         <div class="table-icon" id="right-arrow">
-            <a href="/main/{{ next_date }}" style="color: white;">
+            <a href="/main/{{ next_date }}" style="color: white;" id="next_month">
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </a>
-            <span class="tooltiptext">Next Month</span>
         </div>
         <div class="table-icon" id="left-arrow">
-            <a href="/main/{{ previous_date }}" style="color: black;">
+            <a href="/main/{{ previous_date }}" style="color: black;" id="previous_month">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
-            <span class="tooltiptext">Previous Month</span>
         </div>
         <div class="table-icon" id="plus">
-            <a href="{% url 'create_event' %}" style="color: black;">
+            <a href="{% url 'create_event' %}" style="color: black;" id="create_event">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </a>
-            <span class="tooltiptext">Create New Event</span>
         </div>
         <div class="table-icon" id="plus">
             <a href="{% url 'create_meeting' %}" style="color: black;">
@@ -111,7 +108,7 @@
             </a>
         </div>
         <div class="table-icon" id="credit">
-            <a href="/admin" style="color: white;">
+            <a href="/admin" style="color: white;" id="admin">
                 <i class="fa fa-user-secret" aria-hidden="true"></i>
             </a>
         </div>
@@ -156,6 +153,21 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        tippy('#next_month', {
+          content: 'Next Month',
+        });
+        tippy('#previous_month', {
+          content: 'Previous Month',
+        });
+        tippy('#create_event', {
+          content: 'Create New Event',
+        });
+        tippy('#admin', {
+          content: 'Admin Page',
+        });
+      </script>
 
     {% load static %}
     <script src="{% static 'user_site/home.js' %}"></script>
