@@ -10,22 +10,6 @@ from events.tests import (  # noqa: F401
 )
 
 
-MESSAGE_0 = 'Testing 123 and a 4 and a 5.'
-JOIN_MEETING = 'Joined Meeting in {} minutes'
-SEEN_TIME_0 = datetime(2024, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-SENT_TIME_0 = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
-
-ROW_DUPLICATION_ERROR = 'notification already exists'
-PAST_DATE_TIME_ERROR = 'sent time should be bigger than the current date'
-
-
-@pytest.fixture
-def notification_0(participant0):  # noqa: F811
-    return Notification(
-        participant_id=participant0, seen_time=SEEN_TIME_0, sent_time=SENT_TIME_0, message=MESSAGE_0
-    )
-
-
 @pytest.fixture
 def persist_notification(notification_0):
     return save_notification(notification_0)
@@ -46,14 +30,6 @@ def save_notification(notification):
 @pytest.mark.django_db
 class TestNotification:
 
-    @pytest.fixture
-    def event_participant(self):
-        return EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")
-
-    @pytest.fixture
-    def notification_message(self):
-        return JOIN_MEETING.format(35)
-
     def test_persist_notification(self, persist_notification):
         assert persist_notification in Notification.objects.all()
 
@@ -70,16 +46,15 @@ class TestNotification:
                 )
             )
 
-    def test_invalid_time(self, event_participant, notification_message):
+    def test_invalid_time(self, event_participant):
         date_time_read = timezone.now()
-        date_time_sent = datetime(2000, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
 
-        with pytest.raises(IntegrityError, match=PAST_DATE_TIME_ERROR):
-            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
+        with pytest.raises(IntegrityError, match=pytest.notification_past_date_time_error):
+            create_notification(event_participant, date_time_read, pytest.invalid_date_time, pytest.message).save()
 
-    def test_duplication_of_notification(self, event_participant, notification_message):  # noqa: F811
+    def test_duplication_of_notification(self, event_participant):  # noqa: F811
         date_time_sent = datetime(2032, 2, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
         date_time_read = datetime(2033, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc)
 
-        with pytest.raises(IntegrityError, match=ROW_DUPLICATION_ERROR):
-            create_notification(event_participant, date_time_read, date_time_sent, notification_message).save()
+        with pytest.raises(IntegrityError, match=pytest.row_duplication_error):
+            create_notification(event_participant, date_time_read, date_time_sent, pytest.message).save()

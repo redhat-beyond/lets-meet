@@ -38,8 +38,9 @@ class Migration(migrations.Migration):
 
         with transaction.atomic():
             for participant_id, seen_time, sent_time, message in notification_data:
-                notification = Notification(participant_id=participant_id, seen_time=seen_time, sent_time=sent_time,
-                                            message=message)
+                notification = Notification(
+                        participant_id=participant_id, seen_time=seen_time, sent_time=sent_time, message=message
+                )
                 notification.save()
 
     operations = [

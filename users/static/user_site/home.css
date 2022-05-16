@@ -272,6 +272,11 @@ body > * {
     position: fixed;
     top: 20px;
     right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
 }
 
 #user-name {
@@ -281,3 +286,4 @@ body > * {
     top: 30px;
     right: 100px;
 }
+
