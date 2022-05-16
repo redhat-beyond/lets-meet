@@ -1,0 +1,28 @@
+body {
+    background: url("https://cdn.wallpapersafari.com/1/72/14W9Zo.jpg") no-repeat;
+    background-size: cover;
+    background-repeat: repeat;
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
+}
+
+.hidden {
+    display: none
+}
+  
+h4 {
+    color: white;
+}
+
+#create-meeting {
+    text-decoration: none;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #aae0f0;
+    border-radius: 10px;
+}
