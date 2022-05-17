@@ -103,7 +103,7 @@
             </a>
         </div>
         <div class="table-icon" id="plus">
-            <a href="{% url 'create_meeting' %}" style="color: black;">
+            <a href="{% url 'create_meeting' %}" style="color: black;" id="create_meeting">
                 <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
             </a>
         </div>
@@ -163,6 +163,9 @@
         });
         tippy('#create_event', {
           content: 'Create New Event',
+        });
+        tippy('#create_meeting', {
+          content: 'Create New Meeting',
         });
         tippy('#admin', {
           content: 'Admin Page',
