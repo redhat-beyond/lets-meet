@@ -158,7 +158,7 @@ class CreateMeetingView(TemplateView):
         self.meeting_participants_formset = self.MeetingParticipantsFormset(prefix='participants', user_id=request.user)
         return super().get(request)
 
-    def post(self, request):
+    def post(self, request, day=None, month=None, year=None):
         self.create_event_form = EventCreationForm(request.POST, user_id=request.user)
         self.optional_meetings_formset = self.OptionalMeetingDateFormSet(request.POST, prefix='optional_meetings')
         self.meeting_participants_formset = self.MeetingParticipantsFormset(

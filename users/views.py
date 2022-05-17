@@ -149,6 +149,7 @@ class MainPageView(TemplateView):
             'calendar': self.get_calendar_days(self.year, self.month),
             'previous_date': self.get_dates(self.year, self.month, False),
             'current_events': Event.objects.get_all_user_events(self.user),
+            'current_meetings': Event.objects.get_all_user_meetings(self.user),
             'current_date': (datetime.now().year, datetime.now().month, datetime.now().day),
             'week_days': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         }
