@@ -41,12 +41,6 @@ class OptionalMeetingDates(models.Model):
                                     name='unique optional meeting')
         ]
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['event_creator_id', 'date_time_start', 'date_time_end'],
-                                    name='unique optional meeting')
-        ]
-
     objects = PossibleMeetingManager()
 
     def __str__(self) -> str:

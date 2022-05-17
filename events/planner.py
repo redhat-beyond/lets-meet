@@ -1,4 +1,3 @@
-import email
 from functools import reduce
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -14,7 +13,7 @@ class EventPlanner():
         self.chosen_meeting_date = None
         self.participants_names_who_can_meet = ""
         self.participants_names_who_cant_meet = ""
-        self.event_participants_who_can_meet = []  # type of event participant
+        self.event_participants_who_can_meet = []      # type of event participant
         self.event_participants_who_can_not_meet = []  # type of event participant
         self.all_meeting_participants = (
             EventParticipant.objects.get_an_event_participants_without_creator(self.event_id)

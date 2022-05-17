@@ -75,24 +75,3 @@ class TestMeeting():
         event = Event.objects.get(title=event_title)
         OptionalMeetingDates.objects.remove_all_possible_dates(event)
         assert expected_meeting_results not in list(OptionalMeetingDates.objects.all())
-
-    def test_duplicate_possible_meeting(self):
-        participant_event3_creator = EventParticipant.objects.get(event_id__title="event3", is_creator=True)
-        date_time_start = datetime(2023, 1, 24, 13, 13, 13, 0, tzinfo=timezone.utc)
-        date_time_end = datetime(2023, 1, 24, 15, 15, 15, 0, tzinfo=timezone.utc)
-
-        with pytest.raises(IntegrityError):
-            OptionalMeetingDates(
-                event_creator_id=participant_event3_creator,
-                date_time_start=date_time_start,
-                date_time_end=date_time_end
-            ).save()
-
-    def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
-        event = Event.objects.get(title=event_title)
-        assert expected_meeting_results == list(OptionalMeetingDates.objects.get_all_event_dates(event))
-
-    def test_remove_all_possible_dates(self, expected_meeting_results, event_title="event3"):
-        event = Event.objects.get(title=event_title)
-        OptionalMeetingDates.objects.remove_all_possible_dates(event)
-        assert expected_meeting_results not in list(OptionalMeetingDates.objects.all())
