@@ -25,9 +25,15 @@ class Migration(migrations.Migration):
                     validators=[reminders.class_models.reminder_models.validate_date])
                  ),
                 ('messages', models.TextField(blank=True, null=True)),
-                ('method', models.CharField(
-                    choices=[('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email')],
-                    default='web', max_length=3)
+                ('method',
+                    models.CharField(
+                        choices=[
+                            ('ema', 'Email'), ('web', 'Website'), ('wae', 'Website and Email'),
+                            ('run', 'Run algorithm'), ('evt', 'Voting timeout')
+                        ],
+                        default='web',
+                        max_length=3
+                    )
                  ),
                 ('participant_id', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE, to='events.eventparticipant')

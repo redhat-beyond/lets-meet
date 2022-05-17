@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from reminders.models import Reminder
+from reminders.models import Reminder, BasicReminderType
 
 
 class DataTimePickerInput(forms.DateTimeInput):
@@ -8,6 +8,7 @@ class DataTimePickerInput(forms.DateTimeInput):
 
 
 class ReminderCreationForm(ModelForm):
+    method = forms.ChoiceField(choices=BasicReminderType.choices)
 
     class Meta:
         model = Reminder
@@ -19,6 +20,7 @@ class ReminderCreationForm(ModelForm):
 
 
 class ReminderUpdateForm(ModelForm):
+    method = forms.ChoiceField(choices=BasicReminderType.choices)
 
     class Meta:
         model = Reminder
@@ -26,7 +28,7 @@ class ReminderUpdateForm(ModelForm):
         fields = '__all__'
         widgets = {
             'date_time': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             )
         }

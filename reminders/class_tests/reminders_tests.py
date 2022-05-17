@@ -79,5 +79,5 @@ class TestReminder:
         assert len(mail.outbox) == 1
 
     def test_send_reminder_email(self):
-        send_reminder_email("message", "user@mail")
+        send_reminder_email("message", EventParticipant.objects.get(id=1))
         assert len(mail.outbox) == 1

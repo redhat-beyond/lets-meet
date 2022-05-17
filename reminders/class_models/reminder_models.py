@@ -34,6 +34,12 @@ class ReminderType(models.TextChoices):
     EXPIRATION_VOTING_TIME = "evt", "Voting timeout"
 
 
+class BasicReminderType(models.TextChoices):
+    EMAIL = "ema", "Email"
+    WEBSITE = "web", "Website"
+    WEBSITE_EMAIL = "wae", "Website and Email"
+
+
 class Reminder(models.Model):
     participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
     date_time = models.DateTimeField(blank=True, null=True, validators=[validate_date])

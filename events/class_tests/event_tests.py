@@ -69,14 +69,14 @@ class TestEvent():
         result = Event.objects.get_all_meetings()
         for title_id in ['1', '3']:
             assert Event.objects.get(title=f"event{title_id}") in result
-        assert result.count() == 2
+        assert result.count() == 3
 
     def test_get_all_user_meetings(self, user_id=1):
         result = Event.objects.get_all_user_meetings(user_id)
         for title_id in ['1', '3']:
             assert Event.objects.get(title=f"event{title_id}") in result
         assert Event.objects.get(title="event2") not in result
-        assert result.count() == 2
+        assert result.count() == 3
 
     @pytest.mark.parametrize('event_title, user_id, year, month', [
         ("event1", 1, 2020, 3),

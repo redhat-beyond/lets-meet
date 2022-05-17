@@ -8,12 +8,13 @@ class Migration(migrations.Migration):
     ]
 
     def generate_possible_meeting_data(apps, schema_editor):
-        from datetime import datetime
         from django.utils import timezone
-        from events.models import OptionalMeetingDates
+        from datetime import datetime, timedelta
         from events.models import EventParticipant
+        from events.models import OptionalMeetingDates
 
         participant_event3_creator = EventParticipant.objects.get(event_id__title="event3", is_creator=True)
+        participant_event4_creator = EventParticipant.objects.get(event_id__title="event4", is_creator=True)
 
         possible_meeting_data = [
             (EventParticipant.objects.filter(is_creator=True)[0],
@@ -31,7 +32,13 @@ class Migration(migrations.Migration):
              datetime(2023, 1, 25, 20, 0, 0, 0, tzinfo=timezone.utc)),
             (participant_event3_creator,
              datetime(2023, 1, 26, 13, 0, 0, 0, tzinfo=timezone.utc),
-             datetime(2023, 1, 26, 15, 0, 0, 0, tzinfo=timezone.utc))
+             datetime(2023, 1, 26, 15, 0, 0, 0, tzinfo=timezone.utc)),
+
+            (participant_event4_creator,
+             datetime(2023, 8, 24, 13, 00, 00, 0, tzinfo=timezone.utc),
+             datetime(2023, 8, 25, 15, 15, 00, 0, tzinfo=timezone.utc))
+
+
         ]
 
         with transaction.atomic():

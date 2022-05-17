@@ -55,7 +55,7 @@ class UserAlertScheduler():
         return UserAlertScheduler.__instance
 
     @staticmethod
-    def define_logger(file=stdout, log_level=logging.INFO):
+    def define_logger(file=stdout, log_level=logging.WARNING):
         """ define the __logger object.
             file: where the logger will log all his message. default is stdout
             logger level: define which types of logger message will show up. default Warning """
@@ -236,7 +236,6 @@ class UserAlertScheduler():
             UserAlertScheduler.__current_reminder = reminder
 
             UserAlertScheduler.__logger.debug(f"the current reminder has been modified: {reminder}")
-            print(f"the current reminder has been modified: {reminder}")
 
     @staticmethod
     def __alert_user(methods, *args, **kwargs):
@@ -250,8 +249,13 @@ class UserAlertScheduler():
         UserAlertScheduler.__logger.debug("starting to loop over all the functions")
         UserAlertScheduler.__logger.debug(f"args: {args} || kwargs: {kwargs}")
 
-        for method in methods:
-            method(*args, **kwargs)
+        try:
+            for method in methods:
+                method(*args, **kwargs)
+        except Exception as error:
+            UserAlertScheduler.__logger.warning(
+                f"Exception happend when executing method of {UserAlertScheduler.method}\n {error}"
+            )
 
         # Potential Send Signal - a signal can be sent for alerting that the timer has ended
 

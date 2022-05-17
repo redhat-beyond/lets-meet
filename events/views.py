@@ -151,11 +151,10 @@ class CreateMeetingView(TemplateView):
                     is_valid_formsets = True
 
                     timeout = EventPlanner.get_timeout(event_instance)
-                    print("in views: ", timeout)
                     EventPlanner.creating_meeting_reminders(event_creator, timeout)
                     for message in EventPlanner.get_timeout_message(timeout).split("\n"):
                         messages.success(request, message)
-                    # EventPlanner.send_invite_notification(event_instance)
+                    EventPlanner.send_invite_notification(event_instance)
                     EventPlanner.send_meeting_invitation_email_to_participants(event_instance, event_creator)
                     return redirect('home')
             if not is_valid_formsets:
@@ -174,27 +173,6 @@ class CreateMeetingView(TemplateView):
         instance = form.save(commit=False)
         instance.event_creator_id = event_participant
         instance.save()
-
-    # @staticmethod
-    # def check_dates_constraint(form, event_instance, request):
-    #     """ checking if the event dates are the same as one of the optional meeting dates
-    #         and if the chosen event dates are not in the past """
-
-    #     min_time_to_set_meeting = timezone.now() + timedelta(minutes=5)
-    #     # min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
-    #     form_start_time = form.cleaned_data.get('date_time_start')
-    #     form_end_time = form.cleaned_data.get('date_time_end')
-
-    #     if(event_instance.date_time_start, event_instance.date_time_end) == (form_start_time, form_end_time):
-    #         messages.warning(request, "The optional meeting dates should be different")
-    #         return True
-    #     if event_instance.date_time_start < timezone.now() or event_instance.date_time_end < timezone.now():
-    #         messages.warning(request, "Optional meeting dates cannot be in the past")
-    #         return True
-    #     if event_instance.date_time_start < min_time_to_set_meeting: # check min time of 1 hour to a new meeting date
-    #         messages.warning(request, "Meeting can be set only one hour later from now")
-    #         return True
-    #     return False
 
     @staticmethod
     def get_formset_meeting_date(formset):
