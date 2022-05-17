@@ -90,10 +90,10 @@ function day_view(date) {
 			day_events += '</div>'
 		});
 
-		// /event/meeting/
+
 		const html_text = 
 			' <a href="/event/create/' + date + '" id="plus_link"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>' +
-			' <a href="/event/create/' + date + '" id="date_plus_link"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></a>' +
+			' <a href="/event/meeting/' + date + '" id="date_plus_link"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></a>' +
 			'<div class="dayview-container">' +
 			'    <div class="dayview-timestrings">' +
 			'        <div class="dayview-timestrings">' +

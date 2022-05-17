@@ -141,8 +141,19 @@ class CreateMeetingView(TemplateView):
         }
         return context
 
-    def get(self, request):
-        self.create_event_form = EventCreationForm(user_id=request.user)
+    def get(self, request, day=None, month=None, year=None):
+        initial_state = None
+
+        if day and month and year:
+            current_time = datetime.now().time()
+
+            initial_state = {
+                'date_time_start': datetime(
+                                        int(year), int(month), int(day), current_time.hour, current_time.minute
+                                    ).strftime("%Y-%m-%dT%H:%M")
+            }
+
+        self.create_event_form = EventCreationForm(user_id=request.user, initial=initial_state)
         self.optional_meetings_formset = self.OptionalMeetingDateFormSet(prefix='optional_meetings')
         self.meeting_participants_formset = self.MeetingParticipantsFormset(prefix='participants', user_id=request.user)
         return super().get(request)
