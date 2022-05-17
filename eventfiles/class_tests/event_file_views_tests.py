@@ -6,6 +6,8 @@ from pytest_django.asserts import assertTemplateUsed
 from django.urls import reverse
 from eventfiles.models import EventFile
 
+DOWNLOAD_FILE_URL = '/file/event_file/download/'
+LOGIN_URL = 'login/register_login.html'
 FILE_CREATION_URL = '/file/event_file'
 INVALID_FILE_CREATION_URL = '/file/event_file/8'
 FILE_CREATION_HTML_PATH = "file/event_files.html"
@@ -66,20 +68,20 @@ class TestEventFileFormView:
         assertTemplateUsed(response, 'login/register_login.html')
 
     def test_all_event_files_are_shown_and_downloadable(self, sign_in_with_user2, client):
-        char_content = self.get_char_content_from_eventfile_html(client)
+        char_content = TestEventFileFormView.get_char_content_from_eventfile_html(client)
         all_file_in_event1 = EventFile.objects.get_files_by_event(EVENT_ID)
         for file in all_file_in_event1:
             assert f'{file}' in char_content
             assert f'{DOWNLOAD_FILE_FROM_EVENT_URL}{file}' in char_content
-            response = client.get('/file/event_file/download/', {'event': EVENT_ID, 'file_name': f'{file}'})
+            response = client.get(DOWNLOAD_FILE_URL, {'event': EVENT_ID, 'file_name': f'{file}'})
             assert response.status_code == 200
-            downloaded_file = self.get_file_name_from_response(response)
+            downloaded_file = TestEventFileFormView.get_file_name_from_response(response)
             assert f'{file}' in downloaded_file
 
     def test_delete_button_visible_for_file_user_created(self, sign_in_with_user2, client):
         """ test that an ordinary user can delete only files he created """
-        char_content = self.get_char_content_from_eventfile_html(client)
-        found_file1, found_file3 = self.find_testfile1_and_testfile3(char_content)
+        char_content = TestEventFileFormView.get_char_content_from_eventfile_html(client)
+        found_file1, found_file3 = TestEventFileFormView.find_testfile1_and_testfile3(char_content)
         assert found_file3 and not found_file1
 
     def test_unauthorized_user_delete(self, sign_in_with_user2, client):
@@ -92,20 +94,20 @@ class TestEventFileFormView:
 
     def test_all_delete_buttons_visible_for_event_creator(self, sign_in_with_creator, client):
         """ test that the event creator can delete all files """
-        char_content = self.get_char_content_from_eventfile_html(client)
-        found_file1, found_file3 = self.find_testfile1_and_testfile3(char_content)
+        char_content = TestEventFileFormView.get_char_content_from_eventfile_html(client)
+        found_file1, found_file3 = TestEventFileFormView.find_testfile1_and_testfile3(char_content)
         assert found_file3 and found_file1
 
     def test_event_creator_delete_any_file(self, sign_in_with_creator, client):
         client.get(DELETE_USER2_FILE_URL)
-        assert not EventFile.objects.all().filter(id=FILE_CREATED_BY_USER2).exists()
+        assert not EventFile.objects.filter(id=FILE_CREATED_BY_USER2).exists()
 
     def test_unsigned_user_delete(self, client):
         response = client.get(DELETE_USER2_FILE_URL)
         assert response.status_code == 302
         response = client.get(response.url)
         assert response.status_code == 200
-        assertTemplateUsed(response, 'login/register_login.html')
+        assertTemplateUsed(response, LOGIN_URL)
 
     def test_redirection_to_file_page_after_delete(self, sign_in_with_user2, client):
         response = client.get(DELETE_USER2_FILE_URL)
@@ -114,15 +116,18 @@ class TestEventFileFormView:
         assert response.status_code == 200
         assertTemplateUsed(response, FILE_CREATION_HTML_PATH)
 
-    def get_file_name_from_response(self, response):
+    @staticmethod
+    def get_file_name_from_response(response):
         header = response.headers
         return header['Content-Disposition']
 
-    def get_char_content_from_eventfile_html(self, client):
+    @staticmethod
+    def get_char_content_from_eventfile_html(client):
         response = client.get(reverse("event_files", args=[EVENT_ID]))
         return response.content.decode(response.charset)
 
-    def find_testfile1_and_testfile3(self, char_content):
+    @staticmethod
+    def find_testfile1_and_testfile3(char_content):
         found_file3 = re.search(f'delete testFile{FILE_CREATED_BY_USER2}', char_content)
         found_file1 = re.search(f'delete testFile{FILE_CREATED_BY_EVENT_CREATOR}', char_content)
         return found_file1, found_file3
