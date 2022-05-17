@@ -1,19 +1,12 @@
 import pytest
 from users.models import User
-from events.models import Event, Colors, EventParticipant, OptionalMeetingDates
+from events.models import Event, EventParticipant, OptionalMeetingDates
 from events.views import CreateMeetingView
-from events.tests import valid_event_data  # noqa: F401
+from events.tests import valid_event_data, EVENT_DATE_TIME_START, EVENT_DATE_TIME_END  # noqa: F401
 from events.forms import EventCreationForm
 from datetime import datetime
 from django.utils import timezone
 from pytest_django.asserts import assertTemplateUsed
-
-TITLE = 'new_form'
-LOCATION = 'new_form_location'
-DESCRIPTION = 'new_form_description'
-EVENT_DATE_TIME_START = datetime(2023, 11, 11, 12, 12, 12, 0, tzinfo=timezone.utc)
-EVENT_DATE_TIME_END = datetime(2023, 11, 11, 14, 12, 12, 0, tzinfo=timezone.utc)
-COLOR = Colors.BLACK
 
 OPTIONAL_MEETING_DATE_START = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 OPTIONAL_MEETING_DATE_END = datetime(2023, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
@@ -60,7 +53,7 @@ class TestCreateMeetingForm:
         view = TestCreateMeetingForm.create_meeting_view(user_id, valid_event_data, valid_optional_meeting_data,
                                                          valid_participant_data)
         assert request.status_code == 200
-        assert not view.create_event_form.is_valid()
+        assert view.create_event_form.is_valid()
         event_instance = view.create_event_form.save()
         event_creator = EventParticipant.objects.get(event_id=event_instance, user_id=user_id)
         TestCreateMeetingForm.assert_validation_on_formset(event_creator, event_instance, request, view)
