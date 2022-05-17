@@ -119,6 +119,7 @@ class TestEventFileFormView:
         assert response.status_code == 200
         assertTemplateUsed(response, FILE_CREATION_HTML_PATH)
 
+    #
     def get_file_name_from_response(self, response):
         header = response.headers
         return header['Content-Disposition']
