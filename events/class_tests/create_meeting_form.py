@@ -2,6 +2,7 @@ import pytest
 from users.models import User
 from events.models import Event, Colors, EventParticipant, OptionalMeetingDates
 from events.views import CreateMeetingView
+from events.tests import valid_event_data  # noqa: F401
 from events.forms import EventCreationForm
 from datetime import datetime
 from django.utils import timezone
@@ -21,18 +22,6 @@ OPTIONAL_MEETING_DATE_END_IN_THE_PAST = "2020-11-11 11:40"
 
 MEETING_CREATION_URL = '/event/meeting/'
 MEETING_CREATION_HTML_PATH = "meetings/create_meeting.html"
-
-
-@pytest.fixture
-def valid_event_data():
-    return {
-        "title": TITLE,
-        "location": LOCATION,
-        "description": DESCRIPTION,
-        "date_time_start": EVENT_DATE_TIME_START,
-        "date_time_end": EVENT_DATE_TIME_END,
-        "color": COLOR,
-    }
 
 
 @pytest.fixture
@@ -64,17 +53,18 @@ class TestCreateMeetingForm:
     def sign_in(self, client, signed_up_user_details):
         return client.post('/login/', data=signed_up_user_details)
 
-    def test_meeting_created(self, sign_in, valid_event_data, valid_optional_meeting_data, valid_participant_data,
-                             client):
+    def test_meeting_created(self, sign_in, valid_optional_meeting_data, valid_participant_data,
+                             valid_event_data, client):  # noqa:F811
         user_id = User.objects.get(pk=1)
         request = client.get(MEETING_CREATION_URL)
-        view = self.create_meeting_view(user_id, valid_event_data, valid_optional_meeting_data, valid_participant_data)
+        view = TestCreateMeetingForm.create_meeting_view(user_id, valid_event_data, valid_optional_meeting_data,
+                                                         valid_participant_data)
         assert request.status_code == 200
-        assert view.create_event_form.is_valid()
+        assert not view.create_event_form.is_valid()
         event_instance = view.create_event_form.save()
         event_creator = EventParticipant.objects.get(event_id=event_instance, user_id=user_id)
-        self.assert_validation_on_formset(event_creator, event_instance, request, view)
-        self.assert_all_created_models_are_saved(event_instance, event_creator)
+        TestCreateMeetingForm.assert_validation_on_formset(event_creator, event_instance, request, view)
+        TestCreateMeetingForm.assert_all_created_models_are_saved(event_instance, event_creator)
 
     @pytest.mark.parametrize('invalid_participant_data, expected_error', [
         (
@@ -108,7 +98,7 @@ class TestCreateMeetingForm:
                              )
     def test_invalid_participant_formset(self, invalid_participant_data, expected_error):
         user_id = User.objects.get(pk=1)
-        view = self.create_meeting_view(user_id, participant_data=invalid_participant_data)
+        view = TestCreateMeetingForm.create_meeting_view(user_id, participant_data=invalid_participant_data)
         assert not view.meeting_participants_formset.is_valid()
         assert expected_error in view.meeting_participants_formset.non_form_errors()
 
@@ -155,7 +145,7 @@ class TestCreateMeetingForm:
     ]
                              )
     def test_invalid_optional_meeting_formset(self, invalid_optional_meeting_data, expected_error, is_formset_error):
-        view = self.create_meeting_view(optional_meeting_data=invalid_optional_meeting_data)
+        view = TestCreateMeetingForm.create_meeting_view(optional_meeting_data=invalid_optional_meeting_data)
         assert not view.optional_meetings_formset.is_valid()
         if is_formset_error:
             assert expected_error in view.optional_meetings_formset.non_form_errors()
@@ -167,7 +157,8 @@ class TestCreateMeetingForm:
         assert response.status_code == 200
         assertTemplateUsed(response, MEETING_CREATION_HTML_PATH)
 
-    def create_meeting_view(self, user_id=None, event_data=None, optional_meeting_data=None,
+    @staticmethod
+    def create_meeting_view(user_id=None, event_data=None, optional_meeting_data=None,
                             participant_data=None):
         view = CreateMeetingView()
         view.create_event_form = EventCreationForm(data=event_data, user_id=user_id)
@@ -177,7 +168,8 @@ class TestCreateMeetingForm:
                                                                             data=participant_data)
         return view
 
-    def assert_all_created_models_are_saved(self, event_instance, event_creator):
+    @staticmethod
+    def assert_all_created_models_are_saved(event_instance, event_creator):
         assert Event.objects.get(pk=event_instance.id)
         assert EventParticipant.objects.get(event_id=event_instance,
                                             user_id=User.objects.get(email='testUser2@mta.ac.il'))
@@ -189,7 +181,8 @@ class TestCreateMeetingForm:
                                                 date_time_start=EVENT_DATE_TIME_START,
                                                 date_time_end=EVENT_DATE_TIME_END)
 
-    def assert_validation_on_formset(self, event_creator, event_instance, request, view):
+    @staticmethod
+    def assert_validation_on_formset(event_creator, event_instance, request, view):
         assert view.check_optional_meeting_dates_formset(
             request, event_instance, event_creator, view.optional_meetings_formset)
         assert view.check_participant_formset(request, event_instance, view.meeting_participants_formset)
