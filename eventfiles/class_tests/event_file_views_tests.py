@@ -66,8 +66,7 @@ class TestEventFileFormView:
         assertTemplateUsed(response, 'login/register_login.html')
 
     def test_all_event_files_are_shown_and_downloadable(self, sign_in_with_user2, client):
-        response = client.get(reverse("event_files", args=[EVENT_ID]))
-        char_content = response.content.decode(response.charset)
+        char_content = self.get_char_content_from_eventfile_html(client)
         all_file_in_event1 = EventFile.objects.get_files_by_event(EVENT_ID)
         for file in all_file_in_event1:
             assert f'{file}' in char_content
@@ -121,8 +120,7 @@ class TestEventFileFormView:
 
     def get_char_content_from_eventfile_html(self, client):
         response = client.get(reverse("event_files", args=[EVENT_ID]))
-        char_content = response.content.decode(response.charset)
-        return char_content
+        return response.content.decode(response.charset)
 
     def find_testfile1_and_testfile3(self, char_content):
         found_file3 = re.search(f'delete testFile{FILE_CREATED_BY_USER2}', char_content)
