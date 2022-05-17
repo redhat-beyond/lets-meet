@@ -66,30 +66,50 @@ function delete_event(event_id) {
 	  })
 }
 
-function day_view(date) {
+function create_events(events, isOptionalDate) {
 	let day_events = "";
-	$.get("/get_day_events/" + date, {}, function(data, status) {
-		data.forEach(element => {
-			let start_hour =  get_time_height(parseInt(element.start_hour), parseInt(element.start_minute));
-			let end_hour =  get_time_height(parseInt(element.end_hour), parseInt(element.end_minute));
 
-			if (start_hour === end_hour) {
-				end_hour += 3;
-			}
+	events.forEach(element => {
+		let start_hour =  get_time_height(parseInt(element.start_hour), parseInt(element.start_minute));
+		let end_hour =  get_time_height(parseInt(element.end_hour), parseInt(element.end_minute));
 
-			day_events += "                        "
-			day_events += '<div id="item' + element.id + '" class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; background-color: ' + element.color + ' " >'
-			day_events += "                        "
-			day_events += '    <div id="event_title" class="dayview-cell-title" onclick=move(' + element.id + ')>' + element.title + '</div>'
-			day_events += "                        "
-			day_events += '    <div id="event_date" class="dayview-cell-time" onclick=move(' + element.id + ')> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
+		if (start_hour === end_hour) {
+			end_hour += 3;
+		}
+
+		day_events += "                        "
+		day_events += '<div id="item' + element.id + '" class="dayview-cell" style="grid-row: ' + String(start_hour) + ' / ' + String(end_hour) + '; '
+
+		if (isOptionalDate) {
+			day_events += ' background-color: transparent; outline: 4px solid ' + element.color + '; color: black;" >';
+		}
+		else {
+			day_events += 'background-color: ' + element.color + ' " >';
+		}
+
+		day_events += "                        "
+		day_events += '    <div id="event_title" class="dayview-cell-title" onclick=move(' + element.id + ')>' + element.title + '</div>'
+		day_events += "                        "
+		day_events += '    <div id="event_date" class="dayview-cell-time" onclick=move(' + element.id + ')> ' + element.date_time_start + ' - ' + element.date_time_end + '</div>'
+
+		if (!isOptionalDate) {
 			day_events += '    <div class="dayview-cell-time" style="padding-left: 5px;"> <i class="fa fa-trash-o" aria-hidden="true" id="delete_event" onclick="delete_event(' + element.id + ')"></i></div>'
-			day_events += "                        "
-			day_events += '    <div class="dayview-cell-desc">' + element.description + '</div>'
-			day_events += "                        "
-			day_events += '</div>'
-		});
+		}
 
+		day_events += "                        "
+		day_events += '    <div class="dayview-cell-desc">' + element.description + '</div>'
+		day_events += "                        "
+		day_events += '</div>'
+	});
+
+	return day_events;
+}
+
+function day_view(date) {
+	$.get("/get_day_events/" + date, {}, function(data, status) {
+		let day_events = create_events(data["events"], false);
+		let day_meetings = create_events(data["meetings"], false);
+		let day_optional_dates = create_events(data["optional_dates"], true);
 
 		const html_text = 
 			' <a href="/event/create/' + date + '" id="plus_link"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>' +
@@ -110,6 +130,8 @@ function day_view(date) {
 			'            <div class="dayview-gridcell-container">' +
 			'                <div class="dayview-gridcell">' +
 			day_events +
+			day_meetings +
+			day_optional_dates +
 			'                </div>' +
 			'            </div>' +
 			'            <div class="dayview-grid-marker-end"></div>' +

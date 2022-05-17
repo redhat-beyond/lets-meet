@@ -1,12 +1,12 @@
 from datetime import datetime
 from calendar import Calendar
 from users.models import User
-from events.models import Event
 from django.contrib import messages
 from django.http import JsonResponse
 from main.utilities import time_format
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
+from events.models import Event, OptionalMeetingDates
 from django.contrib.auth.decorators import login_required
 from users.forms import MyUserCreationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
@@ -91,14 +91,70 @@ def update_user(request):
 
 @login_required(login_url="login")
 def get_day_events(request, day, month, year):
+    def convert_events(event_list):
+        events = list()
+        for event in event_list:
+            events.append(
+                { 'id' : event.id,
+                  'title': event.title,
+                  'date_time_start': event.date_time_start,
+                  'date_time_end': event.date_time_end,
+                  'color': event.color,
+                  'description': event.description }
+            )
+        return events
+
+    def check_date(start_date, end_date):
+        return start_date <= datetime(year, month, day).date() <= end_date
+
+    def check_event(event):
+        return check_date(event.date_time_start.date(), event.date_time_end.date())
+    
+    def check_optional_meeting(meeting):
+        return check_date(meeting["date_time_start"].date(), meeting["date_time_end"].date())
+
     day, month, year = int(day), int(month), int(year)
-    result = list(
+    result = {"events" : list(), "meetings" : list(), "optional_dates" : list()}
+    result["events"] = list(
         Event.objects.get_all_user_day_events(
             request.user, datetime(year, month, day)
         ).values('id', 'title', 'date_time_start', 'date_time_end', 'color', 'description')
     )
 
-    for event in result:
+    result["events"] = fix_events(
+        list(
+            Event.objects.get_all_user_day_events(
+                request.user, datetime(year, month, day)
+            ).values('id', 'title', 'date_time_start', 'date_time_end', 'color', 'description')
+        )
+    )
+
+    result["meetings"] = fix_events((
+        convert_events(
+            list(
+                filter(
+                    check_event,
+                    MainPageView.get_set_meetings(request.user)
+                )
+            )
+        )
+    ))
+
+    result["optional_dates"] = fix_events((
+        list (
+            filter(
+                check_optional_meeting,
+                MainPageView.get_optional_meetings(Event.objects.get_all_user_meetings(request.user))
+            )
+        )
+    ))
+
+    return JsonResponse(result, safe=False)
+
+
+def fix_events(events_list):
+
+    for event in events_list:
         event["date_time_end"] = time_format(event["date_time_end"]).split(" ")[1]
         event["date_time_start"] = time_format(event["date_time_start"]).split(" ")[1]
         event["end_hour"] = event['date_time_end'].split(":")[0]
@@ -106,7 +162,7 @@ def get_day_events(request, day, month, year):
         event["end_minute"] = event['date_time_end'].split(":")[1]
         event["start_minute"] = event['date_time_start'].split(":")[1]
 
-    return JsonResponse(result, safe=False)
+    return events_list
 
 
 class MainPageView(TemplateView):
@@ -144,12 +200,13 @@ class MainPageView(TemplateView):
             'max_padding': table_measurements[3],
             'current_meetings': current_meetings,
             'max_margin_events': table_measurements[2],
+            'current_meetings': self.get_set_meetings(self.user),
             'month_name': self.get_current_month_name(self.month),
             'next_date': self.get_dates(self.year, self.month, True),
             'calendar': self.get_calendar_days(self.year, self.month),
             'previous_date': self.get_dates(self.year, self.month, False),
             'current_events': Event.objects.get_all_user_events(self.user),
-            'current_meetings': Event.objects.get_all_user_meetings(self.user),
+            'all_possible_dates': self.get_optional_meetings(current_meetings),
             'current_date': (datetime.now().year, datetime.now().month, datetime.now().day),
             'week_days': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         }
@@ -165,6 +222,35 @@ class MainPageView(TemplateView):
             self.month = int(month)
 
         return super().get(request)
+    
+    @staticmethod
+    def get_set_meetings(user):
+        set_meetings = list()
+        all_user_meetings = Event.objects.get_all_user_meetings(user)
+        print("@"* 45)
+        print(all_user_meetings)
+
+        for meeting in all_user_meetings:
+            if not OptionalMeetingDates.objects.get_all_event_dates(meeting).count():  # eq to 0
+                set_meetings.append(meeting)
+
+        return set_meetings
+
+    @staticmethod
+    def get_optional_meetings(current_meetings):
+        all_possible_dates = []
+
+        for meeting in current_meetings:
+            optional_meetings = OptionalMeetingDates.objects.get_all_event_dates(meeting)
+            for optional_meeting in optional_meetings:
+                event_dict = {'id': optional_meeting.event_creator_id.event_id.id,
+                              'title': optional_meeting.event_creator_id.event_id.title,
+                              'date_time_start': optional_meeting.date_time_start,
+                              'date_time_end': optional_meeting.date_time_end,
+                              'color': optional_meeting.event_creator_id.event_id.color }
+                all_possible_dates.append(event_dict)
+
+        return all_possible_dates
 
     @staticmethod
     def get_dates(year=None, month=None, next=True):

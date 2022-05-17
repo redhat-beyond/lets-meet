@@ -157,6 +157,17 @@
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
+
+                            {% for event in all_possible_dates %}
+                                {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
+                                    {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
+                                        <div class="square" id="event{{ event.id }}"
+                                            style="outline: 4px solid {{ event.color }}; color: black; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                            {{ event.title }}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
                             </div> 
                         </td>
                     {% endfor %}

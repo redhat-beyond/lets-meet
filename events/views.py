@@ -42,9 +42,6 @@ def create_event(request, day=None, month=None, year=None):
                 reminder.participant_id = participant
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
-
-            title = event_form.cleaned_data.get('title')
-            messages.success(request, f'Event: {title} created!')
             return redirect(HOME_PAGE)
     else:
         initial_state = None
