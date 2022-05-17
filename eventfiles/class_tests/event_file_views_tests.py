@@ -79,8 +79,7 @@ class TestEventFileFormView:
 
     def test_delete_button_visible_for_file_user_created(self, sign_in_with_user2, client):
         """ test that an ordinary user can delete only files he created """
-        response = client.get(reverse("event_files", args=[EVENT_ID]))
-        char_content = response.content.decode(response.charset)
+        char_content = self.get_char_content_from_eventfile_html(client)
         found_file3 = re.search(f'delete testFile{FILE_CREATED_BY_USER2}', char_content)
         found_file1 = re.search(f'delete testFile{FILE_CREATED_BY_EVENT_CREATOR}', char_content)
         assert found_file3 and not found_file1
@@ -95,8 +94,7 @@ class TestEventFileFormView:
 
     def test_all_delete_buttons_visible_for_event_creator(self, sign_in_with_creator, client):
         """ test that the event creator can delete all files """
-        response = client.get(reverse("event_files", args=[EVENT_ID]))
-        char_content = response.content.decode(response.charset)
+        char_content = self.get_char_content_from_eventfile_html(client)
         found_file3 = re.search(f'delete testFile{FILE_CREATED_BY_USER2}', char_content)
         found_file1 = re.search(f'delete testFile{FILE_CREATED_BY_EVENT_CREATOR}', char_content)
         assert found_file3 and found_file1
@@ -119,7 +117,11 @@ class TestEventFileFormView:
         assert response.status_code == 200
         assertTemplateUsed(response, FILE_CREATION_HTML_PATH)
 
-    #
     def get_file_name_from_response(self, response):
         header = response.headers
         return header['Content-Disposition']
+
+    def get_char_content_from_eventfile_html(self, client):
+        response = client.get(reverse("event_files", args=[EVENT_ID]))
+        char_content = response.content.decode(response.charset)
+        return char_content
