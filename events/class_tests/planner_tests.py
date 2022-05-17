@@ -1,4 +1,3 @@
-from pydoc import resolve
 import pytest
 from django.core import mail
 from users.models import User
@@ -22,7 +21,7 @@ class TestEventPlanner:
     @pytest.fixture(autouse=True)
     def email_backend_setup(self):
         settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-    
+
     @pytest.fixture
     def signed_up_user_details(self):
         return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
@@ -30,7 +29,7 @@ class TestEventPlanner:
     @pytest.fixture
     def sign_in(self, client, signed_up_user_details):
         return client.post('/login/', data=signed_up_user_details)
-    
+
     @pytest.fixture
     def valid_meeting_data(self):
         return {
@@ -45,12 +44,12 @@ class TestEventPlanner:
             'participants-0-participant_email': "testUser2@mta.ac.il"
         }
 
-    def create_meeting(self, date_time_start):
+    def create_meeting(self):
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         time_now = timezone.now()
         end_time = time_now + timedelta(hours=7)
-        start_time = time_now + timedelta(hours=date_time_start)
+        start_time = time_now + timedelta(hours=2)
         event = Event(
             title="test meeting",
             date_time_start=start_time,
@@ -181,15 +180,13 @@ class TestEventPlanner:
         assert mail.outbox[0].subject == "No suitable meeting found"
 
     def test_correct_calculating_timeout(self):
-        meeting_start_time = 2
-        meeting, time_now = self.create_meeting(meeting_start_time)
+        meeting, time_now = self.create_meeting()
         expected_time = time_now + timedelta(hours=1)
         res = EventPlanner.get_timeout(meeting)
         res = res.replace(microsecond=0)
         expected_time = expected_time.replace(microsecond=0)
         assert expected_time == res
 
-    
     @pytest.mark.parametrize(
         ('event_start_time, optional_meeting_start_time'),
         [
@@ -203,7 +200,8 @@ class TestEventPlanner:
             "set the event and optional meeting time less than an hour"
         ]
     )
-    def test_meeting_can_be_set_at_least_one_hour_from_current_time(self, event_start_time, optional_meeting_start_time):
+    def test_meeting_can_be_set_at_least_one_hour_from_current_time(self, event_start_time,
+                                                                    optional_meeting_start_time):
         event = self.create_event(event_start_time)
         OptionalMeetingDateFormSet = formset_factory(
             OptionalMeetingDateForm, formset=BaseOptionalMeetingDateFormSet,
@@ -217,5 +215,5 @@ class TestEventPlanner:
         }
         optional_meeting_formset = OptionalMeetingDateFormSet(data)
         optional_meeting_formset.set_event_instance(event)
-        assert optional_meeting_formset.is_valid() == False
+        assert not optional_meeting_formset.is_valid()
         assert "Meeting can be set only one hour later from now" in optional_meeting_formset.non_form_errors()

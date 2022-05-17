@@ -75,12 +75,11 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
             # Don't bother validating the formset unless each form is valid on its own
             return
 
-        # min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
-        min_time_to_set_meeting = timezone.now() + timedelta(minutes=5)
+        min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
 
-        if self.event_id.date_time_start < min_time_to_set_meeting: # check min time of 1 hour to a new meeting date
+        if self.event_id.date_time_start < min_time_to_set_meeting:  # check min time of 1 hour to a new meeting date
             raise ValidationError("Meeting can be set only one hour later from now")
-        
+
         dates = [(self.event_id.date_time_start, self.event_id.date_time_end)]
         for form in self.forms:
             if form.cleaned_data.get('date_time_start') and form.cleaned_data.get('date_time_end'):
@@ -88,7 +87,7 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
                 end_date = form.cleaned_data.get('date_time_end')
                 if (start_date, end_date) in dates:
                     raise ValidationError("The optional meeting dates should be different")
-                if start_date < min_time_to_set_meeting: # check min time of 1 hour to a new meeting date
+                if start_date < min_time_to_set_meeting:  # check min time of 1 hour to a new meeting date
                     raise ValidationError("Meeting can be set only one hour later from now")
                 dates.append((start_date, end_date))
             elif not form.cleaned_data.get('date_time_start') and not form.cleaned_data.get('date_time_end'):

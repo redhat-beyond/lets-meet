@@ -15,13 +15,17 @@ class EventPlanner():
         self.participants_names_who_can_meet = ""
         self.participants_names_who_cant_meet = ""
         self.event_participants_who_can_meet = []  # type of event participant
-        self.event_participants_who_can_not_meet = []  #type of event participant
-        self.all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(self.event_id)
+        self.event_participants_who_can_not_meet = []  # type of event participant
+        self.all_meeting_participants = (
+            EventParticipant.objects.get_an_event_participants_without_creator(self.event_id)
+        )
 
     def update_which_participants_can_and_cant_meet(self, chosen_meeting_date):
         participants_ids_who_can_meet = PossibleParticipant.objects.get_all_date_event_participants(chosen_meeting_date)
         self.event_participants_who_can_meet = self.get_participants_instances(participants_ids_who_can_meet)
-        self.event_participants_who_can_not_meet = list(set(self.all_meeting_participants).difference(self.event_participants_who_can_meet))
+        self.event_participants_who_can_not_meet = (
+            list(set(self.all_meeting_participants).difference(self.event_participants_who_can_meet))
+        )
         self.participants_names_who_can_meet = "\n".join(
             [participant.user_id.username for participant in self.event_participants_who_can_meet]
         )
@@ -42,7 +46,9 @@ class EventPlanner():
             will check if there is a possible date that works for everyone
         """
         chosen_meeting_date = None
-        participants_ids_that_can_meet = PossibleParticipant.objects.get_all_possible_participants_of_event(self.event_id)
+        participants_ids_that_can_meet = (
+            PossibleParticipant.objects.get_all_possible_participants_of_event(self.event_id)
+        )
         for possible_date in OptionalMeetingDates.objects.get_all_event_dates(self.event_id):
             participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
             if participants_amount != 0 and participants_ids_that_can_meet.count() == participants_amount:
@@ -105,7 +111,6 @@ class EventPlanner():
         message = self.get_message(meeting_creator_id)
         send_mail_notification(email_title, message, meeting_creator_id.user_id.email)
 
-    
     def get_message(self, meeting_creator_id):
         message = (f"Hi {meeting_creator_id.user_id.username}! The meeting results are here!!!"
                    f"Meeting title: {self.event_id.title}\n"
@@ -120,7 +125,7 @@ class EventPlanner():
                    f"{self.participants_names_who_cant_meet}\n")
         return message
 
-    @staticmethod    
+    @staticmethod
     def send_email_no_suitable_meeting_found(creator_id):
         email_title = "No suitable meeting found"
         message = "Unfortunately, no participant voted for the meeting and therefore no suitable meeting was found."
@@ -139,10 +144,10 @@ class EventPlanner():
             if not PossibleParticipant.objects.did_user_vote(all_possible_meetings, participant.user_id):
                 send_mail_notification(email_title, message, participant.user_id.email)
                 create_notification(message, participant)
-            
+
     @staticmethod
     def calc_last_notification(voting_timeout):
-        minutes_before_timeout = 2 #15
+        minutes_before_timeout = 15
         return voting_timeout - timedelta(minutes=minutes_before_timeout)
 
     @staticmethod
@@ -155,7 +160,8 @@ class EventPlanner():
         possible_dates = OptionalMeetingDates.objects.get_all_event_dates(meeting_id)
         min_possible_date = reduce(get_max_datetime, possible_dates)
         difference = min_possible_date.date_time_start.timestamp() - datetime.now().timestamp()
-        return datetime.fromtimestamp(datetime.now().timestamp() + (difference / 2.0)).replace(tzinfo=timezone.get_current_timezone())
+        return (datetime.fromtimestamp(datetime.now().timestamp() +
+                (difference / 2.0)).replace(tzinfo=timezone.get_current_timezone()))
 
     @staticmethod
     def get_timeout_message(voting_timeout):

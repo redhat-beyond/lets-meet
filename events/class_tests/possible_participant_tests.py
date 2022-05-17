@@ -8,9 +8,9 @@ from events.models import OptionalMeetingDates, EventParticipant, PossiblePartic
 EVENT_3_TITLE = "event3"
 ROW_DUPLICATION_ERROR = "The User is already registered in this possible meeting date"
 INVALID_PARTICIPANT_REGISTRATION = "The participant is not part of this event"
-MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 3
+MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 4
 MAX_POSSIBLE_EVENT_PARTICIPANT_ID = 8
-MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 4
+MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 5
 MAX_POSSIBLE_MEETING_PARTICIPANT_ID = 7
 
 
@@ -35,11 +35,14 @@ def get_event():
 
 @pytest.fixture
 def get_possible_event_participants():
-    return [PossibleParticipant.objects.get(id=f'{id}') for id in range(4, 8)]
+    return [PossibleParticipant.objects.get(id=f'{id}') for id in
+            range(MIN_POSSIBLE_EVENT_PARTICIPANT_ID, MAX_POSSIBLE_EVENT_PARTICIPANT_ID)]
+
 
 @pytest.fixture
 def get_possible_meeting_participants():
-    return [PossibleParticipant.objects.get(id=i) for i in range(5, 7)]
+    return [PossibleParticipant.objects.get(id=i) for i in
+            range(MIN_POSSIBLE_MEETING_PARTICIPANT_ID, MAX_POSSIBLE_MEETING_PARTICIPANT_ID)]
 
 
 @pytest.mark.django_db

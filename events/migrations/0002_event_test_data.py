@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     def generate_event_test_data(apps, schema_editor):
         from events.models import Event
         from django.utils import timezone
-        from datetime import datetime, timedelta
+        from datetime import datetime
 
         events_test_data = [
             ('event1', datetime(2022, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc),

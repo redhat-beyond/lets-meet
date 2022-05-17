@@ -1,6 +1,4 @@
 from users.models import User
-from datetime import timedelta
-from django.utils import timezone
 from django.contrib import messages
 from reminders.models import Reminder
 from events.planner import EventPlanner

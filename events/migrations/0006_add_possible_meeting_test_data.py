@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     def generate_possible_meeting_data(apps, schema_editor):
         from django.utils import timezone
-        from datetime import datetime, timedelta
+        from datetime import datetime
         from events.models import EventParticipant
         from events.models import OptionalMeetingDates
 
