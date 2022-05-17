@@ -95,12 +95,12 @@ def get_day_events(request, day, month, year):
         events = list()
         for event in event_list:
             events.append(
-                { 'id' : event.id,
-                  'title': event.title,
-                  'date_time_start': event.date_time_start,
-                  'date_time_end': event.date_time_end,
-                  'color': event.color,
-                  'description': event.description }
+                {'id': event.id,
+                 'title': event.title,
+                 'date_time_start': event.date_time_start,
+                 'date_time_end': event.date_time_end,
+                 'color': event.color,
+                 'description': event.description}
             )
         return events
 
@@ -109,12 +109,12 @@ def get_day_events(request, day, month, year):
 
     def check_event(event):
         return check_date(event.date_time_start.date(), event.date_time_end.date())
-    
+
     def check_optional_meeting(meeting):
         return check_date(meeting["date_time_start"].date(), meeting["date_time_end"].date())
 
     day, month, year = int(day), int(month), int(year)
-    result = {"events" : list(), "meetings" : list(), "optional_dates" : list()}
+    result = {"events": list(), "meetings": list(), "optional_dates": list()}
     result["events"] = list(
         Event.objects.get_all_user_day_events(
             request.user, datetime(year, month, day)
@@ -141,7 +141,7 @@ def get_day_events(request, day, month, year):
     ))
 
     result["optional_dates"] = fix_events((
-        list (
+        list(
             filter(
                 check_optional_meeting,
                 MainPageView.get_optional_meetings(Event.objects.get_all_user_meetings(request.user))
@@ -198,7 +198,6 @@ class MainPageView(TemplateView):
             'max_height': table_measurements[0],
             'max_margin': table_measurements[1],
             'max_padding': table_measurements[3],
-            'current_meetings': current_meetings,
             'max_margin_events': table_measurements[2],
             'current_meetings': self.get_set_meetings(self.user),
             'month_name': self.get_current_month_name(self.month),
@@ -222,13 +221,11 @@ class MainPageView(TemplateView):
             self.month = int(month)
 
         return super().get(request)
-    
+
     @staticmethod
     def get_set_meetings(user):
         set_meetings = list()
         all_user_meetings = Event.objects.get_all_user_meetings(user)
-        print("@"* 45)
-        print(all_user_meetings)
 
         for meeting in all_user_meetings:
             if not OptionalMeetingDates.objects.get_all_event_dates(meeting).count():  # eq to 0
@@ -247,7 +244,7 @@ class MainPageView(TemplateView):
                               'title': optional_meeting.event_creator_id.event_id.title,
                               'date_time_start': optional_meeting.date_time_start,
                               'date_time_end': optional_meeting.date_time_end,
-                              'color': optional_meeting.event_creator_id.event_id.color }
+                              'color': optional_meeting.event_creator_id.event_id.color}
                 all_possible_dates.append(event_dict)
 
         return all_possible_dates
