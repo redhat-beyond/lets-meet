@@ -24,7 +24,7 @@ def valid_event_data():
         "date_time_start": EVENT_DATE_TIME_START,
         "date_time_end": EVENT_DATE_TIME_END,
         "color": COLOR,
-    }
+        }
 
 
 @pytest.mark.django_db

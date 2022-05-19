@@ -10,11 +10,13 @@ from pytest_django.asserts import assertTemplateUsed
 
 OPTIONAL_MEETING_DATE_START = datetime(2023, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
 OPTIONAL_MEETING_DATE_END = datetime(2023, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
-OPTIONAL_MEETING_DATE_START_IN_THE_PAST = "2020-11-11 10:10"
-OPTIONAL_MEETING_DATE_END_IN_THE_PAST = "2020-11-11 11:40"
-
+OPTIONAL_MEETING_DATE_START_IN_THE_PAST = datetime(2019, 3, 24, 12, 12, 12, 0, tzinfo=timezone.utc)
+OPTIONAL_MEETING_DATE_END_IN_THE_PAST = datetime(2019, 3, 24, 14, 12, 12, 0, tzinfo=timezone.utc)
+MEETING_CREATOR_EMAIL = 'testUser1@mta.ac.il'
+USER2_EMAIL = 'testUser2@mta.ac.il'
 MEETING_CREATION_URL = '/event/meeting/'
 MEETING_CREATION_HTML_PATH = "meetings/create_meeting.html"
+LOGIN_HTML_PATH = 'login/register_login.html'
 
 
 @pytest.fixture
@@ -32,7 +34,7 @@ def valid_participant_data():
     return {
         'participants-TOTAL_FORMS': '1',
         'participants-INITIAL_FORMS': '0',
-        'participants-0-participant_email': 'testUser2@mta.ac.il',
+        'participants-0-participant_email': USER2_EMAIL,
     }
 
 
@@ -40,7 +42,7 @@ def valid_participant_data():
 class TestCreateMeetingForm:
     @pytest.fixture
     def signed_up_user_details(self):
-        return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
+        return {'email': MEETING_CREATOR_EMAIL, 'password': 'PasswordU$er123'}
 
     @pytest.fixture
     def sign_in(self, client, signed_up_user_details):
@@ -63,7 +65,7 @@ class TestCreateMeetingForm:
         (
                 # user does not exist
                 {'participants-TOTAL_FORMS': '2', 'participants-INITIAL_FORMS': '0',
-                 'participants-0-participant_email': 'testUser2@mta.ac.il',
+                 'participants-0-participant_email': USER2_EMAIL,
                  'participants-1-participant_email': 'DoesNotexist@mta.ac.il'
                  },
                 "There is not user with the email: DoesNotexist@mta.ac.il"
@@ -71,7 +73,7 @@ class TestCreateMeetingForm:
         (
                 # event creator included participant
                 {'participants-TOTAL_FORMS': '1', 'participants-INITIAL_FORMS': '0',
-                 'participants-0-participant_email': 'testUser1@mta.ac.il'},
+                 'participants-0-participant_email': MEETING_CREATOR_EMAIL},
                 "You can't add yourself as participant"
         ),
         (
@@ -150,6 +152,13 @@ class TestCreateMeetingForm:
         assert response.status_code == 200
         assertTemplateUsed(response, MEETING_CREATION_HTML_PATH)
 
+    def test_unauthorized_user_redirected_to_login_page(self, client):
+        response = client.get(MEETING_CREATION_URL)
+        assert response.status_code == 302
+        response = client.get(response.url)
+        assert response.status_code == 200
+        assertTemplateUsed(response, LOGIN_HTML_PATH)
+
     @staticmethod
     def create_meeting_view(user_id=None, event_data=None, optional_meeting_data=None,
                             participant_data=None):
@@ -165,7 +174,7 @@ class TestCreateMeetingForm:
     def assert_all_created_models_are_saved(event_instance, event_creator):
         assert Event.objects.get(pk=event_instance.id)
         assert EventParticipant.objects.get(event_id=event_instance,
-                                            user_id=User.objects.get(email='testUser2@mta.ac.il'))
+                                            user_id=User.objects.get(email=USER2_EMAIL))
         assert OptionalMeetingDates.objects.get(event_creator_id=event_creator,
                                                 date_time_start=OPTIONAL_MEETING_DATE_START,
                                                 date_time_end=OPTIONAL_MEETING_DATE_END)
