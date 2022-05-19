@@ -46,6 +46,7 @@ def pytest_configure():
     pytest.get_notification_url = '/notification/get-notification/'
     pytest.seen_notification_url = '/notification/seen-notification/{}'
 
+
 @pytest.fixture
 def signed_up_user_details():
     return {'email': 'testUser2@mta.ac.il', 'password': 'PasswordU$er456'}
