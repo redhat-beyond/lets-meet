@@ -18,15 +18,14 @@ a:active { text-decoration: none; }
 	z-index: 10;
 }
 #dialogbox{
-    z-index:99999;
+    z-index: 99999;
 	display: none;
 	position: absolute;
 	background: #000;
-	border-radius:7px;
-	width:550px;
+	border-radius: 7px;
+	width: 550px;
 	z-index: 10;
 	top: 50%;
-	left 50%;
 }
 
 .DeleteRef{
@@ -52,7 +51,6 @@ a:active { text-decoration: none; }
     letter-spacing: 1px;
     margin: 14px;
     text-decoration: none;
-
 }
 
 .YesNoButton:hover {

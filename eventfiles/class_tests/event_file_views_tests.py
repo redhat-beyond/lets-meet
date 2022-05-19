@@ -6,6 +6,8 @@ from pytest_django.asserts import assertTemplateUsed
 from django.urls import reverse
 from eventfiles.models import EventFile
 
+LOGIN_PATH = '/login/'
+
 DOWNLOAD_FILE_URL = '/file/event_file/download/'
 LOGIN_URL = 'login/register_login.html'
 FILE_CREATION_URL = '/file/event_file'
@@ -32,11 +34,11 @@ class TestEventFileFormView:
 
     @pytest.fixture
     def sign_in_with_creator(self, client, signed_up_user_details):
-        return client.post('/login/', data=signed_up_user_details)
+        return client.post(LOGIN_PATH, data=signed_up_user_details)
 
     @pytest.fixture
     def sign_in_with_user2(self, client, signed_up_user2_details):
-        return client.post('/login/', data=signed_up_user2_details)
+        return client.post(LOGIN_PATH, data=signed_up_user2_details)
 
     def test_valid_files_form(self, client, sign_in_with_creator):
         response = client.get(f'{FILE_CREATION_URL}/1')
