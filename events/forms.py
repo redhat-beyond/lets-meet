@@ -39,23 +39,77 @@ class EventCreationForm(ModelForm):
 
 class EventUpdateForm(ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        self.user_id = kwargs.pop('user_id')
-        super(EventUpdateForm, self).__init__(*args, **kwargs)
-
     class Meta:
         model = Event
         fields = '__all__'
         widgets = {
             'description': Textarea(attrs={'cols': 50, 'rows': 3}),
             'date_time_start': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             ),
             'date_time_end': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             )
+        }
+
+
+class MeetingUpdateForm(ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'description': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'date_time_start': forms.DateInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'date_time_end': forms.DateInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            )
+        }
+
+
+class SetMeetingUpdateForm(ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'description': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'date_time_start': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'date_time_end': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            )
+        }
+
+
+class ShowMeetingUpdateForm(ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'description': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'date_time_start': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'date_time_end': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'color': forms.TextInput(attrs={'readonly': 'readonly'})
         }
 
 
