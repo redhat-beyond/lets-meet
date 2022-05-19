@@ -95,7 +95,7 @@ class EventPlanner():
     def run(self):
         """ run the planner in an event.
             Find the best possible date for the meeting,
-            then excute the choice and change the DB rows accordingly.
+            then execute the choice and change the DB rows accordingly.
         """
         self.find_meeting()
         if not self.chosen_meeting_date:
@@ -111,12 +111,16 @@ class EventPlanner():
         send_mail_notification(email_title, message, meeting_creator_id.user_id.email)
 
     def get_message(self, meeting_creator_id):
+        meeting_description = (
+            f"Meeting description: {self.event_id.description}\n" if self.event_id.description != "" else ""
+        )
+        meeting_location = f"Meeting location: {self.event_id.location}\n" if self.event_id.location != "" else ""
         message = (f"Hi {meeting_creator_id.user_id.username}! The meeting results are here!!!"
                    f"Meeting title: {self.event_id.title}\n"
-                   f"Meeting description: {self.event_id.description}\n" if self.event_id.description != "" else ""
-                   f"Meeting location: {self.event_id.location}\n" if self.event_id.location != "" else ""
+                   f"{meeting_description}"
+                   f"{meeting_location}"
                    "The chosen meeting date is:\n"
-                   f"Strting date: {time_format(self.event_id.date_time_start)}\n"
+                   f"Starting date: {time_format(self.event_id.date_time_start)}\n"
                    f"Ending date: {time_format(self.event_id.date_time_end)}\n"
                    "The participant that will take part in the meeting:\n"
                    f"{self.participants_names_who_can_meet}\n"
@@ -164,7 +168,7 @@ class EventPlanner():
 
     @staticmethod
     def get_timeout_message(voting_timeout):
-        time = (voting_timeout.strftime("%Y-%m-%d %H:%M:%S"))
+        time = voting_timeout.strftime("%Y-%m-%d %H:%M:%S")
         return ("The meeting has been cerated successfully.\n"
                 "A voting email for the meeting was sent to all participants.\n"
                 f"Results about the meeting will be sent to you by email on\n{time}")
@@ -183,9 +187,8 @@ class EventPlanner():
         email_title = "Invitation to meeting"
         description = f"Description: {meeting_id.description}\n" if meeting_id.description != "" else ""
         message = (f"You have been invited to attend a meeting created by {meeting_creator.user_id.username}!\n"
-                   f"The meeting topic: {meeting_id.title}\n"
-                   f"{description}"
-                   "A notice on the website is waiting for you to vote to set a meeting date.")
+                   f"The meeting topic: {meeting_id.title}\n{description}"
+                   f"A notice on the website is waiting for you to vote to set a meeting date.")
         all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
         for participant in all_meeting_participants:
             send_mail_notification(email_title, message, participant.user_id.email)

@@ -154,7 +154,7 @@ class CreateMeetingView(TemplateView):
                         messages.success(request, message)
                     EventPlanner.send_invite_notification(event_instance)
                     EventPlanner.send_meeting_invitation_email_to_participants(event_instance, event_creator)
-                    return redirect('home')
+                    return redirect(HOME_PAGE)
             if not is_valid_formsets:
                 # getting all the data that the user entered in the forms
                 self.formset_meeting_data = self.get_formset_meeting_date(self.optional_meetings_formset)

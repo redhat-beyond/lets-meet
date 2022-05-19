@@ -7,64 +7,84 @@ from django.utils import timezone
 from django.forms import formset_factory
 from events.planner import EventPlanner
 from django.contrib.messages import get_messages
-from events.class_models.participant_model import EventParticipant
-from events.models import OptionalMeetingDates, PossibleParticipant, Event, Colors
+from events.models import (
+    OptionalMeetingDates, PossibleParticipant,
+    Event, Colors, EventParticipant
+)
 from events.forms import (
     OptionalMeetingDateForm,
     BaseOptionalMeetingDateFormSet
 )
 
+TITLE = "test meeting"
+EVENT_DATE_TIME_START = timezone.now() + timedelta(hours=2)
+EVENT_DATE_TIME_END = timezone.now() + timedelta(hours=4)
+COLOR = Colors.BLACK
+
+OPTIONAL_MEETING_DATE_START = timezone.now() + timedelta(days=1)
+OPTIONAL_MEETING_DATE_END = timezone.now() + timedelta(days=2)
+
+
+@pytest.fixture
+def valid_event_data():
+    return {
+        "title": TITLE,
+        "date_time_start": EVENT_DATE_TIME_START,
+        "date_time_end": EVENT_DATE_TIME_END,
+        "color": COLOR,
+    }
+
+
+@pytest.fixture(autouse=True)
+def email_backend_setup():
+    settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
+
+@pytest.fixture
+def signed_up_user_details():
+    return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
+
+
+@pytest.fixture
+def sign_in(client, signed_up_user_details):
+    return client.post('/login/', data=signed_up_user_details)
+
+
+@pytest.fixture
+def valid_optional_meeting_data():
+    return {
+        'optional_meetings-TOTAL_FORMS': '1',
+        'optional_meetings-INITIAL_FORMS': '0',
+        'optional_meetings-0-date_time_start': OPTIONAL_MEETING_DATE_START,
+        'optional_meetings-0-date_time_end': OPTIONAL_MEETING_DATE_END,
+    }
+
+
+@pytest.fixture
+def valid_participant_data():
+    return {
+        'participants-TOTAL_FORMS': '1',
+        'participants-INITIAL_FORMS': '0',
+        'participants-0-participant_email': 'testUser2@mta.ac.il',
+    }
+
+
+@pytest.fixture
+def valid_meeting_data(valid_event_data, valid_optional_meeting_data, valid_participant_data):
+    meeting_data = {}
+    meeting_data.update(valid_event_data)
+    meeting_data.update(valid_optional_meeting_data)
+    meeting_data.update(valid_participant_data)
+    return meeting_data
+
 
 @pytest.mark.django_db
 class TestEventPlanner:
 
-    @pytest.fixture(autouse=True)
-    def email_backend_setup(self):
-        settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-
-    @pytest.fixture
-    def signed_up_user_details(self):
-        return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
-
-    @pytest.fixture
-    def sign_in(self, client, signed_up_user_details):
-        return client.post('/login/', data=signed_up_user_details)
-
-    @pytest.fixture
-    def valid_meeting_data(self):
-        return {
-            'title': "test meeting", 'date_time_start': timezone.now() + timedelta(hours=2),
-            'date_time_end': timezone.now() + timedelta(hours=4), 'color': Colors.BLACK,
-            "optional_meetings-INITIAL_FORMS": 0,
-            "optional_meetings-TOTAL_FORMS": 1,
-            'optional_meetings-0-date_time_start': timezone.now() + timedelta(days=1),
-            'optional_meetings-0-date_time_end': timezone.now() + timedelta(days=2),
-            "participants-INITIAL_FORMS": 0,
-            "participants-TOTAL_FORMS": 1,
-            'participants-0-participant_email': "testUser2@mta.ac.il"
-        }
-
-    def create_meeting(self):
-        user1 = User.objects.get(id=1)
-        user2 = User.objects.get(id=2)
-        time_now = timezone.now()
-        end_time = time_now + timedelta(hours=7)
-        start_time = time_now + timedelta(hours=2)
-        event = Event(
-            title="test meeting",
-            date_time_start=start_time,
-            date_time_end=end_time
-        )
-        event.save()
-        creator = EventParticipant(event_id=event, user_id=user1, is_creator=True)
-        creator.save()
-        participant = EventParticipant(event_id=event, user_id=user2, is_creator=False)
-        participant.save()
-        OptionalMeetingDates(
-            event_creator_id=creator,
-            date_time_start=start_time,
-            date_time_end=end_time
-        ).save()
+    def create_meeting(self, event_start_time):
+        event, time_now = self.create_event(event_start_time)
+        creator = self.create_event_participants(event)
+        self.create_optional_meeting_date(event, creator)
         return event, time_now
 
     def create_event(self, event_start_time):
@@ -76,7 +96,24 @@ class TestEventPlanner:
             date_time_start=start_time,
             date_time_end=end_time
         )
-        return event
+        event.save()
+        return event, time_now
+
+    def create_event_participants(self, event):
+        user1 = User.objects.get(id=1)
+        user2 = User.objects.get(id=2)
+        creator = EventParticipant(event_id=event, user_id=user1, is_creator=True)
+        creator.save()
+        participant = EventParticipant(event_id=event, user_id=user2, is_creator=False)
+        participant.save()
+        return creator
+
+    def create_optional_meeting_date(self, event, creator):
+        OptionalMeetingDates(
+            event_creator_id=creator,
+            date_time_start=event.date_time_start,
+            date_time_end=event.date_time_end
+        ).save()
 
     @pytest.mark.parametrize(
         'event_title, expected_meeting_id', [
@@ -102,7 +139,7 @@ class TestEventPlanner:
             ("event3", 4, range(3, 6), range(4, 6), [6]),
             ("event1", 1, range(1, 2), range(1, 3), [])
         ],
-        ids=["excute event3", "excute event1"]
+        ids=["execute event3", "execute event1"]
     )
     def test_execute_choice(self, original_event_title, chosen_meeting_id,
                             expected_meeting_deleted_ids, expected_possible_participants_deleted_ids,
@@ -180,7 +217,8 @@ class TestEventPlanner:
         assert mail.outbox[0].subject == "No suitable meeting found"
 
     def test_correct_calculating_timeout(self):
-        meeting, time_now = self.create_meeting()
+        meeting_start_time_in_minutes = 120
+        meeting, time_now = self.create_meeting(meeting_start_time_in_minutes)
         expected_time = time_now + timedelta(hours=1)
         res = EventPlanner.get_timeout(meeting)
         res = res.replace(microsecond=0)
@@ -202,7 +240,7 @@ class TestEventPlanner:
     )
     def test_meeting_can_be_set_at_least_one_hour_from_current_time(self, event_start_time,
                                                                     optional_meeting_start_time):
-        event = self.create_event(event_start_time)
+        event, time_now = self.create_event(event_start_time)
         OptionalMeetingDateFormSet = formset_factory(
             OptionalMeetingDateForm, formset=BaseOptionalMeetingDateFormSet,
             max_num=10, extra=0
@@ -210,8 +248,8 @@ class TestEventPlanner:
         data = {
             'form-INITIAL_FORMS': 1,
             'form-TOTAL_FORMS': 1,
-            'form-0-date_time_start': timezone.now() + timedelta(minutes=optional_meeting_start_time),
-            'form-0-date_time_end': timezone.now() + timedelta(hours=3),
+            'form-0-date_time_start': time_now + timedelta(minutes=optional_meeting_start_time),
+            'form-0-date_time_end': time_now + timedelta(hours=3),
         }
         optional_meeting_formset = OptionalMeetingDateFormSet(data)
         optional_meeting_formset.set_event_instance(event)
