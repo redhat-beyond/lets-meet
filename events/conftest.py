@@ -19,10 +19,10 @@ def pytest_configure():
         pytest.current_date.year - 1, pytest.current_date.month, pytest.current_date.day, 12, 0, 0, tzinfo=timezone.utc
     )
 
-    pytest.date_time_end = datetime(
+    pytest.event_date_time_end = datetime(
         pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 14, 0, 0, tzinfo=timezone.utc
     )
-    pytest.date_time_start = datetime(
+    pytest.event_date_time_start = datetime(
         pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 13, 0, 0, tzinfo=timezone.utc
     )
     pytest.reminder_date_time = datetime(
