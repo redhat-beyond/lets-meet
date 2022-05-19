@@ -305,9 +305,9 @@ class MeetingVoteView(TemplateView):
             did_user_vote = PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)
 
             if did_user_vote:
-                return redirect(LOGIN_PAGE)
+                return redirect(HOME_PAGE)
         except Exception:
-            return redirect(LOGIN_PAGE)
+            return redirect(HOME_PAGE)
 
         return super(MeetingVoteView, self).dispatch(request, *args, **kwargs)
 
@@ -345,7 +345,7 @@ class MeetingVoteView(TemplateView):
             # send a seen request
             notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
             seen_notification(request, notification_id.id)
-            return redirect('home')
+            return redirect(HOME_PAGE)
         else:
             self.vote_form = self.VoteFormset()
 
@@ -379,6 +379,6 @@ def remove_participant_from_meeting(request, meeting_id):
         notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
         seen_notification(request, notification_id.id)
         participant.delete()
-        return redirect('home')
+        return redirect(HOME_PAGE)
     except EventParticipant.DoesNotExist:
         return HttpResponseForbidden()

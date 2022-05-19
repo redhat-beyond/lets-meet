@@ -33,14 +33,18 @@ class TestMeetingVote:
         assert response.status_code == 200
 
     @pytest.mark.parametrize(
-        ('meeting_id'),
-        [2, 3],
-        ids=["meeting 2", "meeting 3"]
+        ('meeting_id'), [
+            2, 3
+        ],
+        ids=[
+            "meeting 2: not invited to the meeting",
+            "meeting 3: user has already voted"
+        ]
     )
-    def test_get_not_my_meeting(self, client, sign_in, meeting_id):
+    def test_redirect_of_vote_page(self, client, sign_in, meeting_id):
         response = client.get(pytest.meeting_vote_url.format(meeting_id))
         assert response.status_code == 302
-        assert response.url == pytest.login_url
+        assert response.url == pytest.home_url
 
     def test_remove_participant(self, client, sign_in):
         send_invite_notification(1)
