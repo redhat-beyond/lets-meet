@@ -87,14 +87,15 @@ class TestCreateEventForm:
     def sign_in(self, client, signed_up_user_details):
         return client.post('/login/', data=signed_up_user_details)
 
-    def test_valid_delete_event(self, client, sign_in):
-        event_id = 1
+    @pytest.mark.parametrize("event_id, result", [
+            (1, "success"),
+            (2, "fail"),
+        ], ids=[
+            "test valid delete event",
+            "test invalid delete event",
+        ]
+     )
+    def test_delete_event(self, client, sign_in, event_id, result):
         response = client.get(f"/event/delete_event/{event_id}")
         assert response.status_code == 200
-        assert loads(response.content)["result"] == "success"
-
-    def test_invalid_delete_event(self, client, sign_in):
-        event_id = 2
-        response = client.get(f"/event/delete_event/{event_id}")
-        assert response.status_code == 200
-        assert loads(response.content)["result"] == "fail"
+        assert loads(response.content)["result"] == result

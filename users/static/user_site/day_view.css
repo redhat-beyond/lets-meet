@@ -40,7 +40,6 @@
 }
 .dayview-timestring {
     display: block;
-    /* color: #70757a; */
     color: white;
     font-size: 15px;
     position: relative;
@@ -48,14 +47,12 @@
 }
 .dayview-timestrings {
     position: relative;
-    /* background-color: #fff; */
     box-sizing: border-box;
     margin-left: auto;
 }
 .dayview-grid-container {
     flex: 1 1 0;
     overflow-x: auto;
-    /* overflow-y: scroll; */
     overflow-y: hidden;
     display: flex;
     align-items: flex-start;
@@ -113,7 +110,6 @@
     width: 100%;
     display: grid;
     grid-template-rows: repeat(96, 10px);
-    /* grid-template-columns: fit-content(100%); */
 }
 .dayview-cell {
     z-index: 2;
