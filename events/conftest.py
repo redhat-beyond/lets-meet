@@ -49,6 +49,6 @@ def sign_in(client, signed_up_user_details):
 
 @pytest.fixture
 def valid_event_data_and_reminder():
-    return {'title': TITLE, 'date_time_start': pytest.date_time_start,
-            'date_time_end': pytest.date_time_end, 'color': Colors.BLACK,
+    return {'title': TITLE, 'date_time_start': pytest.event_date_time_start,
+            'date_time_end': pytest.event_date_time_end, 'color': Colors.BLACK,
             'date_time': pytest.reminder_date_time, 'method': ReminderType.EMAIL}
