@@ -83,3 +83,11 @@ body {
     margin-top: 20px;
     width: 100%;
 }
+
+#remove {
+    float: right;
+    color:red;
+    font-size: 25px;
+    cursor: pointer;
+    background: linear-gradient();
+}

@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from reminders.models import Notification, Reminder
+from main.utilities import convert_time_delta, time_format
 from django.contrib.auth.decorators import login_required
 from main.utilities import convert_time_delta, time_format
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
@@ -298,13 +299,9 @@ class MeetingVoteView(TemplateView):
             return redirect(LOGIN_PAGE)
 
         try:
-            user_id = request.user
-            EventParticipant.objects.get(user_id=user_id, event_id=meeting_id)
-            self.chosen_event = Event.objects.get(id=meeting_id)
-            self.chosen_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(self.chosen_event)
-            did_user_vote = PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)
+            EventParticipant.objects.get(user_id=request.user, event_id=meeting_id)
 
-            if did_user_vote:
+            if self.check_user_auth(request.user, meeting_id):
                 return redirect(HOME_PAGE)
         except Exception:
             return redirect(HOME_PAGE)
@@ -339,8 +336,6 @@ class MeetingVoteView(TemplateView):
                     # add possible participant to this meeting date
                     participant = EventParticipant.objects.get(user_id=request.user, event_id=self.chosen_event)
                     PossibleParticipant(participant_id=participant, possible_meeting_id=meeting).save()
-                else:
-                    print(f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)} - False")
 
             # send a seen request
             notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
@@ -351,15 +346,10 @@ class MeetingVoteView(TemplateView):
 
         return self.render_to_response(self.get_context_data())
 
-    def check_user_auth(self, request, meeting_id):
-        user_id = request.user
+    def check_user_auth(self, user_id, meeting_id):
         self.chosen_event = Event.objects.get(id=meeting_id)
-        self.chosen_meeting_dates = OptionalMeetingDates.objects.get_meeting_dates(self.chosen_event)
-        did_user_vote = PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)
-
-        if did_user_vote:
-            return False
-        return True
+        self.chosen_meeting_dates = OptionalMeetingDates.objects.get_all_event_dates(self.chosen_event)
+        return PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)  # did_user_vote
 
     def initialize_forms(self):
         self.title = f"{self.chosen_event.title} Vote Meeting"
