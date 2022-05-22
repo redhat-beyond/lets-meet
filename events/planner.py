@@ -58,28 +58,29 @@ class EventPlanner():
         # Find the meeting with the least unavailable participant possible
 
         if not chosen_meeting_date:
-            meeting_with_max_participants = None
-            max_participant_meeting = 0
-
-            for possible_date in OptionalMeetingDates.objects.get_all_event_dates(self.event_id):
-                participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
-                if max_participant_meeting < participants_amount:
-                    max_participant_meeting = participants_amount
-                    meeting_with_max_participants = possible_date
-
-            chosen_meeting_date = meeting_with_max_participants
+            chosen_meeting_date = self.find_date_with_max_participant()
         self.chosen_meeting_date = chosen_meeting_date
         self.update_which_participants_can_and_cant_meet(chosen_meeting_date)
 
-    def execute_choice(self, chosen_meeting_date=None):
+    def find_date_with_max_participant(self):
+        max_participant_meeting = 0
+        meeting_with_max_participants = None
+
+        for possible_date in OptionalMeetingDates.objects.get_all_event_dates(self.event_id):
+            participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
+            if max_participant_meeting < participants_amount:
+                max_participant_meeting = participants_amount
+                meeting_with_max_participants = possible_date
+
+        return meeting_with_max_participants
+
+    def execute_choice(self):
         """ after a specific event has been selected
             remove all possible meeting,
             remove all possible participant for each date,
             remove all event participant that not take part in the event,
             change the event date and time to the chosen meeting
         """
-        if chosen_meeting_date:
-            self.chosen_meeting_date = chosen_meeting_date
 
         # change the date of the event using the chosen meeting dates
         self.event_id.date_time_start = self.chosen_meeting_date.date_time_start

@@ -11,7 +11,7 @@ class PossibleParticipantsQuerySet(models.QuerySet):
         return self.filter(possible_meeting_id=meeting_id)
 
     def get_all_date_event_participants(self, meeting_id):  # returns event participants id
-        return self.filter(possible_meeting_id=meeting_id).values_list('participant_id', flat=True)
+        return self.get_all_date_participants(meeting_id).values_list('participant_id', flat=True)
 
     def get_all_possible_participants(self, event_id):
         return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)

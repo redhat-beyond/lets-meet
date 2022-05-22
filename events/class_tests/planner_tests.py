@@ -23,6 +23,7 @@ COLOR = Colors.BLACK
 
 OPTIONAL_MEETING_DATE_START = timezone.now() + timedelta(days=1)
 OPTIONAL_MEETING_DATE_END = timezone.now() + timedelta(days=2)
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
 @pytest.fixture
@@ -37,7 +38,7 @@ def valid_event_data():
 
 @pytest.fixture(autouse=True)
 def email_backend_setup():
-    settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+    settings.EMAIL_BACKEND = EMAIL_BACKEND
 
 
 @pytest.fixture
@@ -148,7 +149,8 @@ class TestEventPlanner:
         if type(chosen_meeting_id) is int:
             chosen_meeting_date = OptionalMeetingDates.objects.get(id=chosen_meeting_id)
             planner = EventPlanner(Event.objects.get(title=original_event_title))
-            planner.find_meeting()
+            planner.chosen_meeting_date = chosen_meeting_date
+            planner.update_which_participants_can_and_cant_meet(planner.chosen_meeting_date)
             planner.execute_choice()
         else:
             chosen_meeting_date = chosen_meeting_id
