@@ -70,7 +70,7 @@ def update_event(request, event_id):
         reminder_instance = None
 
     if request.method == 'POST':
-        event_form = EventUpdateForm(request.POST, user_id=request.user, instance=event_instance)
+        event_form = EventUpdateForm(request.POST, instance=event_instance)
         reminder_form = ReminderUpdateForm(request.POST, instance=reminder_instance)
 
         if event_form.is_valid() and reminder_form.is_valid():
@@ -88,7 +88,7 @@ def update_event(request, event_id):
             return redirect(HOME_PAGE)
     else:
         reminder_form = ReminderUpdateForm(instance=reminder_instance)
-        event_form = EventUpdateForm(user_id=request.user, instance=event_instance)
+        event_form = EventUpdateForm(instance=event_instance)
 
     return render(request, 'events/create_event.html',
                   {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Update Event',
@@ -123,6 +123,13 @@ class CreateMeetingView(TemplateView):
         if meeting_id:
             try:
                 participant = EventParticipant.objects.get(event_id__id=meeting_id, user_id=request.user)
+
+                # if meeting_id not in Event.objects.get_all_meetings().values("id"):
+                #     return redirect('update_event', event_id=meeting_id)
+
+                if OptionalMeetingDates.objects.get_all_event_dates(meeting_id).count() == 0:
+                    return redirect('show_meeting', meeting_id=meeting_id)
+
                 if not participant.is_creator:
                     return redirect('show_meeting', meeting_id=meeting_id)  # redirect to static meeting page
 
@@ -293,7 +300,7 @@ class CreateMeetingView(TemplateView):
     @staticmethod
     def check_participant_formset(request, event_instance, meeting_participants_formset, meeting_instance=None):
         event_participants = EventParticipant.objects.filter(event_id=event_instance, is_creator=False)
-
+        print(request.POST)
         if meeting_instance:
             event_participants.delete()
 
@@ -319,6 +326,7 @@ class CreateMeetingView(TemplateView):
                     except ValidationError:  # duplication of the same participant email
                         pass
         else:
+            print(meeting_participants_formset.non_form_errors())
             event_instance.delete()
             return False
         return True
@@ -335,7 +343,11 @@ def show_meeting(request, meeting_id):
     event_instance = Event.objects.get(id=meeting_id)
 
     if request.method == 'POST':
-        event_form = ShowMeetingUpdateForm(request.POST, instance=event_instance)
+
+        if participant.is_creator:
+            event_form = SetMeetingUpdateForm(request.POST, instance=event_instance)
+        else:
+            event_form = ShowMeetingUpdateForm(request.POST, instance=event_instance)
         reminder_form = ReminderCreationForm(request.POST)
 
         if event_form.is_valid() and reminder_form.is_valid():
@@ -348,13 +360,45 @@ def show_meeting(request, meeting_id):
                 reminder.participant_id = participant
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
-            return redirect(HOME_PAGE)
+            else:
+                if reminder:
+                    reminder.delete()
     else:
-        event_form = ShowMeetingUpdateForm(instance=event_instance)
+        if participant.is_creator:
+            event_form = SetMeetingUpdateForm(instance=event_instance)
+        else:
+            event_form = ShowMeetingUpdateForm(instance=event_instance)
         reminder_form = ReminderCreationForm()
-    
+
     return render(request, 'meetings/show_meeting.html',
-                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Show Meeting', 'event_id': meeting_id, 'is_creator': is_creator})
+                  {'event_form': event_form, 'reminder_form': reminder_form,
+                   'title': 'Show Meeting', 'event_id': meeting_id, 'is_creator': is_creator})
+
+
+@login_required(login_url=LOGIN_PAGE)
+def add_participants(request, meeting_id):
+
+    MeetingParticipantsFormset = formset_factory(
+        ParticipantForm, formset=BaseParticipantFormSet,
+        max_num=10, extra=0
+    )
+
+    if request.method == 'POST':
+        try:
+            event_instance = Event.objects.get(id=meeting_id)
+            is_creator = EventParticipant.objects.get(user_id=request.user, event_id=event_instance).is_creator
+        except Event.DoesNotExist:
+            return redirect(HOME_PAGE)
+
+        meeting_participants_formset = MeetingParticipantsFormset(
+            request.POST, prefix='participants', user_id=request.user
+        )
+
+        if CreateMeetingView.check_participant_formset(request, event_instance, meeting_participants_formset, None):
+            if is_creator:
+                return redirect(HOME_PAGE)
+
+    return redirect('show_meeting', meeting_id=meeting_id)
 
 
 @login_required(login_url=LOGIN_PAGE)
@@ -371,3 +415,21 @@ def get_meeting_participants(request, meeting_id):
     else:
         participants = EventParticipant.objects.get_an_event_participants(meeting_id)
     return JsonResponse(list(participants.values('id', 'user_id__username', 'user_id__email', 'user_id__phone_number')), safe=False)
+
+
+@login_required(login_url=LOGIN_PAGE)
+def delete_participant(request, participant_id):
+
+    try:
+        participant = EventParticipant.objects.get(id=participant_id)
+
+        if EventParticipant.objects.get(user_id=request.user, event_id=participant.event_id).is_creator:
+            if EventParticipant.objects.get_an_event_participants().count() > 2:
+                participant.delete()
+                return JsonResponse({"result": "success"})
+            else:
+                return JsonResponse({"result": "You cant remove the last participant."})
+        else:
+            return JsonResponse({"result": "You are not the event creator so you can't remove participants."})
+    except EventParticipant.DoesNotExist:
+        return JsonResponse({"result": "You are not a participant of this meeting"})

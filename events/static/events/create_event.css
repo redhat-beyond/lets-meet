@@ -163,49 +163,112 @@ input[type="checkbox"] + span {
   display: block;
 }
 
-@media (max-width: 524px) {
+@media (max-width: 850px) {
   .container-shadow {
-    width: 400px;
+    width: 500px;
     margin-top: 60px;
-    left: 50%;
+    left: 42%;
     margin-left: -200px;
   }
 
   .container {
-    width: 400px;
+    width: 500px;
     margin-top: 60px;
-    left: 50%;
+    left: 42%;
     margin-left: -200px;
   }
 
   .wrap {
-    width: 300px;
+    width: 85%;
   }
 
 }
 
-@media (max-width: 399px) {
+@media (max-width: 600px) {
   .container-shadow {
-    width: 100%;
-    margin: 0px;
-    left: inherit;
+    width: 90%;
   }
 
   .container {
-    width: 100%;
-    margin: 0px;
-    left: inherit;
+    width: 90%;
   }
 
   .wrap {
-    width: 80%;
+    width: 90%;
+    margin-left: 20px;
   }
 }
 
-@media (max-width: 330px) {
+@media (max-width: 500px) {
   .wrap {
     width: 90%;
   }
+
+  .container-shadow {
+    min-width: 470px;
+    width: 470px;
+    height: 100%;
+  }
+
+  .container {
+    min-width: 470px;
+    width: 470px;
+    height: 100%;
+  }
+
+  .button {
+    width: 100%;
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    font-size: 0.5rem;
+  }
+
+  .wrap {
+    width: 90%;
+  }
+
+  .container-shadow {
+    font-size: 1.2rem;
+    min-width: 350px;
+    width: 100%;
+    height: 90%;
+    
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+  }
+
+  .container {
+    font-size: 1.5rem;
+    min-width: 350px;
+    width: 100%;
+    height: 90%;
+    
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+  }
+
+  .button {
+    width: 100%;
+    margin-left: 10px;
+    font-size: 11px;
+  }
+  
+  label {
+    font-size: 1.5rem;
+  }
+
+  #input-title, #location, #id_date_time_end, #id_date_time_start {
+    font-size: 1.3rem;
+  }
+  
 }
 
 .errorlist {

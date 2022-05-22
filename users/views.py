@@ -1,9 +1,9 @@
 from datetime import datetime
 from calendar import Calendar
 from users.models import User
-from events.models import Event
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from events.models import Event, OptionalMeetingDates
 from django.contrib.auth.decorators import login_required
 from users.forms import MyUserCreationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
@@ -109,9 +109,38 @@ def main_page(request, date=None):
          'next_date': get_dates(year, month, True), 'previous_date': get_dates(year, month, False),
          'max_height': table_measurements[0], 'max_margin': table_measurements[1],
          'max_margin_events': table_measurements[2], 'max_padding': table_measurements[3],
-         'current_date': current_date, 'current_events': current_events}
+         'current_date': current_date,
+         'current_meetings': get_set_meetings(request.user),
+         'current_events': Event.objects.get_all_user_events(request.user),
+         'all_possible_dates': get_optional_meetings(Event.objects.get_all_user_meetings(request.user))}
     )
 
+
+def get_set_meetings(user):
+    set_meetings = list()
+    all_user_meetings = Event.objects.get_all_user_meetings(user)
+
+    for meeting in all_user_meetings:
+        if not OptionalMeetingDates.objects.get_all_event_dates(meeting).count():  # eq to 0
+            set_meetings.append(meeting)
+
+    return set_meetings
+
+
+def get_optional_meetings(current_meetings):
+    all_possible_dates = []
+
+    for meeting in current_meetings:
+        optional_meetings = OptionalMeetingDates.objects.get_all_event_dates(meeting)
+        for optional_meeting in optional_meetings:
+            event_dict = {'id': optional_meeting.event_creator_id.event_id.id,
+                            'title': optional_meeting.event_creator_id.event_id.title,
+                            'date_time_start': optional_meeting.date_time_start,
+                            'date_time_end': optional_meeting.date_time_end,
+                            'color': optional_meeting.event_creator_id.event_id.color}
+            all_possible_dates.append(event_dict)
+
+    return all_possible_dates
 
 def get_dates(year=None, month=None, next=True):
     """ return the next or previous date.

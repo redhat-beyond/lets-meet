@@ -3,8 +3,8 @@
     {% block head-content %}
      {% load static %}
         <link href="{% static 'events/create_event.css' %}" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
         <link href="{% static 'reminders/reminder_form.css' %}" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" type="text/javascript"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
@@ -15,83 +15,201 @@
         <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
 
         <style>
-            .participant {
+            .participants {
                 width: 100%;
-                font-size: 1.5rem;
-                text-align: left;
+                font-size: 1.7rem;
+                color: black;
                 margin-top: 2%;
                 margin-bottom: 2%;
-                margin-left: 5px;
+                margin-left: 10px;
+                margin-right: 10px;
+                text-align: left;
+            }
+
+            .close_btn {
+                color: red;
+                font-size: 25px;
+                cursor: pointer;
+            }
+
+            .plus_btn {
+                color: green;
+                font-size: 25px;
+                cursor: pointer;
+            }
+
+            .par {
+                width: 100%;
+                margin-bottom: 1%;
+                border-radius: 25px;
+                border: 2px solid black;
+            }
+
+            .participant_email {
+                width: 95%;
                 color: black;
             }
 
-            .close-btn {
-                color: red;
-                font-size: 20px;
+            .save_btn {
+                background-color: black;
             }
+
+            .vote-link {
+                position: fixed;
+                top: 6%;
+                right: 3%;
+                font-size: 30px;
+                color: white;
+            }
+
+            .event-link {
+                position: fixed;
+                top: 2%;
+                right: 3%;
+                font-size: 30px;
+                color: white;
+            }
+
         </style>
 
         <script>
-            let get_participants_url = "{% url 'get_meeting_participants' meeting_id=event_id %}";
+            let index = 0;
+            let existent_participants_length = 0;
+            const show_meeting_url = "{% url 'get_meeting_participants' meeting_id=event_id %}";
+            const delete_participant_url = "{% url 'delete_participant' participant_id=1 %}";
 
-            function delete_participant(id) {
-                console.log("deleted " + id);
+            function delete_participant(id, username) {
+                $.get(delete_participant_url.slice(0, -1) + id, {}, function(data, status) {
+                    if (data.result === "success") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '<h1>Deleted!</h1>',
+                            html: '<h3>' + username + ' has been deleted.</h3>'
+                        })
+
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '<h1>Meeting Participant Deletion Failed</h1>',
+                            html: '<h3>' + data.result +'</h3>'
+                        })
+                    }
+                })
             }
 
-            function create_rows(data, isCreator) {
-                let rows = "";
+            function add_participant_row() {
+
+                if (existent_participants_length + index < 10) {
+                    const id = "form-" + index;
+                    let participant_row =  "<div class='par' id=" + id +">";
+                        participant_row += "        <table style='width: 100%;'>";
+                        participant_row += "            <tr id='tr" + index + "'>";
+                        participant_row += "                <td><input type='email' placeholder='Participant email' class='participant_email' name='participants-" + index + "-participant_email' id='id_participants-" + index + "-participant_email'></td>";
+                        participant_row += "                <td id='del_btn" + index + "'><i class='fa fa-times close_btn' aria-hidden='true' onclick='remove_participant_row(" + index + ")'></i></td>";
+                        participant_row += "            </tr>";
+                        participant_row += "        </table>";
+                        participant_row += "</div>";
+
+                    $("#save").before(participant_row);
+                    index++;
+                    $("#id_participants-TOTAL_FORMS").val(index);
+
+                    $("#save").show();
+
+                }
+            }
+
+            function remove_participant_row(row_index) {
+
+                $("#form-" + row_index).remove();
+
+                if (index === 1) {
+                    $("#save").hide();
+                }
+
+                for (let i = row_index; i < index; i++) {
+                    if (i != 0) {
+                        $("#form-" + i).attr('id', 'form-' + (i - 1));
+                        $("#del_btn" + i).remove();
+                        $('#tr' + i).append("            <td id='del_btn" + (i - 1) + "'><i class='fa fa-times close_btn' aria-hidden='true' onclick='remove_participant_row(" + (i - 1) + ")'></i></td>");
+                        $("#tr" + i).attr('id', 'tr' + (i - 1));
+                        $("#id_participants-" + i + "-participant_email").attr('id', 'id_participants-' + (i - 1) +  '-participant_email').attr('name', 'participants-' + (i - 1) +  '-participant_email');
+                    }
+                }
+
+                index --;
+                $("#id_participants-TOTAL_FORMS").val(index);
+            }
+
+            function get_rows(data, is_creator) {
+                let rows = "<div class='meeting_participants'>";
+                existent_participants_length = data.length;
 
                 data.forEach(element => {
-                    let row = "";
+                    let row =  "<div class='par'>";
+                        row += "    <table class='participants' id='" + element.id + "'>";
+                        row += "        <tr>";
+                        row += "            <td colspan='2' style='font-weight: bold;'>" +  element.user_id__username + "</td>";
 
-                    row =  "<table id='participant" + element.id + "' class='participant'>";
-                    row += "    <tr>";
-                    row += "        <td colspan=2 style='font-weight: bold;'>" + element.user_id__username + "</td>";
-                    row += "    </tr>";
-                    row += "    <tr>";
-                    row += "        <td width=60%>" + element.user_id__email + "</td>";
-                    
-                    row += "        <td>" + "0544601142" + "</td>";
-                    if (element.user_id__phone_number !== null) {
-                        row += "        <td>" + element.user_id__phone_number + "</td>";
-                    }
-                    if (isCreator === true) {
-                        row += "        <td><i class='fa fa-times close-btn' aria-hidden='true' onclick='delete_participant(" + element.id +")'></i></td>";
-                    }
+                        if (is_creator) {
+                            row += "            <td rowspan='3'><i class='fa fa-times close_btn' aria-hidden='true' onclick='delete_participant(" + element.id + ", \"" + element.user_id__username +"\")'></i></td>";
+                        }
 
-                    row += "    </tr>";
-                    row += "</table>";
-                    
+                        row += "        </tr>";
+                        row += "        <tr>";
+                        row += "            <td width=70%>" + element.user_id__email + "</td>";
+
+                        if (element.user_id__phone_number !== null) {
+                            row += "            <td width=25%>" + element.user_id__phone_number + "</td>";
+                        }
+
+                        row += "        </tr>";
+                        row += "    </table>";
+                        row += "</div>";
+
                     rows += row;
-                });
+                })
+                rows += "</div>";
 
                 return rows;
             }
 
-            function show_participants(isCreator) {
-                let html_text = "";
-                $.get(get_participants_url, {}, function(data, status) {
-                    html_text = "<table>" +
-                                "     <tr>" +
-                                "         <table>" +
-                                create_rows(data, isCreator) +
-                                create_rows(data, isCreator) +
-                                create_rows(data, isCreator) +
-                                create_rows(data, isCreator) +
-                                create_rows(data, isCreator) +
-                                create_rows(data, isCreator) +
-                                "     </tr>" + 
-                                "</table>";
+            function show_participants(is_creator) {
+                $.get(show_meeting_url, {}, function(data, status) {
+                    index = 0;
 
-                    console.log(html_text);
+                    let html_text =  get_rows(data, is_creator);
+                    let add_btn = "<div id='meeting-participants-form-list' class='new_participants'>";
+                        add_btn += "    <form method='POST' id='participant_form' action=\"{% url 'add_participants' meeting_id=event_id %}\">";
+                        add_btn += '        {% csrf_token %}';
+                        add_btn += "        <input type='hidden' name='participants-TOTAL_FORMS' value='0' id='id_participants-TOTAL_FORMS'>";
+                        add_btn += "        <input type='hidden' name='participants-INITIAL_FORMS' value='0' id='id_participants-INITIAL_FORMS'>";
+                        add_btn += "        <input type='hidden' name='participants-MIN_NUM_FORMS' value='0' id='id_participants-MIN_NUM_FORMS'>";
+                        add_btn += "        <input type='hidden' name='participants-MAX_NUM_FORMS' value='10' id='id_participants-MAX_NUM_FORMS'>";
+                        add_btn += "        <input type='submit' id='save' class='save_btn' name='submit' value='Save' />";
+                        add_btn += "    </form>";
+                        add_btn += "</div>";
+                        add_btn += "<div style='position: absolute; top: 30px; left: 30px;'>";
+                        add_btn += "  <i class='fa fa-plus-circle plus_btn' aria-hidden='true' onclick='add_participant_row()' id='add'></i>";
+                        add_btn += "</div>";
+            
+                    if (is_creator) {
+                        html_text += add_btn;
+                    }
+
                     Swal.fire({
                         title: "<h1 style='font-size: 2.5rem'>Meeting Participants</h1>",
                         html: html_text,
-                        background: "linear-gradient(#fff,  #146fa0)",
+                        closeButtonHtml: '<div style="font-weight: bold; color: black; font-size: 25px;">&times;</div>',
                         width: "700px",
+                        background: "linear-gradient(#fff, #0575E6)",
                         showCloseButton: true,
                         showConfirmButton: false,
                     })
+
+
+                    $("#save").hide();
                 })
             }
 
@@ -106,12 +224,15 @@
                 <div class="headings">
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
-                    {% if event_id %}
-                    <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
-                        <i class="fa-solid fa-file fa-2x"></i>
-                    </a>
-                    {% endif %}
                 </div>
+
+                {% if messages %}
+                    <ul class="errorlist">
+                        {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
                 <div id="create-event-form">
                     <form method="POST">
@@ -124,10 +245,9 @@
                             <h3 style="color:white;"> Add Reminder: </h3>
                             {{ reminder_form }}
                         </div>
-                        <button type="button" onclick="show_participants({{ is_creator }})">Show Participants</button>
+                        <button type="button" class="button" onclick="show_participants({{ is_creator }})"> Show Participants </button>
                         <input type="submit" class="button" name="submit" value="create" />
                     </form>
-                    
                 </div>
             </div>
         </div>
