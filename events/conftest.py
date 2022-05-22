@@ -3,8 +3,13 @@ from django.utils import timezone
 from django.utils.datetime_safe import datetime
 from events.class_models.event_models import Colors
 from reminders.class_models.reminder_models import ReminderType
-from events.class_tests.create_events import DATE_TIME_START, DATE_TIME_END, COLOR, TITLE
 
+TITLE = 'new_form'
+LOCATION = 'new_form_location'
+DESCRIPTION = 'new_form_description'
+DATE_TIME_END = "2012-12-12 12:12"
+DATE_TIME_START = "2012-11-11 11:11"
+COLOR = Colors.BLACK
 
 # define constants
 def pytest_configure():
