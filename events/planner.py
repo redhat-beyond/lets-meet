@@ -6,7 +6,7 @@ class EventPlanner():
     def run(self, event):
         """ run the planner in an event.
             Find the best possible date for the meeting,
-            then excute the choice and change the DB rows accordingly.
+            then execute the choice and change the DB rows accordingly.
         """
         meetings_possibilities = self.find_meeting(event)
 

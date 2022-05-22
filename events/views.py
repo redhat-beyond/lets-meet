@@ -1,6 +1,7 @@
 from users.models import User
 from django.utils import timezone
 from django.contrib import messages
+from django.http import JsonResponse
 from reminders.models import Reminder
 from django.forms import formset_factory
 from django.views.generic import TemplateView
@@ -18,7 +19,8 @@ from events.forms import (
     BaseOptionalMeetingDateFormSet,
     BaseParticipantFormSet,
     MeetingUpdateForm,
-    ShowMeetingUpdateForm
+    ShowMeetingUpdateForm,
+    SetMeetingUpdateForm
 )
 
 
@@ -150,7 +152,7 @@ class CreateMeetingView(TemplateView):
         if meeting_id:
             self.title = "Update meeting"
             meeting_instance = Event.objects.get(id=meeting_id)
-            self.create_event_form = MeetingUpdateForm(instance=meeting_instance)
+            self.create_event_form = SetMeetingUpdateForm(instance=meeting_instance)
 
             self.formset_meeting_data = list(
                 OptionalMeetingDates.objects.get_all_event_dates(meeting_id).exclude(
@@ -181,7 +183,7 @@ class CreateMeetingView(TemplateView):
 
         if meeting_id:
             meeting_instance = Event.objects.get(id=meeting_id)
-            self.create_event_form = MeetingUpdateForm(request.POST,instance=meeting_instance)
+            self.create_event_form = SetMeetingUpdateForm(request.POST,instance=meeting_instance)
         else:
             self.create_event_form = EventCreationForm(request.POST, user_id=request.user)
 
@@ -325,7 +327,8 @@ class CreateMeetingView(TemplateView):
 def show_meeting(request, meeting_id):
 
     try:
-        EventParticipant.objects.get(user_id=request.user, event_id__id=meeting_id)
+        participant = EventParticipant.objects.get(user_id=request.user, event_id__id=meeting_id)
+        is_creator = "true" if participant.is_creator else False
     except EventParticipant.DoesNotExist:
         return redirect(HOME_PAGE)
     
@@ -345,11 +348,26 @@ def show_meeting(request, meeting_id):
                 reminder.participant_id = participant
                 reminder.messages = convert_time_delta(event.date_time_start - reminder.date_time)
                 reminder.save()
-
             return redirect(HOME_PAGE)
     else:
         event_form = ShowMeetingUpdateForm(instance=event_instance)
         reminder_form = ReminderCreationForm()
     
     return render(request, 'meetings/show_meeting.html',
-                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Show Meeting', 'event_id': meeting_id})
+                  {'event_form': event_form, 'reminder_form': reminder_form, 'title': 'Show Meeting', 'event_id': meeting_id, 'is_creator': is_creator})
+
+
+@login_required(login_url=LOGIN_PAGE)
+def get_meeting_participants(request, meeting_id):
+    user = request.user
+
+    try:
+        participant = EventParticipant.objects.get(user_id=user, event_id=meeting_id)
+    except EventParticipant.DoesNotExist:
+        return JsonResponse({})
+
+    if participant.is_creator:
+        participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
+    else:
+        participants = EventParticipant.objects.get_an_event_participants(meeting_id)
+    return JsonResponse(list(participants.values('id', 'user_id__username', 'user_id__email', 'user_id__phone_number')), safe=False)
