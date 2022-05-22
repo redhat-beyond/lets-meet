@@ -169,7 +169,7 @@ class EventPlanner():
     @staticmethod
     def get_timeout_message(voting_timeout):
         time = voting_timeout.strftime("%Y-%m-%d %H:%M:%S")
-        return ("The meeting has been cerated successfully.\n"
+        return ("The meeting has been created successfully.\n"
                 "A voting email for the meeting was sent to all participants.\n"
                 f"Results about the meeting will be sent to you by email on\n{time}")
 

@@ -140,7 +140,10 @@ class TestEventPlanner:
             ("event3", 4, range(3, 6), range(4, 6), [6]),
             ("event1", 1, range(1, 2), range(1, 3), [])
         ],
-        ids=["execute event3", "execute event1"]
+        ids=[
+            "execute event3- event participant with id 6 should be deleted from meeting",
+            "execute event1- all the event participant are in the meeting"
+        ]
     )
     def test_execute_choice(self, original_event_title, chosen_meeting_id,
                             expected_meeting_deleted_ids, expected_possible_participants_deleted_ids,
@@ -210,7 +213,7 @@ class TestEventPlanner:
         response = self.test_email_sended_to_all_participants_when_meeting_created(client, sign_in, valid_meeting_data)
         messages = list(get_messages(response.wsgi_request))
         assert len(messages) == 4
-        assert str(messages[0]) == "The meeting has been cerated successfully."
+        assert str(messages[0]) == "The meeting has been created successfully."
 
     def test_email_sended_to_creator_while_suitable_meeting_not_found(self):
         original_event = Event.objects.get(title="event4")
