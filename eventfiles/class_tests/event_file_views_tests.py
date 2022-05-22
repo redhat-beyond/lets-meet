@@ -92,7 +92,7 @@ class TestEventFileFormView:
 
     def test_delete_file_created_by_user(self, sign_in_with_user2, client):
         client.get(DELETE_USER2_FILE_URL)
-        assert not EventFile.objects.all().filter(id=FILE_CREATED_BY_USER2).exists()
+        assert not EventFile.objects.filter(id=FILE_CREATED_BY_USER2).exists()
 
     def test_all_delete_buttons_visible_for_event_creator(self, sign_in_with_creator, client):
         """ test that the event creator can delete all files """
