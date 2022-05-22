@@ -81,7 +81,6 @@ class EventPlanner():
             remove all event participant that not take part in the event,
             change the event date and time to the chosen meeting
         """
-
         # change the date of the event using the chosen meeting dates
         self.event_id.date_time_start = self.chosen_meeting_date.date_time_start
         self.event_id.date_time_end = self.chosen_meeting_date.date_time_end
