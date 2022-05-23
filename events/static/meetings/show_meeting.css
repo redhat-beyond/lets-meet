@@ -1,0 +1,54 @@
+.participants {
+    width: 100%;
+    font-size: 1.7rem;
+    color: black;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: left;
+}
+
+.close_btn {
+    color: red;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.plus_btn {
+    color: green;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.par {
+    width: 100%;
+    margin-bottom: 1%;
+    border-radius: 25px;
+    border: 2px solid black;
+}
+
+.participant_email {
+    width: 95%;
+    color: black;
+}
+
+.save_btn {
+    background-color: black;
+}
+
+.vote-link {
+    position: fixed;
+    top: 6%;
+    right: 3%;
+    font-size: 30px;
+    color: white;
+}
+
+.event-link {
+    position: fixed;
+    top: 2%;
+    right: 3%;
+    font-size: 30px;
+    color: white;
+}
