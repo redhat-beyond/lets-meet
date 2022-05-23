@@ -92,7 +92,7 @@ class TestEvent():
         ("event1", 1, datetime(2022, 3, 24)),
         ("event3", 1, datetime(2023, 1, 24))
     ], ids=[
-        "get all users day meeting of event 1",
+        "get all users month meeting of event 1",
         "get all users month meeting of event 3"
     ])
     def test_get_all_user_day_meetings(self, event_title, user_id, date):
