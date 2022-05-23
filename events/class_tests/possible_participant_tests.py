@@ -8,9 +8,9 @@ from events.models import OptionalMeetingDates, EventParticipant, PossiblePartic
 EVENT_3_TITLE = "event3"
 ROW_DUPLICATION_ERROR = "The User is already registered in this possible meeting date"
 INVALID_PARTICIPANT_REGISTRATION = "The participant is not part of this event"
-MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 3
+MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 4
 MAX_POSSIBLE_EVENT_PARTICIPANT_ID = 8
-MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 4
+MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 5
 MAX_POSSIBLE_MEETING_PARTICIPANT_ID = 7
 
 

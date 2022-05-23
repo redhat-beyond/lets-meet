@@ -1,6 +1,7 @@
 from django import forms
 from users.models import User
 from django.utils import timezone
+from datetime import timedelta
 from django.forms import ModelForm, Textarea, BaseFormSet
 from .class_models.event_models import Event
 from .class_models.participant_model import EventParticipant
@@ -114,21 +115,37 @@ class ShowMeetingUpdateForm(ModelForm):
 
 
 class BaseOptionalMeetingDateFormSet(BaseFormSet):
+
+    def __init__(self, *args, **kwargs):
+        self.event_id = None
+        super(BaseOptionalMeetingDateFormSet, self).__init__(*args, **kwargs)
+
+    def set_event_instance(self, event_id):
+        self.event_id = event_id
+
     def clean(self):
         """checks that no two optional meetings dates with the same dates"""
         if any(self.errors):
             # Don't bother validating the formset unless each form is valid on its own
             return
 
-        dates = []
+        min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
+        if self.event_id:
+            # check min time of 1 hour to a new meeting date
+            if self.event_id.date_time_start < min_time_to_set_meeting:
+                raise ValidationError("Meeting can be set only one hour later from now")
+
+            dates = [(self.event_id.date_time_start, self.event_id.date_time_end)]
+        else:
+            dates = []
         for form in self.forms:
             if form.cleaned_data.get('date_time_start') and form.cleaned_data.get('date_time_end'):
                 start_date = form.cleaned_data.get('date_time_start')
                 end_date = form.cleaned_data.get('date_time_end')
                 if (start_date, end_date) in dates:
                     raise ValidationError("The optional meeting dates should be different")
-                if start_date < timezone.now() or end_date < timezone.now():
-                    raise ValidationError("Optional meeting dates cannot be in the past")
+                if start_date < min_time_to_set_meeting:  # check min time of 1 hour to a new meeting date
+                    raise ValidationError("Meeting can be set only one hour later from now")
                 dates.append((start_date, end_date))
             elif not form.cleaned_data.get('date_time_start') and not form.cleaned_data.get('date_time_end'):
                 pass

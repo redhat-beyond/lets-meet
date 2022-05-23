@@ -30,6 +30,14 @@ class ReminderType(models.TextChoices):
     EMAIL = "ema", "Email"
     WEBSITE = "web", "Website"
     WEBSITE_EMAIL = "wae", "Website and Email"
+    RUN_ALGORITHM = "run", "Run algorithm"
+    EXPIRATION_VOTING_TIME = "evt", "Voting timeout"
+
+
+class BasicReminderType(models.TextChoices):
+    EMAIL = "ema", "Email"
+    WEBSITE = "web", "Website"
+    WEBSITE_EMAIL = "wae", "Website and Email"
 
 
 class Reminder(models.Model):
