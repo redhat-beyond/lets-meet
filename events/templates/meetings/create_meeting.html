@@ -5,22 +5,37 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'events/create_event.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
-
+    <link href="{% static 'reminders/reminder_form.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+    <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
+        
     <title>Create Meeting </title>
-{% endblock %}
 
-<script>
-    total_meeting_dates_forms = "{{ total_meeting_forms }}"
-    total_participant_forms = "{{ total_particpant_forms }}"
-</script>
+    <script>
+        $(document).ready(function() {
+            total_meeting_dates_forms = "{{ total_meeting_forms }}";
+            total_participant_forms = "{{ total_participant_forms }}";
+
+            $("#id_optional_meetings-TOTAL_FORMS").val("{{ total_meeting_forms }}");
+            $("#id_participants-TOTAL_FORMS").val("{{ total_participant_forms }}");
+        })
+    </script>
+{% endblock %}
 
 {% block body-content %}
 <div class="container-shadow"></div>
 <div class="container">
     <div class="wrap">
         <div class="headings">
-            <a id="create-meeting" class="active"><span>{{ title }}:</span></a>
+            <a id="create-meeting" class="active">
+                <span>{{ title }}:</span>
+            </a>
+            <i id="add_alert" class="material-icons">add_alert</i>
+            {% if meeting_id %}
+                <a href="{% url 'event_files' event_id=meeting_id %}" class="FileRef">
+                    <i class="fa-solid fa-file fa-2x"></i>
+                </a>
+            {% endif %}
         </div>
         <form method="POST" >
             {% csrf_token %}
@@ -99,10 +114,15 @@
             </div>
 
             <div id="empty-meeting-participants-form" class="hidden">{{ meeting_participants_formset.empty_form.as_p }}</div>
-            <button id="add-more-meeting-paricipants" type="button" class="btn btn-dark">
+            <button id="add-more-meeting-participants" type="button" class="btn btn-dark">
                 <i class="fas fa-user-plus" aria-hidden="true" style='margin-right: 10px; font-size:15px; color: black;'></i>
                 Add more participants
             </button>
+            
+            <div id="reminder_form_attribute">
+                <h3 style="color:white;"> Add Reminder: </h3>
+                {{ reminder_form }}
+            </div>
 
             <input type="submit" class="button" name="submit" value="create" />
         </form>
@@ -112,5 +132,6 @@
 
 {% load static %}
 <script src="{% static 'meetings/create_meeting.js' %}"></script>
+<script src="{% static 'reminders/reminder_form.js' %}"></script>
 
 {% endblock %}

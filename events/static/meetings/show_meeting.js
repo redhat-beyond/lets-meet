@@ -1,7 +1,9 @@
 let index = 0;
 let existent_participants_length = 0;
-let show_meeting_url;
-let delete_participant_url;
+let show_meeting_url = "";
+let delete_participant_url = "";
+let token = "";
+let add_participant_url = "";
 
 function delete_participant(id, username) {
     $.get(delete_participant_url.slice(0, -1) + id, {}, function(data, status) {
@@ -70,7 +72,6 @@ function remove_participant_row(row_index) {
 function get_rows(data, is_creator) {
     let rows = "<div class='meeting_participants'>";
     existent_participants_length = data.length;
-
     data.forEach(element => {
         let row =  "<div class='par'>";
             row += "    <table class='participants' id='" + element.id + "'>";
@@ -101,13 +102,13 @@ function get_rows(data, is_creator) {
 }
 
 function show_participants(is_creator) {
+
     $.get(show_meeting_url, {}, function(data, status) {
         index = 0;
-
         let html_text =  get_rows(data, is_creator);
         let add_btn = "<div id='meeting-participants-form-list' class='new_participants'>";
-            add_btn += "    <form method='POST' id='participant_form' action=\"{% url 'add_participants' meeting_id=event_id %}\">";
-            add_btn += '        {% csrf_token %}';
+            add_btn += "    <form method='POST' id='participant_form' action='" + add_participant_url + "'>";
+            add_btn += '        ' + token;
             add_btn += "        <input type='hidden' name='participants-TOTAL_FORMS' value='0' id='id_participants-TOTAL_FORMS'>";
             add_btn += "        <input type='hidden' name='participants-INITIAL_FORMS' value='0' id='id_participants-INITIAL_FORMS'>";
             add_btn += "        <input type='hidden' name='participants-MIN_NUM_FORMS' value='0' id='id_participants-MIN_NUM_FORMS'>";
@@ -124,7 +125,7 @@ function show_participants(is_creator) {
         }
 
         Swal.fire({
-            title: "<h1 style='font-size: 2.5rem'>Meeting Participants</h1>",
+            title: "<h1 style='font-size: 2.5rem; color: black;'>Meeting Participants</h1>",
             html: html_text,
             closeButtonHtml: '<div style="font-weight: bold; color: black; font-size: 25px;">&times;</div>',
             width: "700px",

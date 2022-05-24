@@ -2,7 +2,7 @@ let total_meeting_dates_forms;
 let total_participant_forms;
 const addMoreOptionalDatesBtn = document.getElementById('add-more-optional-meeting-dates')
 addMoreOptionalDatesBtn.addEventListener('click', add_optional_meeting_dates_form)
-const addMoreBtn = document.getElementById('add-more-meeting-paricipants')
+const addMoreBtn = document.getElementById('add-more-meeting-participants')
 addMoreBtn.addEventListener('click', add_participant_form)
 
 

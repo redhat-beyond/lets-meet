@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
     {% block head-content %}
+    
      {% load static %}
         <link href="{% static 'events/create_event.css' %}" rel="stylesheet">
-        <link href="{% static 'meetings/show_meeting.css' %}" rel="stylesheet">
         <link href="{% static 'reminders/reminder_form.css' %}" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
@@ -14,21 +14,34 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
+        <link href="{% static 'meetings/show_meeting.css' %}" rel="stylesheet">
 
         <script>
-            show_meeting_url = "{% url 'get_meeting_participants' meeting_id=event_id %}";
-            delete_participant_url = "{% url 'delete_participant' participant_id=1 %}";
+
+            $(document).ready(function() {
+                show_meeting_url = "{% url 'get_meeting_participants' meeting_id=event_id %}";
+                delete_participant_url = "{% url 'delete_participant' participant_id=1 %}";
+                add_participant_url = "{% url 'add_participants' meeting_id=event_id %}";
+                token = '{% csrf_token %}';
+            })
+
         </script>
 
     {% endblock %}
 
     {% block body-content %}
+        
         <div class="container-shadow"></div>
         <div class="container">
             <div class="wrap">
                 <div class="headings">
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
+                    {% if event_id %}
+                        <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
+                            <i class="fa-solid fa-file fa-2x"></i>
+                        </a>
+                    {% endif %}
                 </div>
 
                 {% if messages %}
@@ -46,11 +59,16 @@
                         {{ event_form }}
                         <br><br>
 
+                        <button type="button" class="show_btn" onclick="show_participants({{ is_creator }})">
+                            <i class="fas fa-users" aria-hidden="true" style='margin-right: 10px; font-size:15px; color: black;'></i>
+                                Show Participants
+                        </button>
+
                         <div id="reminder_form_attribute">
                             <h3 style="color:white;"> Add Reminder: </h3>
                             {{ reminder_form }}
                         </div>
-                        <button type="button" class="button" onclick="show_participants({{ is_creator }})"> Show Participants </button>
+
                         <input type="submit" class="button" name="submit" value="create" />
                     </form>
                 </div>
