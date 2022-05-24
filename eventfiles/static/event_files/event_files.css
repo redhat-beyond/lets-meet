@@ -46,6 +46,7 @@ a {
     box-shadow: 0px 0px 50px -20px #000;
     overflow-y: auto;
     color: white;
+
 }
 
 .wrap {
@@ -84,7 +85,8 @@ a {
 .PostContent {
     display: grid;
     background: rgba(255, 255, 255, 1);
-    width: 400px;
+    width: fit-content;
+    min-width: 400px;
     height: 1px;
     align-items: center;
     border-radius: 23px;
@@ -94,24 +96,35 @@ a {
     margin-left:-7%
 }
 
-.FileName{
-    font-weight: 700;
-    padding: 26px;
-    margin-top: -10%;
-    font-size: 98%;
-    margin-right: 74%;
+.attribute{
+     margin: -24px;
 }
 
-.DownloadButton{
-    margin-left: 89%;
-    margin-top: -78px;
+.FileName{
+    font-weight: 700;
+    margin-top: 2%;
+    font-size: 98%;
+    margin-right: 74%;
+    position: absolute;
 }
+
 .event_files{
     font-family: "Montserrat", sans-serif;
 }
 
 .fa-circle-down{
-    color:black
+    color:black;
+    margin-left: 282px;
+}
+.fa-trash-can{
+    color: #E34724;
+    margin-left: 5px;
+}
+
+
+.fa-trash-can:hover {
+    color: #8B0000;
+    cursor: pointer;
 }
 
 .fa-circle-down:hover {
