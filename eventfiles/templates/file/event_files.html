@@ -3,9 +3,11 @@
     <title>Event files</title>
     {% load static %}
         <link href="{% static 'event_files/event_files.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'event_files/delete_pop_up.css' %}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
         <script src="{% static 'event_files/event_files.js' %}"></script>
+
 
 {% endblock %}
 
@@ -15,24 +17,38 @@
 <div class="container-shadow">
      <div class="container">
         <div class="wrap">
-            <h1 class="title" > {{title}} files:</h1>
-
-            <div class="file-list">
-                {% if files %}
-                    {% for post in files %}
-                <div class='PostContent'>
-                        <h2 class="FileName" >{{post}}</h2>
-                        <a href="download/?event={{event}}&file_name={{post}}"download="{{post.adminupload.url}}" class="DownloadButton">
-                             <i class="fa-solid fa-circle-down fa-2x" aria-hidden="true"></i>
-                        </a>
-                </div>
-                    {% endfor %}
+            <!-- this dialog box is responsible for the delete confirmation pop up. -->
+            <div id="dialogoverlay"></div>
+            <div id="dialogbox">
+              <div>
+                <div id="dialogboxhead"></div>
+                <div id="dialogboxbody"></div>
+                <div id="dialogboxfoot"></div>
+              </div>
             </div>
-                {% else %}
-                     <h2>No files exist</h2>
-                {% endif %}
+            <h1 class="title" > {{event.title}} files:</h1>
+            <div class="file-list">
+                {% for file in files %}
+                    <div class='PostContent'>
+                        <span class="attribute">
+                            <h2 class="FileName" >{{file}}</h2>
+                            <a href="download/?event={{event.id}}&file_name={{file}}"download="{{file.adminupload.url}}" class="DownloadButton">
+                            <i class="fa-solid fa-circle-down fa-2x" aria-hidden="true"></i>
+                            </a>
+                            {% if is_event_creator or file.participant_id.id is user_participant.id %}
+                            <a>
+                            <i id="DeleteButton" class="fa-solid fa-trash-can fa-2x" aria-hidden="true" onclick="Confirm.render('delete {{file}}','{{event.id}}','{{file.id}}')"></i>
+                            </a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% empty %}
+                <h2>No files exist</h2>
+                {% endfor %}
+            </div>
 
-            <form action="./{{event}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
+
+            <form action="./{{event.id}}" class="form" id="form1" method="POST" enctype="multipart/form-data">
             <fieldset class="form-group">
             {% csrf_token %}
             <div class="fileUpload">
@@ -49,6 +65,6 @@
         </div>
      </div>
 </div>
-    </center>
+</center>
 </div>
 {% endblock %}

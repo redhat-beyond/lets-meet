@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.utils import timezone
 from django.core.mail import send_mail
+from reminders.models import Notification
 
 
 def send_mail_notification(title, message, receiver_email):
@@ -9,19 +11,20 @@ def send_mail_notification(title, message, receiver_email):
 
 def create_notification(message, receiver_id):
     """ create a notification with the receiver id the message given using the site notification """
-    print(f"notification -> {message}  -  {receiver_id}")  # for debug only
+    Notification(participant_id=receiver_id, sent_time=timezone.now(),  message=message).save()
 
 
 # pre built notifications
 
-def send_reminder_email(message, receiver_email):
+def send_reminder_email(message, receiver_id):
     """ default reminder email message for calendar alert """
     title = "Lets Meet Calendar Alert"
+    receiver_email = receiver_id.user_id.email
     send_mail_notification(title, message, receiver_email)
 
 
 def time_format(date_time):
-    return date_time.strftime("%Y-%m-%d %H:%M:%S")
+    return timezone.localtime(date_time).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def convert_time_delta(time_delta, starting_text="You have a meeting in "):

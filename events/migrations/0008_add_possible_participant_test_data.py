@@ -13,6 +13,9 @@ class Migration(migrations.Migration):
         from events.models import PossibleParticipant
 
         test_participant1 = EventParticipant.objects.filter(is_creator=True)[0]
+        test_participant3 = EventParticipant.objects.get(
+            is_creator=False, event_id__title="event1"
+        )
         test_participant2 = EventParticipant.objects.filter(is_creator=True)[1]
 
         possible_meetings_arr_for_event3 = OptionalMeetingDates.objects.filter(
@@ -20,6 +23,8 @@ class Migration(migrations.Migration):
 
         possible_participant_data = [
             (test_participant1,
+             OptionalMeetingDates.objects.get(event_creator_id__id=test_participant1.id)),
+            (test_participant3,
              OptionalMeetingDates.objects.get(event_creator_id__id=test_participant1.id)),
 
             (test_participant2,
@@ -32,12 +37,12 @@ class Migration(migrations.Migration):
              ),
             (EventParticipant.objects.get(
                 event_id__title='event3',
-                user_id__username='testUser2'),
+                user_id__username='testUser1'),
                 possible_meetings_arr_for_event3[1]
              ),
             (EventParticipant.objects.get(
                 event_id__title='event3',
-                user_id__username='testUser3'),
+                user_id__username='testUser2'),
                 possible_meetings_arr_for_event3[1]
              ),
             (EventParticipant.objects.get(

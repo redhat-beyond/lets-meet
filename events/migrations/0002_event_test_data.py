@@ -9,8 +9,8 @@ class Migration(migrations.Migration):
 
     def generate_event_test_data(apps, schema_editor):
         from events.models import Event
-        from datetime import datetime
         from django.utils import timezone
+        from datetime import datetime
 
         events_test_data = [
             ('event1', datetime(2022, 3, 24, 11, 11, 11, 0, tzinfo=timezone.utc),
@@ -18,7 +18,9 @@ class Migration(migrations.Migration):
             ('event2', datetime(2022, 8, 14, 13, 13, 13, 0, tzinfo=timezone.utc),
              datetime(2022, 8, 14, 15, 15, 15, 0, tzinfo=timezone.utc)),
             ('event3', datetime(2023, 1, 24, 13, 13, 13, 0, tzinfo=timezone.utc),
-             datetime(2023, 1, 24, 15, 15, 15, 0, tzinfo=timezone.utc))
+             datetime(2023, 1, 24, 15, 15, 15, 0, tzinfo=timezone.utc)),
+            ('event4', datetime(2023, 8, 24, 13, 00, 00, 0, tzinfo=timezone.utc),
+             datetime(2023, 8, 25, 15, 15, 00, 0, tzinfo=timezone.utc))
         ]
 
         with transaction.atomic():

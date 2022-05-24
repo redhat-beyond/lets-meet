@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from django.conf import settings
 from django.utils import timezone
-from reminders.models import Reminder, ReminderType
+from reminders.models import Reminder, ReminderType, Notification
 from events.models import Event, EventParticipant, Colors
 from events.tests import (  # noqa: F401
         new_event, user0,
@@ -39,6 +39,9 @@ def pytest_configure():
 
     pytest.exist_reminder_error = 'reminder already exists'
     pytest.past_date_time_error = "date time should be bigger than the current date_time"
+
+    pytest.row_duplication_error = 'notification already exists'
+    pytest.notification_past_date_time_error = 'sent time should be bigger than the current date'
 
 
 @pytest.fixture
@@ -82,3 +85,16 @@ def reminder_0(participant0):  # noqa: F811
 @pytest.fixture(autouse=True)
 def email_backend_setup():
     settings.EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
+
+@pytest.fixture
+def notification_0(participant0):  # noqa: F811
+    return Notification(
+        participant_id=participant0, seen_time=pytest.date_time_start,
+        sent_time=pytest.date_time_end, message=pytest.message
+    )
+
+
+@pytest.fixture
+def event_participant():
+    return EventParticipant.objects.get(event_id__title="event2", user_id__username="testUser3")

@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 import pytest
 from django.core import mail
 from datetime import datetime
@@ -53,7 +54,7 @@ class TestReminder:
     def test_reminder_with_invalid_time(self, participant0):
         date_time = datetime(2022, 3, 22, 12, 12, 12, 0, tzinfo=timezone.utc)
 
-        with pytest.raises(IntegrityError, match=pytest.past_date_time_error):
+        with pytest.raises(ValidationError, match=pytest.past_date_time_error):
             save_reminder(
                 reminder=create_reminder(participant0, pytest.valid_method, pytest.message, date_time)
             )
@@ -78,5 +79,5 @@ class TestReminder:
         assert len(mail.outbox) == 1
 
     def test_send_reminder_email(self):
-        send_reminder_email("message", "user@mail")
+        send_reminder_email("message", EventParticipant.objects.get(id=1))
         assert len(mail.outbox) == 1

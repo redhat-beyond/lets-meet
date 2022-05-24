@@ -1,11 +1,10 @@
 import pytest
 from datetime import datetime
 from django.utils import timezone
-from users.tests import user0  # noqa: F401
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from events.models import OptionalMeetingDates, EventParticipant, Event
 from events.tests import (  # noqa:F811, F401
-    new_event,
+    new_event, user0,
     event_participant_not_creator
 )
 
@@ -53,18 +52,20 @@ class TestMeeting():
         persist_possible_meeting.event_creator_id.delete()
         assert persist_possible_meeting not in OptionalMeetingDates.objects.all()
 
-    def test_persist_possible_meeting_Validation_Error(self, persist_possible_meeting):
-        with pytest.raises(ValidationError):
-            persist_possible_meeting.date_time_start = DATE_TIME_END
-            persist_possible_meeting.date_time_end = DATE_TIME_START
-            persist_possible_meeting.save()
-
     def test_persist_possible_meeting_in_db(self):
         assert OptionalMeetingDates.objects.filter(event_creator_id=get_event_participant_from_db())
 
-    def test_duplicate_possible_meeting(self, persist_possible_meeting):
-        with pytest.raises(ValidationError, match='meeting hours already exists'):
-            persist_possible_meeting.save()
+    def test_duplicate_possible_meeting(self):
+        participant_event3_creator = EventParticipant.objects.get(event_id__title="event3", is_creator=True)
+        date_time_start = datetime(2023, 1, 24, 13, 13, 13, 0, tzinfo=timezone.utc)
+        date_time_end = datetime(2023, 1, 24, 15, 15, 15, 0, tzinfo=timezone.utc)
+
+        with pytest.raises(IntegrityError):
+            OptionalMeetingDates(
+                event_creator_id=participant_event3_creator,
+                date_time_start=date_time_start,
+                date_time_end=date_time_end
+            ).save()
 
     def test_get_all_event_dates(self, expected_meeting_results, event_title="event3"):
         event = Event.objects.get(title=event_title)

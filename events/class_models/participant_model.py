@@ -9,11 +9,17 @@ class EventParticipantQuerySet(models.QuerySet):
     def get_an_event_participants(self, event):
         return self.filter(event_id=event)
 
+    def get_an_event_participants_without_creator(self, event):
+        return self.filter(event_id=event, is_creator=False)
+
     def get_creator_of_event(self, event):
         return self.get(event_id=event, is_creator=True)
 
+    def get_participant_from_event(self, event, user):
+        return self.get(event_id=event, user_id=user)
+
     def remove_participant_from_event(self, event, user):
-        return self.get(event_id=event, user_id=user).delete()
+        return self.get_participant_from_event(event, user).delete()
 
 
 class EventParticipant(models.Model):

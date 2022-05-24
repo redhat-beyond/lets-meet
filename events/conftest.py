@@ -27,6 +27,7 @@ def pytest_configure():
     pytest.valid_event_color = Colors.BLACK
     pytest.valid_event_title = 'new_form'
 
+
     pytest.updated_event_title = 'updated_event'
     pytest.updated_event_date_time_start = "2012-12-12 12:12"
     pytest.updated_event_date_time_end = "2012-12-12 13:13"
@@ -50,8 +51,10 @@ def valid_event_data_and_reminder():
             'date_time': pytest.reminder_date_time, 'method': ReminderType.EMAIL}
 
 
+
 @pytest.fixture
 def updated_event_data_and_reminder():
     return {'title': pytest.updated_event_title, 'date_time_start': pytest.updated_event_date_time_start,
             'date_time_end': pytest.updated_event_date_time_end, 'color': pytest.updated_event_color,
             'date_time': pytest.reminder_date_time, 'method': ReminderType.EMAIL}
+
