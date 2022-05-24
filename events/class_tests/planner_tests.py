@@ -126,10 +126,9 @@ class TestEventPlanner:
     def test_find_meeting(self, event_title, expected_meeting_id):
         event = Event.objects.get(title=event_title)
         planner = EventPlanner(event)
+        expected_meeting_date = None
         if expected_meeting_id:
             expected_meeting_date = OptionalMeetingDates.objects.get(id=expected_meeting_id)
-        else:
-            expected_meeting_date = expected_meeting_id
         planner.find_meeting()
         assert expected_meeting_date == planner.chosen_meeting_date
 
