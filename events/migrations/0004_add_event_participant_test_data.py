@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
             (Event.objects.get(title='event3'), User.objects.get(username="testUser3"), False),
 
             (Event.objects.get(title='event4'), User.objects.get(username="testUser1"), True),
+            (Event.objects.get(title='event4'), User.objects.get(username="testUser2"), False),
             (Event.objects.get(title='event4'), User.objects.get(username="testUser3"), False)
         ]
 

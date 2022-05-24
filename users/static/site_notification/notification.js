@@ -25,7 +25,6 @@ function build_table() {
 		data.forEach((element, index) => {
 			let line =  "<div class='list-item noti' id=row" + String(element.id) + ">";
 				line += "<div class='image fl'><i class='fa fa-user' aria-hidden='true' style='color: #0575E6;'></i></div>";
-				line += "<div class='text fl'>" + element.message + "</div>";
 
 			if (element.notification_type === "meeting" ) {
 				const meeting_id = element.participant_id__event_id;

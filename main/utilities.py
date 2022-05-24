@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.utils import timezone
 from django.core.mail import send_mail
-from events.models import EventParticipant
 from reminders.models import Notification, NotificationType
 
 
@@ -24,15 +23,6 @@ def send_reminder_email(message, receiver_id):
     title = "Lets Meet Calendar Alert"
     receiver_email = receiver_id.user_id.email
     send_mail_notification(title, message, receiver_email)
-
-
-def send_invite_notification(meeting_id):
-    """ send an invite notification using the site notification to all  """
-    message = "You have a new meeting"
-    all_event_participants = EventParticipant.objects.get_meeting_participants_of_event(meeting_id)
-
-    for participant in all_event_participants:
-        create_notification(message, participant, NotificationType.MEETING)
 
 
 def time_format(date_time):

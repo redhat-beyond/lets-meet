@@ -66,7 +66,7 @@ def updated_event_data_and_reminder():
 
 
 def get_event_participant():
-    return EventParticipant.objects.get(id=2)
+    return EventParticipant.objects.get(id=8)
 
 
 @pytest.fixture

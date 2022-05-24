@@ -217,10 +217,12 @@ input[type="checkbox"] + span {
 a {
     text-decoration: none;
 }
+
 .fa-file{
-    margin-top: 10px;
+    margin-left: 100%;
+    margin-top: 5px;
     position: absolute;
-    right: 0;
+    left: 22px;
     top: 5%;
     color: white;
     cursor: pointer;

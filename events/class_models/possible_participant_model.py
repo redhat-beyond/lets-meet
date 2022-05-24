@@ -25,12 +25,6 @@ class PossibleParticipantsQuerySet(models.QuerySet):
     def get_all_possible_participants_of_event(self, event_id):
         return self.get_all_possible_participants(event_id).values('participant_id').distinct()
 
-    def get_all_meeting_participants(self, possible_meeting_dates):
-        return self.filter(Q(possible_meeting_id__in=possible_meeting_dates))
-
-    def did_user_vote(self, possible_meeting_dates, user):
-        return self.get_all_meeting_participants(possible_meeting_dates).filter(participant_id__user_id=user).exists()
-
     def remove_all_possible_meeting_participants(self, meeting_id):
         return self.get_all_possible_participants_of_optional_date(meeting_id).delete()
 

@@ -10,10 +10,9 @@ from reminders.views import seen_notification
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
-from reminders.models import Notification, Reminder
-from main.utilities import convert_time_delta, time_format
 from django.contrib.auth.decorators import login_required
 from main.utilities import convert_time_delta, time_format
+from reminders.models import Notification, Reminder, ReminderType
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
 from events.models import Event, EventParticipant, OptionalMeetingDates, PossibleParticipant
 from events.forms import (
@@ -72,7 +71,9 @@ def update_event(request, event_id):
 
     try:
         participant = EventParticipant.objects.get(user_id=request.user, event_id=event_instance)
-        reminder_instance = Reminder.objects.get(participant_id=participant)
+        reminder_instance = Reminder.objects.filter(
+            participant_id=participant
+            ).exclude(method__in=(ReminderType.RUN_ALGORITHM, ReminderType.EXPIRATION_VOTING_TIME)).first()
     except Reminder.DoesNotExist:
         reminder_instance = None
 
