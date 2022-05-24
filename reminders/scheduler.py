@@ -3,6 +3,7 @@ from sys import stdout
 from datetime import datetime
 from threading import Timer, Thread
 from django.dispatch import receiver
+from events.planner import EventPlanner
 from reminders.models import Reminder, ReminderType
 from main.utilities import send_reminder_email, create_notification
 from django.db.models.signals import post_save, pre_delete, post_delete
@@ -93,7 +94,7 @@ class UserAlertScheduler():
         message = reminder.messages
         method_type = reminder.method
         date_time = reminder.date_time
-        user_id = reminder.participant_id.user_id
+        user_id = reminder.participant_id
 
         return date_time, message, method_type, user_id
 
@@ -108,6 +109,12 @@ class UserAlertScheduler():
 
         if method_type in (ReminderType.WEBSITE, ReminderType.WEBSITE_EMAIL):
             function_to_invoke.append(create_notification)
+
+        if method_type == ReminderType.RUN_ALGORITHM:
+            function_to_invoke.append(EventPlanner.invoke_meeting_algorithm)
+
+        if method_type == ReminderType.EXPIRATION_VOTING_TIME:
+            function_to_invoke.append(EventPlanner.send_timeout_voting_notification_email_for_participants)
 
         return function_to_invoke
 
@@ -229,7 +236,6 @@ class UserAlertScheduler():
             UserAlertScheduler.__current_reminder = reminder
 
             UserAlertScheduler.__logger.debug(f"the current reminder has been modified: {reminder}")
-            print(f"the current reminder has been modified: {reminder}")
 
     @staticmethod
     def __alert_user(methods, *args, **kwargs):
@@ -243,8 +249,13 @@ class UserAlertScheduler():
         UserAlertScheduler.__logger.debug("starting to loop over all the functions")
         UserAlertScheduler.__logger.debug(f"args: {args} || kwargs: {kwargs}")
 
-        for method in methods:
-            method(*args, **kwargs)
+        try:
+            for method in methods:
+                method(*args, **kwargs)
+        except Exception as error:
+            UserAlertScheduler.__logger.warning(
+                f"Exception happend when executing method of {UserAlertScheduler.method}\n {error}"
+            )
 
         # Potential Send Signal - a signal can be sent for alerting that the timer has ended
 

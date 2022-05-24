@@ -8,9 +8,9 @@ from events.models import OptionalMeetingDates, EventParticipant, PossiblePartic
 EVENT_3_TITLE = "event3"
 ROW_DUPLICATION_ERROR = "The User is already registered in this possible meeting date"
 INVALID_PARTICIPANT_REGISTRATION = "The participant is not part of this event"
-MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 3
+MIN_POSSIBLE_EVENT_PARTICIPANT_ID = 4
 MAX_POSSIBLE_EVENT_PARTICIPANT_ID = 8
-MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 4
+MIN_POSSIBLE_MEETING_PARTICIPANT_ID = 5
 MAX_POSSIBLE_MEETING_PARTICIPANT_ID = 7
 
 
@@ -63,9 +63,11 @@ class TestPossibleParticipant():
         with pytest.raises(ValidationError, match=INVALID_PARTICIPANT_REGISTRATION):
             create_possible_participant(participant_of_event1, possible_meeting_of_event2).save()
 
-    def test_get_all_date_participants(self, get_possible_meeting, get_possible_meeting_participants):
+    def test_get_all_possible_participants_of_optional_date(self, get_possible_meeting,
+                                                            get_possible_meeting_participants):
         expected_participants_in_current_meeting = get_possible_meeting_participants
-        participants_in_current_meeting = PossibleParticipant.objects.get_all_date_participants(get_possible_meeting)
+        participants_in_current_meeting = \
+            PossibleParticipant.objects.get_all_possible_participants_of_optional_date(get_possible_meeting)
         assert list(participants_in_current_meeting) == list(expected_participants_in_current_meeting)
 
     def test_get_all_possible_participants(self, get_event, get_possible_event_participants):

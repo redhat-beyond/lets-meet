@@ -130,7 +130,7 @@ class TestCreateMeetingForm:
                  'optional_meetings-0-date_time_start': OPTIONAL_MEETING_DATE_START_IN_THE_PAST,
                  'optional_meetings-0-date_time_end': OPTIONAL_MEETING_DATE_END_IN_THE_PAST,
                  },
-                "Optional meeting dates cannot be in the past", True
+                "Meeting can be set only one hour later from now", True
         )
     ], ids=[
         "blank end date",
@@ -186,5 +186,5 @@ class TestCreateMeetingForm:
     @staticmethod
     def assert_validation_on_formset(event_creator, event_instance, request, view):
         assert view.check_optional_meeting_dates_formset(
-            request, event_instance, event_creator, view.optional_meetings_formset)
+            event_instance, event_creator, view.optional_meetings_formset)
         assert view.check_participant_formset(request, event_instance, view.meeting_participants_formset)
