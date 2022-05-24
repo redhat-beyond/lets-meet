@@ -110,10 +110,10 @@ class UserAlertScheduler():
         if method_type in (ReminderType.WEBSITE, ReminderType.WEBSITE_EMAIL):
             function_to_invoke.append(create_notification)
 
-        if method_type in ReminderType.RUN_ALGORITHM:
+        if method_type == ReminderType.RUN_ALGORITHM:
             function_to_invoke.append(EventPlanner.invoke_meeting_algorithm)
 
-        if method_type in ReminderType.EXPIRATION_VOTING_TIME:
+        if method_type == ReminderType.EXPIRATION_VOTING_TIME:
             function_to_invoke.append(EventPlanner.send_timeout_voting_notification_email_for_participants)
 
         return function_to_invoke

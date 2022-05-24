@@ -13,14 +13,16 @@ class EventPlanner():
         self.chosen_meeting_date = None
         self.participants_names_who_can_meet = ""
         self.participants_names_who_cant_meet = ""
-        self.event_participants_who_can_meet = []      # type of event participant
-        self.event_participants_who_can_not_meet = []  # type of event participant
+        self.event_participants_who_can_meet = []
+        self.event_participants_who_can_not_meet = []
         self.all_meeting_participants = (
             EventParticipant.objects.get_an_event_participants_without_creator(self.event_id)
         )
 
     def update_which_participants_can_and_cant_meet(self, chosen_meeting_date):
-        participants_ids_who_can_meet = PossibleParticipant.objects.get_all_date_event_participants(chosen_meeting_date)
+        participants_ids_who_can_meet = (
+            PossibleParticipant.objects.get_all_event_participants_ids_of_optional_date(chosen_meeting_date)
+        )
         self.event_participants_who_can_meet = self.get_participants_instances(participants_ids_who_can_meet)
         self.event_participants_who_can_not_meet = (
             list(set(self.all_meeting_participants).difference(self.event_participants_who_can_meet))
@@ -49,7 +51,9 @@ class EventPlanner():
             PossibleParticipant.objects.get_all_possible_participants_of_event(self.event_id)
         )
         for possible_date in OptionalMeetingDates.objects.get_all_event_dates(self.event_id):
-            participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
+            participants_amount = (
+                PossibleParticipant.objects.get_all_possible_participants_of_optional_date(possible_date).count()
+            )
             if participants_amount != 0 and participants_ids_that_can_meet.count() == participants_amount:
                 chosen_meeting_date = possible_date
                 break
@@ -67,7 +71,8 @@ class EventPlanner():
         meeting_with_max_participants = None
 
         for possible_date in OptionalMeetingDates.objects.get_all_event_dates(self.event_id):
-            participants_amount = PossibleParticipant.objects.get_all_date_participants(possible_date).count()
+            participants_amount = \
+                PossibleParticipant.objects.get_all_possible_participants_of_optional_date(possible_date).count()
             if max_participant_meeting < participants_amount:
                 max_participant_meeting = participants_amount
                 meeting_with_max_participants = possible_date

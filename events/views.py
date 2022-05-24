@@ -1,5 +1,4 @@
 from users.models import User
-from django.utils import timezone
 from django.contrib import messages
 from django.http import JsonResponse
 from events.planner import EventPlanner

@@ -7,11 +7,11 @@ from .event_models import time_format
 
 class PossibleParticipantsQuerySet(models.QuerySet):
 
-    def get_all_date_participants(self, meeting_id):  # returns possible participants
+    def get_all_possible_participants_of_optional_date(self, meeting_id):
         return self.filter(possible_meeting_id=meeting_id)
 
-    def get_all_date_event_participants(self, meeting_id):  # returns event participants id
-        return self.get_all_date_participants(meeting_id).values_list('participant_id', flat=True)
+    def get_all_event_participants_ids_of_optional_date(self, meeting_id):
+        return self.get_all_possible_participants_of_optional_date(meeting_id).values_list('participant_id', flat=True)
 
     def get_all_possible_participants(self, event_id):
         return self.filter(possible_meeting_id__event_creator_id__event_id=event_id)
@@ -26,7 +26,7 @@ class PossibleParticipantsQuerySet(models.QuerySet):
         return self.get_all_possible_participants(event_id).values('participant_id').distinct()
 
     def remove_all_possible_meeting_participants(self, meeting_id):
-        return self.get_all_date_participants(meeting_id).delete()
+        return self.get_all_possible_participants_of_optional_date(meeting_id).delete()
 
     def remove_all_event_participants(self, event_id):
         return self.get_all_possible_participants(event_id).delete()

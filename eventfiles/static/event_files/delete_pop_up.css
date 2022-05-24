@@ -1,0 +1,66 @@
+a:link { text-decoration: none; }
+
+a:visited { text-decoration: none; }
+
+a:hover { text-decoration: none; }
+
+a:active { text-decoration: none; }
+
+
+#dialogoverlay{
+	display: none;
+	opacity: .8;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #FFF;
+	width: 100%;
+	z-index: 10;
+}
+#dialogbox{
+    z-index: 99999;
+	display: none;
+	position: absolute;
+	background: #000;
+	border-radius: 7px;
+	width: 550px;
+	z-index: 10;
+	top: 50%;
+}
+
+.DeleteRef{
+    width: 100%;
+    display: inline-block;
+    color: #2c353e;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+.YesNoButton{
+    width: 44%;
+    background: #aae0f0;
+    color: #2c353e;
+    text-transform: uppercase;
+    margin-top: 2em;
+    padding: 11px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin: 14px;
+    text-decoration: none;
+}
+
+.YesNoButton:hover {
+    background: #aae0f0;
+    box-shadow: 0 0 10px #aae0f0, 0 0 30px #aae0f0, 0 0 50px #aae0f0;
+    text-decoration: none;
+    border-bottom: #aae0f0; ;
+}
+
+#dialogbox > div{ background:#FFF; margin:8px; }
+#dialogbox > div > #dialogboxhead{ background: #666; font-size:19px; padding:10px; color:#CCC; }
+#dialogbox > div > #dialogboxbody{ background: #333; padding:20px; color:#FFF; }
+#dialogbox > div > #dialogboxfoot{ background: #666; padding:10px; text-align:right; }

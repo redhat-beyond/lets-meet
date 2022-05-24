@@ -1,12 +1,12 @@
 import pytest
 from django.core import mail
-from reminders.class_models.reminder_models import ReminderType
 from users.models import User
 from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
-from django.forms import formset_factory
 from events.planner import EventPlanner
+from django.forms import formset_factory
+from reminders.models import ReminderType
 from django.contrib.messages import get_messages
 from events.models import (
     OptionalMeetingDates, PossibleParticipant,
@@ -128,10 +128,9 @@ class TestEventPlanner:
     def test_find_meeting(self, event_title, expected_meeting_id):
         event = Event.objects.get(title=event_title)
         planner = EventPlanner(event)
+        expected_meeting_date = None
         if expected_meeting_id:
             expected_meeting_date = OptionalMeetingDates.objects.get(id=expected_meeting_id)
-        else:
-            expected_meeting_date = expected_meeting_id
         planner.find_meeting()
         assert expected_meeting_date == planner.chosen_meeting_date
 
