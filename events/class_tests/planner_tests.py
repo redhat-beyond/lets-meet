@@ -1,5 +1,6 @@
 import pytest
 from django.core import mail
+from reminders.class_models.reminder_models import ReminderType
 from users.models import User
 from datetime import timedelta
 from django.conf import settings
@@ -76,6 +77,7 @@ def valid_meeting_data(valid_event_data, valid_optional_meeting_data, valid_part
     meeting_data.update(valid_event_data)
     meeting_data.update(valid_optional_meeting_data)
     meeting_data.update(valid_participant_data)
+    meeting_data.update({"method": ReminderType.WEBSITE})
     return meeting_data
 
 

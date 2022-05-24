@@ -8,9 +8,6 @@ class EventParticipantQuerySet(models.QuerySet):
 
     def get_an_event_participants(self, event):
         return self.filter(event_id=event)
-    
-    def get_an_event_participants_without_creator(self, event):
-        return self.filter(event_id=event, is_creator=False)
 
     def get_an_event_participants_without_creator(self, event):
         return self.filter(event_id=event, is_creator=False)

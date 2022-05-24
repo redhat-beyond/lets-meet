@@ -31,6 +31,9 @@ class PossibleParticipantsQuerySet(models.QuerySet):
     def remove_all_event_participants(self, event_id):
         return self.get_all_possible_participants(event_id).delete()
 
+    def remove_possible_participant(self, participant_id):
+        return self.filter(participant_id=participant_id).delete()
+
 
 class PossibleParticipant(models.Model):
     participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)

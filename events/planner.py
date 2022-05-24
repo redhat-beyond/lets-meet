@@ -164,13 +164,10 @@ class EventPlanner():
     @staticmethod
     def get_min_date(possible_dates, is_set=False):
         def get_mim_datetime(datetime1, datetime2):
-            if datetime1.date_time_start < datetime2.date_time_start:
-                return datetime1
-            return datetime2
+            return datetime1 if datetime1.date_time_start < datetime2.date_time_start else datetime2
+
         def get_min_date_time_set(set1, set2):
-            if set1[0] < set2[0]:
-                return set1
-            return set2
+            return set1 if set1[0] < set2[0] else set2
 
         if is_set:
             return reduce(get_min_date_time_set, possible_dates)
@@ -205,8 +202,8 @@ class EventPlanner():
         email_title = "Invitation to meeting"
         description = f"Description: {meeting_id.description}\n" if meeting_id.description != "" else ""
         message = (f"You have been invited to attend a meeting created by {meeting_creator.user_id.username}!\n"
-                    f"The meeting topic: {meeting_id.title}\n{description}"
-                    f"A notice on the website is waiting for you to vote to set a meeting date.")
+                   f"The meeting topic: {meeting_id.title}\n{description}"
+                   f"A notice on the website is waiting for you to vote to set a meeting date.")
         return email_title, message
 
     @staticmethod

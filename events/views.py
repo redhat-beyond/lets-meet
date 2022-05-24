@@ -1,21 +1,17 @@
-from optparse import Option
-from os import rmdir, stat
-from events.class_models.possible_participant_model import PossibleParticipant
-from reminders.class_models.reminder_models import ReminderType
 from users.models import User
 from django.utils import timezone
 from django.contrib import messages
 from django.http import JsonResponse
-from reminders.models import Reminder
 from events.planner import EventPlanner
 from django.forms import formset_factory
 from django.views.generic import TemplateView
 from main.utilities import convert_time_delta
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
+from reminders.models import Reminder, ReminderType
 from django.contrib.auth.decorators import login_required
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
-from events.models import Event, EventParticipant, OptionalMeetingDates
+from events.models import Event, EventParticipant, OptionalMeetingDates, PossibleParticipant
 from events.forms import (
     EventCreationForm,
     EventUpdateForm,
@@ -166,7 +162,7 @@ class CreateMeetingView(TemplateView):
         return context
 
     def get(self, request, meeting_id=None):
-    
+
         if meeting_id:
             self.title = "Update meeting"
             self.meeting_id = meeting_id
@@ -181,8 +177,10 @@ class CreateMeetingView(TemplateView):
 
             for index, possible_date in enumerate(self.formset_meeting_data):
                 possible_date.id = index
-                possible_date.date_time_start = timezone.localtime(possible_date.date_time_start).strftime("%Y-%m-%dT%H:%M:%S")
-                possible_date.date_time_end = timezone.localtime(possible_date.date_time_end).strftime("%Y-%m-%dT%H:%M:%S")
+                possible_date.date_time_start = \
+                    timezone.localtime(possible_date.date_time_start).strftime("%Y-%m-%dT%H:%M:%S")
+                possible_date.date_time_end = \
+                    timezone.localtime(possible_date.date_time_end).strftime("%Y-%m-%dT%H:%M:%S")
 
             all_participants_ids = EventParticipant.objects.filter(event_id=meeting_id, is_creator=False)
             self.formset_participant_data = list()
@@ -190,10 +188,11 @@ class CreateMeetingView(TemplateView):
             for index, participant in enumerate(all_participants_ids):
                 self.formset_participant_data.append({"id": index, "email": participant.user_id.email})
 
+            self.reminder_form = ReminderUpdateForm(instance=self.reminder_instance)
         else:
             self.create_event_form = EventCreationForm(user_id=request.user)
+            self.reminder_form = ReminderCreationForm()
 
-        self.reminder_form = ReminderCreationForm(instance=self.reminder_instance)
         self.optional_meetings_formset = self.OptionalMeetingDateFormSet(prefix='optional_meetings')
         self.meeting_participants_formset = self.MeetingParticipantsFormset(prefix='participants', user_id=request.user)
         return super().get(request)
@@ -203,11 +202,12 @@ class CreateMeetingView(TemplateView):
 
         if meeting_id:
             meeting_instance = Event.objects.get(id=meeting_id)
-            self.create_event_form = MeetingUpdateForm(request.POST,instance=meeting_instance)
+            self.create_event_form = MeetingUpdateForm(request.POST, instance=meeting_instance)
+            self.reminder_form = ReminderUpdateForm(request.POST, instance=self.reminder_instance)
         else:
             self.create_event_form = EventCreationForm(request.POST, user_id=request.user)
+            self.reminder_form = ReminderCreationForm(request.POST)
 
-        self.reminder_form = ReminderCreationForm(request.POST, instance=self.reminder_instance)
         self.optional_meetings_formset = self.OptionalMeetingDateFormSet(request.POST, prefix='optional_meetings')
         self.meeting_participants_formset = self.MeetingParticipantsFormset(
             request.POST, prefix='participants', user_id=request.user
@@ -220,7 +220,9 @@ class CreateMeetingView(TemplateView):
 
             if self.check_optional_meeting_dates_formset(
                event_instance, event_creator, self.optional_meetings_formset, meeting_instance):
-                if self.check_participant_formset(request, event_instance, self.meeting_participants_formset, meeting_instance):
+                if self.check_participant_formset(
+                    request, event_instance, self.meeting_participants_formset, meeting_instance
+                ):
                     # all the forms are valid and all the data saved in the DB
                     is_valid_formsets = True
 
@@ -242,10 +244,11 @@ class CreateMeetingView(TemplateView):
         return self.render_to_response(self.get_context_data())
 
     @staticmethod
-    def calc_timeout_and_send_meeting_notifications(request, event_instance, event_creator, updated_meeting=False, min_date_change=False):
+    def calc_timeout_and_send_meeting_notifications(request, event_instance, event_creator,
+                                                    updated_meeting, min_date_change):
         timeout = EventPlanner.get_timeout(event_instance)
 
-        if not updated_meeting or not min_date_change:
+        if updated_meeting and min_date_change:
             Reminder.objects.remove_algorithm_reminder(event_creator)
             EventPlanner.creating_meeting_reminders(event_creator, timeout)
 
@@ -295,7 +298,8 @@ class CreateMeetingView(TemplateView):
             result.append(form_data)
         return result
 
-    def saving_all_optional_meeting_dates(self, event_creator, event_instance, optional_meetings_formset, meeting_instance=None):
+    def saving_all_optional_meeting_dates(self, event_creator, event_instance,
+                                          optional_meetings_formset, meeting_instance=None):
 
         if meeting_instance:
             date_changed, old_dates, new_dates = self.check_date_changed(optional_meetings_formset, event_instance)
@@ -320,27 +324,29 @@ class CreateMeetingView(TemplateView):
         old_dates = set()
         for date in OptionalMeetingDates.objects.get_all_event_dates(event_instance):
             old_dates.add((date.date_time_start, date.date_time_end))
-    
+
         new_dates = set()
         new_dates.add((event_instance.date_time_start, event_instance.date_time_end))
         for form in optional_meetings_formset:
             new_dates.add((form.cleaned_data.get('date_time_start'), form.cleaned_data.get('date_time_end')))
 
         return new_dates == old_dates, old_dates, new_dates
-    
+
     @staticmethod
     def check_min_date_time_change(old_dates, new_dates):
         min_old_date = EventPlanner.get_min_date(old_dates, True)
         min_new_date = EventPlanner.get_min_date(new_dates, True)
 
-        return min_old_date == min_new_date
+        return min_old_date != min_new_date
 
-    def check_optional_meeting_dates_formset(self, event_instance, event_creator, optional_meetings_formset, meeting_instance=None):
+    def check_optional_meeting_dates_formset(self, event_instance, event_creator,
+                                             optional_meetings_formset, meeting_instance=None):
         optional_meetings_formset.set_event_instance(event_instance)
         if optional_meetings_formset.is_valid():
-            self.saving_all_optional_meeting_dates(event_creator, event_instance, optional_meetings_formset, meeting_instance)
+            self.saving_all_optional_meeting_dates(
+                event_creator, event_instance, optional_meetings_formset, meeting_instance)
         else:
-            if not meeting_instance:  
+            if not meeting_instance:
                 event_instance.delete()
             return False
         return True
@@ -348,10 +354,15 @@ class CreateMeetingView(TemplateView):
     @staticmethod
     def check_participant_formset(request, event_instance, meeting_participants_formset, meeting_instance=None):
         event_participants = EventParticipant.objects.filter(event_id=event_instance, is_creator=False)
-        
+        meeting_creator = EventParticipant.objects.get(event_id=event_instance, is_creator=True)
 
         if meeting_participants_formset.is_valid():
             if meeting_instance:
+                new_participants_emails = \
+                    CreateMeetingView.get_all_participants_emails_from_formset(meeting_participants_formset)
+                for participant in event_participants:
+                    if participant.user_id.email not in new_participants_emails:
+                        PossibleParticipant.objects.remove_possible_participant(participant)
                 event_participants.delete()
 
             for form in meeting_participants_formset:
@@ -367,7 +378,9 @@ class CreateMeetingView(TemplateView):
 
                             if participant not in event_participants:
                                 # send notification to new participant
-                                EventPlanner.send_meeting_invitation_to_new_participant(meeting_instance, request.user, participant)
+                                EventPlanner.send_meeting_invitation_to_new_participant(
+                                    meeting_instance, meeting_creator, participant
+                                )
 
                     except User.DoesNotExist:
                         messages.warning(request, f"There is no user with the email: {participant_email}")
@@ -382,6 +395,15 @@ class CreateMeetingView(TemplateView):
             return False
         return True
 
+    @staticmethod
+    def get_all_participants_emails_from_formset(meeting_participants_formset):
+        participants_emails = []
+        for form in meeting_participants_formset:
+            if form.is_valid():
+                participants_emails.append(form.cleaned_data.get('participant_email'))
+        return participants_emails
+
+
 @login_required(login_url=LOGIN_PAGE)
 def show_meeting(request, meeting_id):
 
@@ -390,7 +412,7 @@ def show_meeting(request, meeting_id):
         is_creator = "true" if participant.is_creator else False
     except EventParticipant.DoesNotExist:
         return redirect(HOME_PAGE)
-    
+
     event_instance = Event.objects.get(id=meeting_id)
 
     if request.method == 'POST':
@@ -466,7 +488,8 @@ def get_meeting_participants(request, meeting_id):
         participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
     else:
         participants = EventParticipant.objects.get_an_event_participants(meeting_id)
-    return JsonResponse(list(participants.values('id', 'user_id__username', 'user_id__email', 'user_id__phone_number')), safe=False)
+    return JsonResponse(list(participants.values(
+        'id', 'user_id__username', 'user_id__email', 'user_id__phone_number')), safe=False)
 
 
 @login_required(login_url=LOGIN_PAGE)

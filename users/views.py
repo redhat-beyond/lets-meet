@@ -134,13 +134,14 @@ def get_optional_meetings(current_meetings):
         optional_meetings = OptionalMeetingDates.objects.get_all_event_dates(meeting)
         for optional_meeting in optional_meetings:
             event_dict = {'id': optional_meeting.event_creator_id.event_id.id,
-                            'title': optional_meeting.event_creator_id.event_id.title,
-                            'date_time_start': optional_meeting.date_time_start,
-                            'date_time_end': optional_meeting.date_time_end,
-                            'color': optional_meeting.event_creator_id.event_id.color}
+                          'title': optional_meeting.event_creator_id.event_id.title,
+                          'date_time_start': optional_meeting.date_time_start,
+                          'date_time_end': optional_meeting.date_time_end,
+                          'color': optional_meeting.event_creator_id.event_id.color}
             all_possible_dates.append(event_dict)
 
     return all_possible_dates
+
 
 def get_dates(year=None, month=None, next=True):
     """ return the next or previous date.
