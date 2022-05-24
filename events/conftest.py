@@ -10,7 +10,6 @@ from reminders.class_models.reminder_models import ReminderType
 def pytest_configure():
 
     pytest.current_date = datetime.now()
-
     pytest.event_date_time_end = datetime(
         pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 14, 0, 0, tzinfo=timezone.utc
     )
