@@ -1,9 +1,8 @@
 import pytest
 from datetime import datetime
 from django.utils import timezone
-from events.models import EventParticipant
-from events.class_models.event_models import Colors
-from reminders.class_models.reminder_models import ReminderType
+from reminders.models import ReminderType
+from events.models import EventParticipant, Colors
 
 
 # define constants
@@ -41,7 +40,6 @@ def pytest_configure():
 
 @pytest.fixture
 def signed_up_user_details():
-    # return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
     return {'email': 'testUser2@mta.ac.il', 'password': 'PasswordU$er456'}
 
 
@@ -64,6 +62,7 @@ def updated_event_data_and_reminder():
             'date_time': pytest.reminder_date_time, 'method': ReminderType.EMAIL}
 
 
+@pytest.fixture
 def get_event_participant():
     return EventParticipant.objects.get(id=8)
 

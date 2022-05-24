@@ -2,7 +2,6 @@ from datetime import datetime
 from users.models import User
 from django.contrib import messages
 from django.http import JsonResponse
-from reminders.models import Reminder
 from events.planner import EventPlanner
 from django.forms import formset_factory
 from django.http import HttpResponseForbidden
