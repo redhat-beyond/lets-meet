@@ -50,11 +50,11 @@ class EventUpdateForm(ModelForm):
         widgets = {
             'description': Textarea(attrs={'cols': 50, 'rows': 3}),
             'date_time_start': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             ),
             'date_time_end': forms.DateInput(
-                attrs={"type": "datetime-local", "class": "form-control"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             )
         }

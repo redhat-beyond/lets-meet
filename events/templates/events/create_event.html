@@ -20,10 +20,15 @@
                 <div class="headings">
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
+
                     {% if event_id %}
-                    <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
-                        <i class="fa-solid fa-file fa-2x"></i>
-                    </a>
+                        <i id="remove_event" class="fa fa-trash-o" aria-hidden="true" onclick="delete_event('{{ event_id }}')"></i>
+                    {% endif %}
+
+                    {% if event_id %}
+                        <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
+                            <i class="fa-solid fa-file fa-2x" id="add_file"></i>
+                        </a>
                     {% endif %}
                 </div>
 
@@ -43,6 +48,18 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            tippy('#add_alert', {
+                content: 'Add A New Alert',
+            });
+            tippy('#remove_event', {
+                content: 'Delete Event',
+            });
+            tippy('#add_file', {
+                content: 'Add A File',
+            });
+        </script>
 
         {% load static %}
         <script src="{% static 'reminders/reminder_form.js' %}"></script>
