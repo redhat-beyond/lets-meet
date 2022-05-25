@@ -162,10 +162,10 @@ body {
 	border: 1px solid var(--blue);
 	color: var(--white);
 	cursor: pointer;
-	font-size: 0.8rem;
+	font-size: 0.8em;
 	font-weight: bold;
 	letter-spacing: 0.1rem;
-	padding: 0.7em 3em;
+	padding: 1rem 3rem;
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
 }

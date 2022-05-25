@@ -162,7 +162,6 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'profile',
             'email',
-            # 'https://www.googleapis.com/auth/calendar.readonly'
         ],
         'AUTH_PARAMS': {
             'access_type': 'offline',
@@ -173,6 +172,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Additional configuration settings
 SOCIALACCOUNT_QUERY_EMAIL = True
-ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True

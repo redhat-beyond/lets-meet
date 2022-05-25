@@ -4,8 +4,8 @@ from django.db import migrations
 
 
 def add_google_account(apps, schema_editor):
-    from allauth.socialaccount.models import SocialApp
     import environ
+    from allauth.socialaccount.models import SocialApp
 
     env = environ.Env()
     environ.Env.read_env()
@@ -13,6 +13,7 @@ def add_google_account(apps, schema_editor):
     app = SocialApp(provider='google', name='OAuth-App', client_id=env("AUTH_ID"), secret=env("AUTH_SECRET"))
     app.save()
     app.sites.set('1')
+
 
 class Migration(migrations.Migration):
 

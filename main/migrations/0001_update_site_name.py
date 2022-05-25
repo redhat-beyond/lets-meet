@@ -2,7 +2,6 @@
 
 from django.db import migrations
 
-# /home/vagrant/.local/share/virtualenvs/vagrant-gKDsaKU3/lib/python3.9/site-packages/allauth/socialaccount/migrations
 
 def setup_default_site(apps, schema_editor):
     """
@@ -20,8 +19,8 @@ def setup_default_site(apps, schema_editor):
         site.save()
 
     except Site.DoesNotExist:
-    #     # No site with domain example.com exists.
-    #     # Create a default site, but only if no sites exist.
+        #  No site with domain example.com exists.
+        #  Create a default site, but only if no sites exist.
         if Site.objects.count() == 0:
             Site.objects.create(name=name, domain=domain)
 

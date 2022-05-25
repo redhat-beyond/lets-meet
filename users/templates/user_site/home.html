@@ -71,7 +71,7 @@
             $(document).ready(function() {
                 show_messages();
             })
-        </script>   
+        </script>
     {% endif %}
 
 {% endblock %}
@@ -102,29 +102,35 @@
         </div>
     </div>
     <div id="overlay"></div>
-    <div class="table-title">
-        <h1 style="font-family: 'Bodoni Moda', serif; font-size: 4.8em;">{{ month_name }} - {{ current_year }}:</h1>
-    </div>
+    <h1 class="main-title" style="font-family: 'Bodoni Moda', serif;">{{ month_name }} - {{ current_year }}</h1>
     <div style="display: inline;">
         <div class="table-icon" id="right-arrow">
-            <a href="/main/{{ next_date }}" style="color: white;" id="next_month">
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </a>
+            <span class="dot">
+                <a href="/main/{{ next_date }}" style="color: black;" id="next_month">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </span>
         </div>
         <div class="table-icon" id="left-arrow">
-            <a href="/main/{{ previous_date }}" style="color: black;" id="previous_month">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </a>
+            <span class="dot">
+                <a href="/main/{{ previous_date }}" style="color: black;" id="previous_month">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </a>
+            </span>
         </div>
         <div class="table-icon" id="plus">
-            <a href="{% url 'create_event' %}" style="color: black;" id="create_event">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </a>
+            <span class="dot">
+                <a href="{% url 'create_event' %}" style="color: black;" id="create_event">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </a>
+            </span>
         </div>
         <div class="table-icon" id="plus">
-            <a href="{% url 'create_meeting' %}" style="color: black;" id="create_meeting">
-                <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
-            </a>
+            <span class="dot">
+                <a href="{% url 'create_meeting' %}" style="color: black;" id="create_meeting">
+                    <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
+                </a>
+            </span>
         </div>
         <div class="table-icon" id="credit">
             <a href="/admin" style="color: white;" id="admin">
@@ -132,7 +138,7 @@
             </a>
         </div>
     </div>
-    <table class="table-fill">
+    <table class="table table-fill" style="width: 90%; height: 95%;">
         <thead>
             <tr>
                 {% for day in week_days %}
@@ -149,7 +155,7 @@
                                                    {% else %} border-right: 1px solid #C1C3D1; {% endif %}"
                                                    onclick="day_view('{{ day.2 }}/{{ day.1 }}/{{ day.0 }}')">
                         <div style="cursor: pointer;">
-                            <p class="tab" style="top: -{{ max_margin }}vh;
+                            <p style="color: black; float: left;
                                 {% if current_date.1 == day.1 and current_date.2 == day.2 %}  color: red; {% endif %}
                                 {% if current_date.1 == day.1 %}  font-weight: bold; {% endif %}">
                                 {{ day.2 }}
@@ -159,7 +165,7 @@
                                 {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
                                     {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
                                         <div class="square" id="event{{ event.id }}"
-                                            style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                            style="background-color: {{ event.color }}; margin-left: 5%">
                                             {{ event.title }}
                                         </div>
                                     {% endif %}
@@ -170,7 +176,7 @@
                                 {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
                                     {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
                                         <div class="square" id="event{{ event.id }}"
-                                            style="background-color: {{ event.color }}; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                            style="background-color: {{ event.color }}; margin-left: 5%">
                                             {{ event.title }}
                                         </div>
                                     {% endif %}
@@ -181,7 +187,7 @@
                                 {% if event.date_time_start.year <= day.0 and event.date_time_start.month <= day.1 and event.date_time_start.day <= day.2 %}
                                     {% if event.date_time_end.year >= day.0 and event.date_time_end.month >= day.1 and event.date_time_end.day >= day.2 %}
                                         <div class="square" id="event{{ event.id }}"
-                                            style="outline: 4px solid {{ event.color }}; color: black; margin-top: -{{ max_margin_events }}vh; margin-bottom: {{ max_padding }}vh;">
+                                            style="outline: 4px solid {{ event.color }}; color: black; margin-left: 5%">
                                             {{ event.title }}
                                         </div>
                                     {% endif %}
