@@ -1,6 +1,6 @@
 import pytest
+from datetime import datetime
 from django.utils import timezone
-from django.utils.datetime_safe import datetime
 from events.class_models.event_models import Colors
 from reminders.class_models.reminder_models import ReminderType
 

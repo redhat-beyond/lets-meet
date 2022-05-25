@@ -2,8 +2,8 @@ from functools import reduce
 from django.utils import timezone
 from datetime import datetime, timedelta
 from reminders.models import Reminder, ReminderType
-from events.models import OptionalMeetingDates, PossibleParticipant, EventParticipant
 from main.utilities import send_mail_notification, time_format, create_notification
+from events.models import OptionalMeetingDates, PossibleParticipant, EventParticipant, Event
 
 
 class EventPlanner():
@@ -105,6 +105,7 @@ class EventPlanner():
         self.find_meeting()
         if not self.chosen_meeting_date:
             self.send_email_no_suitable_meeting_found(EventParticipant.objects.get_creator_of_event(self.event_id))
+            Event.objects.get(id=self.event_id.id).delete()
         else:
             self.execute_choice()
             self.send_email_about_algorithm_results_to_the_creator()
@@ -215,6 +216,7 @@ class EventPlanner():
     def send_meeting_invitation_to_new_participant(meeting_id, meeting_creator, new_event_participant):
         email_title, message = EventPlanner.create_invitation_to_meeting_message(meeting_id, meeting_creator)
         send_mail_notification(email_title, message, new_event_participant.user_id.email)
+        create_notification(message, new_event_participant)
 
     @staticmethod
     def creating_meeting_reminders(meeting_creator, voting_timeout):

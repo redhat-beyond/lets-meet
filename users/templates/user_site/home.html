@@ -40,8 +40,10 @@
     {% if messages %}
         <script>
             function show_messages() {
+                let status = "{% for message in messages %} {{ message.extra_tags }} {% endfor %}".split(" ")[1];
+
                 Swal.fire({
-                    title: 'Meeting Has Been Created Successfully',
+                    title: 'Meeting has been ' + status + ' successfully',
                     width: '43%',
                     html:  '{% for message in messages %}' +
                                 '{{ message }}<br>' +

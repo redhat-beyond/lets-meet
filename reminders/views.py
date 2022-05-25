@@ -22,7 +22,9 @@ def get_notification(request):
 def seen_notification(request, notification_id):
 
     user = request.user
-    user_notification = Notification.objects.get(id=notification_id, participant_id=user, seen_time__isnull=True)
+    user_notification = Notification.objects.get(
+        id=notification_id, participant_id__user_id=user, seen_time__isnull=True
+    )
     user_notification.seen_time = timezone.now()
     user_notification.save()
 

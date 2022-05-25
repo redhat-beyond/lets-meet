@@ -8,7 +8,7 @@ function build_table() {
 	$.get(get_notification, {}, function(data, status) {
 		
 		$(id).empty();
-
+		console.log(data);
 		let length = data.length;
 		if (length === 0) {
 			length = "";
