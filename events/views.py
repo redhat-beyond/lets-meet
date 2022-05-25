@@ -354,8 +354,10 @@ class CreateMeetingView(TemplateView):
         optional_meetings_formset.set_event_instance(event_instance)
 
         if meeting_instance:
-            optional_meetings_formset.set_creation_meeting_time(self.get_creation_time(event_instance, optional_meetings_formset))
-        
+            optional_meetings_formset.set_creation_meeting_time(
+                self.get_creation_time(event_instance, optional_meetings_formset)
+            )
+
         if optional_meetings_formset.is_valid():
             self.saving_all_optional_meeting_dates(
                 event_creator, event_instance, optional_meetings_formset, meeting_instance)
@@ -390,7 +392,7 @@ class CreateMeetingView(TemplateView):
                             )
                             participant.save()
 
-                            if (participant.event_id, participant.user_id) not in old_participants:
+                            if meeting_instance and (participant.event_id, participant.user_id) not in old_participants:
                                 # send notification to new participant
                                 EventPlanner.send_meeting_invitation_to_new_participant(
                                     event_instance, meeting_creator, participant
@@ -420,10 +422,13 @@ class CreateMeetingView(TemplateView):
     def get_creation_time(self, event_instance, optional_meetings_formset):
         _, old_dates, _ = self.check_date_changed(optional_meetings_formset, event_instance)
         min_old_date = EventPlanner.get_min_date(old_dates, True)
-        timeout = Reminder.objects.get(participant_id__event_id__id=event_instance.id, method=ReminderType.RUN_ALGORITHM).date_time
+        timeout = Reminder.objects.get(
+            participant_id__event_id__id=event_instance.id, method=ReminderType.RUN_ALGORITHM
+        ).date_time
         difference = min_old_date[0].timestamp() - timeout.timestamp()
-        return datetime.fromtimestamp(timeout.timestamp() - difference
-        ).replace(tzinfo=timezone.get_current_timezone()).replace(second=0).replace(microsecond=0)
+        return datetime.fromtimestamp(
+            timeout.timestamp() - difference
+            ).replace(tzinfo=timezone.get_current_timezone()).replace(second=0).replace(microsecond=0)
 
 
 @login_required(login_url=LOGIN_PAGE)

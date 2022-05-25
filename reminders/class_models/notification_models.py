@@ -1,6 +1,4 @@
-from django.db.models import Q
 from django.utils import timezone
-from django.db.models.functions import Now
 from events.models import EventParticipant
 from django.db import models, IntegrityError
 from django.core.exceptions import ValidationError

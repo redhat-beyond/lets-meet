@@ -103,7 +103,7 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
 
     def set_event_instance(self, event_id):
         self.event_id = event_id
-    
+
     def set_creation_meeting_time(self, creation_meeting_time):
         self.creation_meeting_time = creation_meeting_time
 
