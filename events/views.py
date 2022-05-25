@@ -339,7 +339,9 @@ class MeetingVoteView(TemplateView):
 
             # send a seen request
             try:
-                notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
+                notification_id = Notification.objects.filter(
+                    participant_id=participant, seen_time__isnull=True
+                ).first()
                 seen_notification(request, notification_id.id)
             except Exception:
                 pass
