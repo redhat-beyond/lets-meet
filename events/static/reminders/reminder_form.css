@@ -1,7 +1,8 @@
 #add_alert {
   position: absolute;
-  right: 0px;
+  right: 10%;
   top: 5%;
+  margin-top: 5px;
   font-size:36px;
   color: white;
   cursor: pointer;
@@ -9,4 +10,19 @@
 
 #add_alert:hover {
     color: #aae0f0;
+}
+
+#remove_event {
+  margin-left: 100%;
+  margin-top: 5px;
+  position: absolute;
+  left: 22px;
+  top: 5%;
+  font-size:36px;
+  color: red;
+  cursor: pointer;
+}
+
+#remove_event:hover {
+    color: red;
 }

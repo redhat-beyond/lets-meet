@@ -1,13 +1,17 @@
 from django.db import models
+from django.utils import timezone
 from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 class EventQuerySet(models.QuerySet):
     def get_all_meetings(self):
         """ get all the meetings from all the users """
         return self.alias(participant_amount=Count('eventparticipant__event_id')).filter(participant_amount__gte=2)
+
+    def get_all_events(self):
+        """ get all the events from all the users """
+        return self.alias(participant_amount=Count('eventparticipant__event_id')).filter(participant_amount=1)
 
     def get_all_user_events(self, user_id):
         """ get all the events that the user_id is part of """
@@ -25,14 +29,31 @@ class EventQuerySet(models.QuerySet):
             start_year=year, start_month=month
         )
 
+    def get_all_user_month_events(self, user_id, year, month):
+        """ get only the events for the user given in the month given """
+        return self.__date_filter(
+            self.get_all_user_events(user_id),
+            start_year=year, start_month=month
+        )
+
     def get_all_user_day_meetings(self, user_id, date):
         """ get only the meeting for the user at the date given """
         year, month, day = date.year, date.month, date.day
 
         return self.__date_filter(
             self.get_all_user_meetings(user_id),
-            start_year=year, start_month=month,
-            start_day=day
+            start_year=year, start_month=month, start_day=day,
+            end_year=year, end_month=month, end_day=day
+        )
+
+    def get_all_user_day_events(self, user_id, date):
+        """ get only the events for the user at the date given """
+        year, month, day = date.year, date.month, date.day
+
+        return self.__date_filter(
+            self.get_all_user_events(user_id),
+            start_year=year, start_month=month, start_day=day,
+            end_year=year, end_month=month, end_day=day
         )
 
     def __date_filter(self, query, start_year=None, end_year=None,
@@ -42,22 +63,22 @@ class EventQuerySet(models.QuerySet):
         result = query
 
         if start_year:
-            result = result.filter(date_time_start__year__gte=start_year)
+            result = result.filter(date_time_start__year__lte=start_year)
 
             if end_year:
-                result = result.filter(date_time_end__year__lte=end_year)
+                result = result.filter(date_time_end__year__gte=end_year)
 
         if start_month:
-            result = result.filter(date_time_start__month__gte=start_month)
+            result = result.filter(date_time_start__month__lte=start_month)
 
             if end_month:
-                result = result.filter(date_time_end__month__lte=end_month)
+                result = result.filter(date_time_end__month__gte=end_month)
 
         if start_day:
-            result = result.filter(date_time_start__day__gte=start_day)
+            result = result.filter(date_time_start__day__lte=start_day)
 
             if end_day:
-                result = result.filter(date_time_end__day__lte=end_day)
+                result = result.filter(date_time_end__day__gte=end_day)
 
         return result
 

@@ -20,8 +20,8 @@ a {
 .container-shadow {
   position: absolute;
   width: 600px;
-  height: 85%;
   left: 48%;
+  height: 85%;
   margin-left: -262.5px;
   margin-top: 8vh;
   box-shadow: 0px 30px 50px -20px #000;
@@ -30,9 +30,9 @@ a {
 .container {
   position: absolute;
   width: 600px;
+  left: 48%;
   height: 85%;
   overflow: auto;
-  left: 48%;
   margin-left: -262.5px;
   margin-top: 8vh;
   background: linear-gradient(90deg, #29323c 0%, #3b4249 100%);
@@ -281,10 +281,9 @@ a {
   text-decoration: none;
 }
 .fa-file{
-    margin-left: 100%;
-    margin-top: 5px;
+    margin-top: 10px;
     position: absolute;
-    left: 22px;
+    right: 0;
     top: 5%;
     color: white;
     cursor: pointer;
@@ -292,4 +291,13 @@ a {
 
 .fa-file:hover {
     color: #aae0f0;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aae0f0;
+  border-radius: 10px;
 }

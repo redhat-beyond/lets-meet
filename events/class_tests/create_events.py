@@ -1,4 +1,5 @@
 import pytest
+from json import loads
 from users.models import User
 from users.tests import persist_user  # noqa: F401
 from events.forms import EventCreationForm
@@ -84,3 +85,24 @@ class TestCreateEventForm:
                 form.save()
             else:
                 assert False
+
+    @pytest.fixture
+    def signed_up_user_details(self):
+        return {'email': 'testUser1@mta.ac.il', 'password': 'PasswordU$er123'}
+
+    @pytest.fixture
+    def sign_in(self, client, signed_up_user_details):
+        return client.post('/login/', data=signed_up_user_details)
+
+    @pytest.mark.parametrize("event_id, result", [
+            (1, "success"),
+            (2, "fail"),
+        ], ids=[
+            "test valid delete event",
+            "test invalid delete event",
+        ]
+     )
+    def test_delete_event(self, client, sign_in, event_id, result):
+        response = client.get(f"/event/delete_event/{event_id}")
+        assert response.status_code == 200
+        assert loads(response.content)["result"] == result

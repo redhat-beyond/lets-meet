@@ -1,3 +1,4 @@
+from datetime import datetime
 from users.models import User
 from datetime import datetime
 from django.utils import timezone
@@ -29,7 +30,7 @@ LOGIN_PAGE = 'login'
 
 
 @login_required(login_url=LOGIN_PAGE)
-def create_event(request):
+def create_event(request, day=None, month=None, year=None):
     if request.method == 'POST':
         event_form = EventCreationForm(request.POST, user_id=request.user)
         reminder_form = ReminderCreationForm(request.POST)
@@ -46,7 +47,18 @@ def create_event(request):
                 reminder.save()
             return redirect(HOME_PAGE)
     else:
-        event_form = EventCreationForm(user_id=request.user)
+        initial_state = None
+
+        if day and month and year:
+            current_time = datetime.now().time()
+
+            initial_state = {
+                'date_time_start': datetime(
+                                        int(year), int(month), int(day), current_time.hour, current_time.minute
+                                    ).strftime("%Y-%m-%dT%H:%M")
+            }
+
+        event_form = EventCreationForm(user_id=request.user, initial=initial_state)
         reminder_form = ReminderCreationForm()
 
     return render(request, 'events/create_event.html',
@@ -531,3 +543,15 @@ def delete_participant(request, participant_id):
             return JsonResponse({"result": "You are not the event creator so you can't remove participants."})
     except EventParticipant.DoesNotExist:
         return JsonResponse({"result": "You are not a participant of this meeting"})
+
+@login_required(login_url=LOGIN_PAGE)
+def delete_event(request, event_id):
+    user = request.user
+    event_instance = Event.objects.get(id=event_id)
+
+    try:
+        EventParticipant.objects.get(event_id=event_instance, user_id=user, is_creator=True)
+        event_instance.delete()
+        return JsonResponse({"result": "success"}, safe=False)
+    except EventParticipant.DoesNotExist:
+        return JsonResponse({"result": "fail"}, safe=False)
