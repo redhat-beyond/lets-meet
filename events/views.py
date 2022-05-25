@@ -1,6 +1,5 @@
 from datetime import datetime
 from users.models import User
-from datetime import datetime
 from django.utils import timezone
 from django.contrib import messages
 from django.http import JsonResponse
@@ -543,6 +542,7 @@ def delete_participant(request, participant_id):
             return JsonResponse({"result": "You are not the event creator so you can't remove participants."})
     except EventParticipant.DoesNotExist:
         return JsonResponse({"result": "You are not a participant of this meeting"})
+
 
 @login_required(login_url=LOGIN_PAGE)
 def delete_event(request, event_id):

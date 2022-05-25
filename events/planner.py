@@ -200,7 +200,6 @@ class EventPlanner():
     def send_meeting_invitation_email_to_participants(meeting_id, meeting_creator):
         email_title, message = EventPlanner.create_invitation_to_meeting_message(meeting_id, meeting_creator)
         all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
-        print(all_meeting_participants)
         for participant in all_meeting_participants:
             send_mail_notification(email_title, message, participant.user_id.email)
 
