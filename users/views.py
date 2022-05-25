@@ -265,10 +265,10 @@ class MainPageView(TemplateView):
 
         if month + action > 12:
             year += 1
-            month -= 11
+            month = 1
         elif month + action < 1:
             year -= 1
-            month += 11
+            month = 12
         else:
             month += action
 
@@ -283,10 +283,11 @@ class MainPageView(TemplateView):
             return 0
 
         for event in events:
-            if not events_count.get(event.date_time_start.date()):
-                events_count[event.date_time_start.date()] = 1
+            event_start_date = event.date_time_start.date()
+            if not events_count.get(event_start_date):
+                events_count[event_start_date] = 1
             else:
-                events_count[event.date_time_start.date()] += 1
+                events_count[event_start_date] += 1
 
         return max(events_count.values())
 
