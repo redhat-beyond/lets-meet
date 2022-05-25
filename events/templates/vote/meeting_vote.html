@@ -46,9 +46,9 @@
             <div class="form-control">
                 
                 {% load events_extras %}
-                {% for field, date in form|zip:meetings_dates %}
-                    {% for f in field %}
-                        <p> {{ f }} {{ date }} </p>
+                {% for fields, date in form|zip:meetings_dates %}
+                    {% for field in fields %}
+                        <p> {{ field }} {{ date }} </p>
                     {% endfor %}
                 {% endfor %}
             </div>

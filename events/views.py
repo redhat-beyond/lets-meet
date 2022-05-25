@@ -338,8 +338,11 @@ class MeetingVoteView(TemplateView):
                     PossibleParticipant(participant_id=participant, possible_meeting_id=meeting).save()
 
             # send a seen request
-            notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
-            seen_notification(request, notification_id.id)
+            try:
+                notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
+                seen_notification(request, notification_id.id)
+            except Exception:
+                pass
             return redirect(HOME_PAGE)
         else:
             self.vote_form = self.VoteFormset()
@@ -354,10 +357,10 @@ class MeetingVoteView(TemplateView):
     def initialize_forms(self):
         self.title = f"{self.chosen_event.title} Vote Meeting"
         self.VoteFormset = formset_factory(VoteForm, extra=self.chosen_meeting_dates.count())
-        self.meetings_dates = list(
-            map(lambda meeting: f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)}",
-                self.chosen_meeting_dates)
-        )
+        self.meetings_dates = [
+            f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)}"
+            for meeting in self.chosen_meeting_dates
+        ]
 
 
 @login_required(login_url=LOGIN_PAGE)

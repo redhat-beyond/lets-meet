@@ -220,9 +220,9 @@ a {
 
 .fa-file{
     margin-left: 100%;
-    margin-top: 5px;
+    margin-top: 10px;
     position: absolute;
-    left: 22px;
+    left: -20px;
     top: 5%;
     color: white;
     cursor: pointer;
