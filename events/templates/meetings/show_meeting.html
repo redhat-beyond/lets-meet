@@ -38,7 +38,8 @@
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
                     {% if event_id %}
-                        <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
+                    <i id="remove_event" class="fa fa-trash-o" aria-hidden="true" onclick="delete_event('{{ event_id }}')"></i>
+                    <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
                             <i class="fa-solid fa-file fa-2x"></i>
                         </a>
                     {% endif %}

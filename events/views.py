@@ -183,7 +183,7 @@ class CreateMeetingView(TemplateView):
         }
         return context
 
-    def get(self, request, meeting_id=None):
+    def get(self, request, meeting_id=None, day=None, month=None, year=None):
 
         if meeting_id:
             meeting_instance = Event.objects.get(id=meeting_id)
@@ -205,7 +205,18 @@ class CreateMeetingView(TemplateView):
 
             self.reminder_form = ReminderUpdateForm(instance=self.reminder_instance)
         else:
-            self.create_event_form = EventCreationForm(user_id=request.user)
+            initial_state = None
+
+            if day and month and year:
+                current_time = datetime.now().time()
+
+                initial_state = {
+                    'date_time_start': datetime(
+                                            int(year), int(month), int(day), current_time.hour, current_time.minute
+                                        ).strftime("%Y-%m-%dT%H:%M")
+                }
+
+            self.create_event_form = EventCreationForm(user_id=request.user, initial=initial_state)
             self.reminder_form = ReminderCreationForm()
 
         self.optional_meetings_formset = self.OptionalMeetingDateFormSet(prefix='optional_meetings')
@@ -387,7 +398,8 @@ class CreateMeetingView(TemplateView):
         return True
 
     @staticmethod
-    def check_participant_formset(request, event_instance, meeting_participants_formset, meeting_instance=None):
+    def check_participant_formset(request, event_instance, meeting_participants_formset,
+                                  meeting_instance=None, is_set=False):
         event_participants = EventParticipant.objects.get_an_event_participants_without_creator(event_instance)
         old_participants = [(participant.event_id, participant.user_id) for participant in event_participants]
         meeting_creator = EventParticipant.objects.get_creator_of_event(event_instance)
@@ -419,13 +431,13 @@ class CreateMeetingView(TemplateView):
 
                     except User.DoesNotExist:
                         messages.warning(request, f"There is no user with the email: {participant_email}")
-                        if not meeting_instance:
+                        if not meeting_instance and not is_set:
                             event_instance.delete()
                         return False
                     except ValidationError:  # duplication of the same participant email
                         pass
         else:
-            if not meeting_instance:
+            if not meeting_instance and not is_set:
                 event_instance.delete()
             return False
         return True
@@ -510,7 +522,8 @@ def add_participants(request, meeting_id):
             request.POST, prefix='participants', user_id=request.user
         )
 
-        if CreateMeetingView.check_participant_formset(request, event_instance, meeting_participants_formset, None):
+        if CreateMeetingView.check_participant_formset(request, event_instance,
+                                                       meeting_participants_formset, None, True):
             if is_creator:
                 return redirect(HOME_PAGE)
 
