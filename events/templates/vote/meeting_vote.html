@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block head-content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+
+    {% load static %}
+    <link href="{% static 'vote/meeting_vote.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock %}
+
+{% block body-content %}
+
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'remove_participant' meeting_id=meeting_id %}">
+                <i class="fa fa-user-times" id="remove" aria-hidden="true"></i>
+            </a>
+            <h2>{{ title }}:</h2>
+        </div>
+        <div class="header" style="border-bottom: none">
+            <h3> Event Details: </h3>
+            {% if event.location != "" %}
+                <p style="text-decoration: none;">Location: {{ event.location }} </p>
+            {% endif %}
+
+            {% if event.description != "" %}
+                <p style="text-decoration: none;">Description: {{ event.description }} </p>
+            {% endif %}
+
+            <p style="text-decoration: none;">Meeting Creator: {{ creator }} </p>
+        </div>
+
+        <form method="POST" id="form" class="form">
+            {% csrf_token %}
+
+            {{ form.management_data }}
+
+            <input type="hidden" name="form-TOTAL_FORMS" value="3" id="id_form-TOTAL_FORMS">
+            <input type="hidden" name="form-INITIAL_FORMS" value="0" id="id_form-INITIAL_FORMS">
+            <input type="hidden" name="form-MIN_NUM_FORMS" value="0" id="id_form-MIN_NUM_FORMS">
+            <input type="hidden" name="form-MAX_NUM_FORMS" value="1000" id="id_form-MAX_NUM_FORMS">
+
+            <div class="form-control">
+                
+                {% load events_extras %}
+                {% for fields, date in form|zip:meetings_dates %}
+                    {% for field in fields %}
+                        <p> {{ field }} {{ date }} </p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <input type="submit" class="button" name="submit" value="vote" />
+        </form>
+    </div>
+{% endblock %}

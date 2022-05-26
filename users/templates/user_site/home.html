@@ -44,6 +44,7 @@
         $(document).ready(function(){
             const TIMEOUT = 10000;
 
+            vote_url = "{% url 'meeting_vote' meeting_id=1 %}";
             get_notification = "{% url 'get_notification' %}";
             seen_notification = "{% url 'seen_notification' notification_id=1 %}";
 

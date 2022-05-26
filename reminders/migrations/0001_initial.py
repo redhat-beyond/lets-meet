@@ -52,6 +52,9 @@ class Migration(migrations.Migration):
                     to='events.eventparticipant'
                     )
                  ),
+                ('notification_type', models.CharField(
+                    choices=[('website', 'Website'), ('meeting', 'Meeting')], default='website', max_length=7)
+                 )
             ],
         ),
         migrations.AddConstraint(

@@ -43,10 +43,13 @@ def pytest_configure():
     pytest.row_duplication_error = 'notification already exists'
     pytest.notification_past_date_time_error = 'seen time cannot be earlier than time of creation.'
 
+    pytest.get_notification_url = '/notification/get-notification/'
+    pytest.seen_notification_url = '/notification/seen-notification/{}'
+
 
 @pytest.fixture
 def signed_up_user_details():
-    return {'email': 'testUser3@mta.ac.il', 'password': 'PasswordU$er789'}
+    return {'email': 'testUser2@mta.ac.il', 'password': 'PasswordU$er456'}
 
 
 @pytest.fixture

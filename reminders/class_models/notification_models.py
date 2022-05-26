@@ -4,15 +4,25 @@ from django.db import models, IntegrityError
 from django.core.exceptions import ValidationError
 
 
+class NotificationType(models.TextChoices):
+    WEBSITE = "website", "Website"
+    MEETING = "meeting", "Meeting"
+
+
 class Notification(models.Model):
     participant_id = models.ForeignKey(EventParticipant, on_delete=models.CASCADE)
     seen_time = models.DateTimeField(null=True, blank=True)
     sent_time = models.DateTimeField(default=timezone.now)
     message = models.TextField(null=True, blank=True)
+    notification_type = models.CharField(
+        max_length=7,
+        choices=NotificationType.choices,
+        default=NotificationType.WEBSITE,
+    )
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['participant_id', 'sent_time'], name='unique notification'),
+            models.UniqueConstraint(fields=['participant_id', 'sent_time'], name='unique notification')
         ]
 
     @staticmethod
