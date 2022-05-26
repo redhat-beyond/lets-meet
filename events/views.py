@@ -596,9 +596,20 @@ class MeetingVoteView(TemplateView):
             return redirect(LOGIN_PAGE)
 
         try:
-            EventParticipant.objects.get(user_id=request.user, event_id=meeting_id)
+            participant = EventParticipant.objects.get(user_id=request.user, event_id=meeting_id)
 
             if self.check_user_auth(request.user, meeting_id):
+                return redirect(HOME_PAGE)
+
+            if OptionalMeetingDates.objects.get_all_event_dates(meeting_id).count() == 0:
+                try:
+                    notification_id = Notification.objects.filter(
+                        participant_id=participant, seen_time__isnull=True
+                    ).first()
+                    seen_notification(request, notification_id.id)
+                except Exception:
+                    pass
+
                 return redirect(HOME_PAGE)
         except Exception:
             return redirect(HOME_PAGE)

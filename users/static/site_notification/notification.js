@@ -28,13 +28,13 @@ function build_table() {
 			if (element.notification_type === "meeting" ) {
 				const meeting_id = element.participant_id__event_id;
 				const url = vote_url.slice(0, -1) + meeting_id;
-				line += "<div class='text fl'>" + element.message + "&nbsp&nbsp&nbsp&nbsp<a href='" + String(url) + "'><i class='fa fa-link' aria-hidden='true' style='color: blue;'></i></a></div>";
+				line += "<div class='text fl'><a href='" + url + "' style='display: block; padding: 15px 15px;'>" + element.message + "&nbsp<i class='fa fa-link' style='color: blue;'></i></a></div>";
 			}
 			else {
 				line += "<div class='text fl'>" + element.message + "</div>";
 			}
 
-			line += "				<div class='cls' onclick=remove_from_list('" + String(element.id) + "')><i class='fa fa-times-circle' style='color: red;'></i></div>";
+			line += "				<div class='cls'><i class='fa fa-times-circle' style='color: red;' onclick=remove_from_list('" + String(element.id) + "')></i></div>";
 			line += "		</div>";
 
 			$(id).append(line);

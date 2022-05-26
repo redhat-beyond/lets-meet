@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('users.urls')),
     path('event/', include('events.urls')),
     path('file/', include('eventfiles.urls')),
+    path('accounts/', include('allauth.urls')),
     path('notification/', include('reminders.urls'))
 ]
 
