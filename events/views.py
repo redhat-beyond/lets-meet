@@ -10,7 +10,6 @@ from reminders.views import seen_notification
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
-from reminders.models import Reminder, ReminderType
 from django.contrib.auth.decorators import login_required
 from main.utilities import convert_time_delta, time_format
 from reminders.models import Notification, Reminder, ReminderType
@@ -196,12 +195,7 @@ class CreateMeetingView(TemplateView):
                     )
                 )
 
-            for index, possible_date in enumerate(self.formset_meeting_data):
-                possible_date.id = index
-                possible_date.date_time_start = \
-                    timezone.localtime(possible_date.date_time_start).strftime("%Y-%m-%dT%H:%M:%S")
-                possible_date.date_time_end = \
-                    timezone.localtime(possible_date.date_time_end).strftime("%Y-%m-%dT%H:%M:%S")
+            self.get_all_possible_dates_data()
 
             all_participants_ids = EventParticipant.objects.filter(event_id=meeting_id, is_creator=False)
             self.formset_participant_data = list()
@@ -264,6 +258,14 @@ class CreateMeetingView(TemplateView):
                 self.formset_participant_data = self.get_formset_participant_date(request)
         return self.render_to_response(self.get_context_data())
 
+    def get_all_possible_dates_data(self):
+        for index, possible_date in enumerate(self.formset_meeting_data):
+            possible_date.id = index
+            possible_date.date_time_start = \
+                timezone.localtime(possible_date.date_time_start).strftime("%Y-%m-%dT%H:%M:%S")
+            possible_date.date_time_end = \
+                timezone.localtime(possible_date.date_time_end).strftime("%Y-%m-%dT%H:%M:%S")
+
     @staticmethod
     def calc_timeout_and_send_meeting_notifications(request, event_instance, event_creator,
                                                     updated_meeting, min_date_change):
@@ -274,9 +276,9 @@ class CreateMeetingView(TemplateView):
             EventPlanner.creating_meeting_reminders(event_creator, timeout)
 
         meeting_status = "created"
+
         if updated_meeting:
             meeting_status = "updated"
-
             if not min_date_change:
                 messages.success(request, "The meeting has been updated successfully", extra_tags=f"{meeting_status}")
 
@@ -386,9 +388,9 @@ class CreateMeetingView(TemplateView):
 
     @staticmethod
     def check_participant_formset(request, event_instance, meeting_participants_formset, meeting_instance=None):
-        event_participants = EventParticipant.objects.filter(event_id=event_instance, is_creator=False)
+        event_participants = EventParticipant.objects.get_an_event_participants_without_creator(event_instance)
         old_participants = [(participant.event_id, participant.user_id) for participant in event_participants]
-        meeting_creator = EventParticipant.objects.get(event_id=event_instance, is_creator=True)
+        meeting_creator = EventParticipant.objects.get_creator_of_event(event_instance)
 
         if meeting_participants_formset.is_valid():
             if meeting_instance:
@@ -452,7 +454,7 @@ class CreateMeetingView(TemplateView):
 def show_meeting(request, meeting_id):
 
     try:
-        participant = EventParticipant.objects.get(user_id=request.user, event_id=meeting_id)
+        participant = EventParticipant.objects.get_participant_from_event(meeting_id, request.user)
         is_creator = "true" if participant.is_creator else "false"
         reminder_instance = Reminder.objects.filter(
                     participant_id=participant
@@ -500,7 +502,7 @@ def add_participants(request, meeting_id):
     if request.method == 'POST':
         try:
             event_instance = Event.objects.get(id=meeting_id)
-            is_creator = EventParticipant.objects.get(user_id=request.user, event_id=event_instance).is_creator
+            is_creator = EventParticipant.objects.get_participant_from_event(event_instance, request.user).is_creator
         except Event.DoesNotExist:
             return redirect(HOME_PAGE)
 
@@ -520,7 +522,7 @@ def get_meeting_participants(request, meeting_id):
     user = request.user
 
     try:
-        participant = EventParticipant.objects.get(user_id=user, event_id=meeting_id)
+        participant = EventParticipant.objects.get_participant_from_event(meeting_id, user)
     except EventParticipant.DoesNotExist:
         return JsonResponse({})
 

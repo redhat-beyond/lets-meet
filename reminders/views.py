@@ -23,10 +23,7 @@ def get_notification(request):
 def seen_notification(request, notification_id):
     """ set the seen date time of the notification with the id as notification_id  """
     user = request.user
-<<<<<<< HEAD
-=======
 
->>>>>>> main
     user_notification = Notification.objects.get(
         id=notification_id, participant_id__user_id=user, seen_time__isnull=True
     )
