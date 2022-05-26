@@ -2,17 +2,20 @@ from datetime import datetime
 from users.models import User
 from django.contrib import messages
 from django.http import JsonResponse
-from reminders.models import Reminder
 from events.planner import EventPlanner
 from django.forms import formset_factory
+from django.http import HttpResponseForbidden
+from reminders.views import seen_notification
 from django.views.generic import TemplateView
-from main.utilities import convert_time_delta
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
+from main.utilities import convert_time_delta, time_format
+from reminders.models import Notification, Reminder, ReminderType
 from reminders.forms import ReminderCreationForm, ReminderUpdateForm
-from events.models import Event, EventParticipant, OptionalMeetingDates
+from events.models import Event, EventParticipant, OptionalMeetingDates, PossibleParticipant
 from events.forms import (
+    VoteForm,
     EventCreationForm,
     EventUpdateForm,
     OptionalMeetingDateForm,
@@ -67,7 +70,9 @@ def update_event(request, event_id):
 
     try:
         participant = EventParticipant.objects.get(user_id=request.user, event_id=event_instance)
-        reminder_instance = Reminder.objects.get(participant_id=participant)
+        reminder_instance = Reminder.objects.filter(
+            participant_id=participant
+            ).exclude(method__in=(ReminderType.RUN_ALGORITHM, ReminderType.EXPIRATION_VOTING_TIME)).first()
     except Reminder.DoesNotExist:
         reminder_instance = None
 
@@ -274,3 +279,101 @@ def delete_event(request, event_id):
         return JsonResponse({"result": "success"}, safe=False)
     except EventParticipant.DoesNotExist:
         return JsonResponse({"result": "fail"}, safe=False)
+
+
+class MeetingVoteView(TemplateView):
+
+    template_name = 'vote/meeting_vote.html'
+
+    def __init__(self, **kwargs) -> None:
+        self.title = None
+        self.vote_form = None
+        self.VoteFormset = None
+        self.chosen_event = None
+        self.meetings_dates = None
+        self.chosen_meeting_dates = None
+        super().__init__(**kwargs)
+
+    def dispatch(self, request, meeting_id, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(LOGIN_PAGE)
+
+        try:
+            EventParticipant.objects.get(user_id=request.user, event_id=meeting_id)
+
+            if self.check_user_auth(request.user, meeting_id):
+                return redirect(HOME_PAGE)
+        except Exception:
+            return redirect(HOME_PAGE)
+
+        return super(MeetingVoteView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context = {
+            'title': self.title,
+            'form': self.vote_form,
+            'event': self.chosen_event,
+            'meeting_id': self.chosen_event.id,
+            'meetings_dates': self.meetings_dates,
+            'creator': EventParticipant.objects.get(event_id=self.chosen_event, is_creator=True).user_id.username
+        }
+        return context
+
+    def get(self, request):
+        self.initialize_forms()
+        self.vote_form = self.VoteFormset()
+        return super().get(request)
+
+    def post(self, request):
+        self.initialize_forms()
+        self.vote_form = self.VoteFormset(request.POST, request.FILES)
+
+        if self.vote_form.is_valid():
+            for field, meeting in zip(self.vote_form, self.chosen_meeting_dates):
+                field_value = field.cleaned_data.get('date_vote')
+                if field_value:
+                    # add possible participant to this meeting date
+                    participant = EventParticipant.objects.get(user_id=request.user, event_id=self.chosen_event)
+                    PossibleParticipant(participant_id=participant, possible_meeting_id=meeting).save()
+
+            # send a seen request
+            try:
+                notification_id = Notification.objects.filter(
+                    participant_id=participant, seen_time__isnull=True
+                ).first()
+                seen_notification(request, notification_id.id)
+            except Exception:
+                pass
+            return redirect(HOME_PAGE)
+        else:
+            self.vote_form = self.VoteFormset()
+
+        return self.render_to_response(self.get_context_data())
+
+    def check_user_auth(self, user_id, meeting_id):
+        self.chosen_event = Event.objects.get(id=meeting_id)
+        self.chosen_meeting_dates = OptionalMeetingDates.objects.get_all_event_dates(self.chosen_event)
+        return PossibleParticipant.objects.did_user_vote(self.chosen_meeting_dates, user_id)  # did_user_vote
+
+    def initialize_forms(self):
+        self.title = f"{self.chosen_event.title} Vote Meeting"
+        self.VoteFormset = formset_factory(VoteForm, extra=self.chosen_meeting_dates.count())
+        self.meetings_dates = [
+            f"{time_format(meeting.date_time_start)} - {time_format(meeting.date_time_end)}"
+            for meeting in self.chosen_meeting_dates
+        ]
+
+
+@login_required(login_url=LOGIN_PAGE)
+def remove_participant_from_meeting(request, meeting_id):
+    user = request.user
+
+    try:
+        participant = EventParticipant.objects.get(user_id=user, event_id=meeting_id)
+        notification_id = Notification.objects.filter(participant_id=participant, seen_time__isnull=True).first()
+        seen_notification(request, notification_id.id)
+        participant.delete()
+        return redirect(HOME_PAGE)
+    except EventParticipant.DoesNotExist:
+        return HttpResponseForbidden()

@@ -1,7 +1,7 @@
 from functools import reduce
 from django.utils import timezone
 from datetime import datetime, timedelta
-from reminders.models import Reminder, ReminderType
+from reminders.models import Reminder, ReminderType, NotificationType
 from events.models import OptionalMeetingDates, PossibleParticipant, EventParticipant
 from main.utilities import send_mail_notification, time_format, create_notification
 
@@ -183,7 +183,7 @@ class EventPlanner():
         all_event_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
 
         for participant in all_event_participants:
-            create_notification(message, participant)
+            create_notification(message, participant, NotificationType.MEETING)
 
     @staticmethod
     def send_meeting_invitation_email_to_participants(meeting_id, meeting_creator):
