@@ -227,8 +227,8 @@ class TestEventPlanner:
         meeting, time_now = self.create_meeting(meeting_start_time_in_minutes)
         expected_time = time_now + timedelta(hours=1)
         res = EventPlanner.get_timeout(meeting)
-        res = res.replace(microsecond=0)
-        expected_time = expected_time.replace(microsecond=0)
+        res = res.replace(microsecond=0, second=0)
+        expected_time = expected_time.replace(microsecond=0, second=0)
         assert expected_time == res
 
     @pytest.mark.parametrize(
