@@ -3,11 +3,6 @@ let get_notification = "";
 let seen_notification = "";
 
 
-function move(url) {
-	console.log(url);
-	document.location.href = url;
-}
-
 function build_table() {
 	const id = "#notification-table";
 

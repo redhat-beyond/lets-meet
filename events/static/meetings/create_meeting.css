@@ -2,7 +2,6 @@ body {
     background: url("https://cdn.wallpapersafari.com/1/72/14W9Zo.jpg") no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    /* background-repeat: repeat; */
     font-family: "Montserrat", sans-serif;
     margin: 0;
 }
