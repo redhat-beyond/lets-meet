@@ -10,6 +10,7 @@ pytest = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 phonenumbers = "*"
 django-environ = "*"
+django-allauth = "*"
 
 [dev-packages]
 flake8 = "*"

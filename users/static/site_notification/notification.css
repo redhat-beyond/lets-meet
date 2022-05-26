@@ -13,11 +13,12 @@
 
 #bell {
     display: inline;
-    position: fixed;
+    position: absolute;
     top: 100px;
-    right: 20px;
+    right: 0;
     font-size: 40px;
     color: white;
+    z-index: 2;
 }
 
 .background-white{
@@ -38,7 +39,7 @@ header{
     float: right;
     padding: 5px;
     cursor: pointer;
-    position: fixed;
+    position: absolute;
     top: 100px;
     right: 20px;
     top: 7px;
@@ -103,7 +104,7 @@ header{
 }
 
 .dropdown-transition{
-    width: 325px;
+    width: 330px;
     position: absolute;
     color: #2336AB;
     top: 125px;
@@ -183,7 +184,7 @@ header{
     width: 80%;
     padding-right: 5px;
     position: relative;
-    top: -1px;
+    top: -5px;
 }
 
 .notification-dropdown .items .list-item .cls{
@@ -191,4 +192,13 @@ header{
     top: -1px;
     right: 0;
     cursor: pointer;
+}
+
+@media only screen and (max-width: 420px)  {
+
+    .wrapper {
+        position: absolute;
+        right: -35vw;
+    }
+
 }
