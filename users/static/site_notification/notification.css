@@ -104,7 +104,7 @@ header{
 }
 
 .dropdown-transition{
-    width: 325px;
+    width: 330px;
     position: absolute;
     color: #2336AB;
     top: 125px;
@@ -184,7 +184,7 @@ header{
     width: 80%;
     padding-right: 5px;
     position: relative;
-    top: -1px;
+    top: -5px;
 }
 
 .notification-dropdown .items .list-item .cls{
