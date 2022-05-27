@@ -24,6 +24,8 @@
 
                     {% if event_id %}
                         <i id="remove_event" class="fa fa-trash-o" aria-hidden="true" onclick="delete_event('{{ event_id }}')"></i>
+                    {% else %}
+                        <a href="/main/"><i id="remove_event" class="fa fa-trash-o" aria-hidden="true"></i></a>
                     {% endif %}
 
                     {% if event_id %}

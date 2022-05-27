@@ -37,6 +37,8 @@
                 <a href="{% url 'event_files' event_id=meeting_id %}" class="FileRef">
                     <i class="fa-solid fa-file fa-2x"></i>
                 </a>
+            {% else %}
+                <a href="/main/"><i id="remove_event" class="fa fa-trash-o" aria-hidden="true"></i></a>
             {% endif %}
         </div>
         <form method="POST" >
