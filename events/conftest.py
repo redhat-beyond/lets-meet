@@ -16,6 +16,8 @@ def pytest_configure():
         pytest.current_date.year, pytest.current_date.month, pytest.current_date.day + 1, 13, 0, 0, tzinfo=timezone.utc
     )
 
+    pytest.reminder_date_time = pytest.event_date_time_start
+
     pytest.create_event_url = "/event/create/"
     pytest.create_event_template = 'events/create_event.html'
     pytest.login_page_template = 'login/register_login.html'

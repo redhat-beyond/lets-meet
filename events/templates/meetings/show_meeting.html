@@ -1,39 +1,57 @@
 {% extends "base.html" %}
-    
+
     {% block head-content %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
      {% load static %}
         <link href="{% static 'events/create_event.css' %}" rel="stylesheet">
         <link href="{% static 'reminders/reminder_form.css' %}" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'meetings/create_meeting.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" type="text/javascript"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://kit.fontawesome.com/ca9581fda8.js" crossorigin="anonymous"></script>
-    
+        <link href="{% static 'meetings/show_meeting.css' %}" rel="stylesheet">
+
+        <script>
+
+            $(document).ready(function() {
+                show_meeting_url = "{% url 'get_meeting_participants' meeting_id=event_id %}";
+                delete_participant_url = "{% url 'delete_participant' participant_id=1 %}";
+                add_participant_url = "{% url 'add_participants' meeting_id=event_id %}";
+                token = '{% csrf_token %}';
+            })
+
+        </script>
+
     {% endblock %}
 
     {% block body-content %}
+        
         <div class="container-shadow"></div>
         <div class="container">
             <div class="wrap">
                 <div class="headings">
                     <a id="create-event" class="active"><span>{{ title }}:</span></a>
                     <i id="add_alert" class="material-icons">add_alert</i>
-
                     {% if event_id %}
-                        <i id="remove_event" class="fa fa-trash-o" aria-hidden="true" onclick="delete_event('{{ event_id }}')"></i>
-                    {% else %}
-                        <a href="/main/"><i id="remove_event" class="fa fa-trash-o" aria-hidden="true"></i></a>
-                    {% endif %}
-
-                    {% if event_id %}
-                        <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
-                            <i class="fa-solid fa-file fa-2x" id="add_file"></i>
+                    <i id="remove_event" class="fa fa-trash-o" aria-hidden="true" onclick="delete_event('{{ event_id }}')"></i>
+                    <a href="{% url 'event_files' event_id=event_id %}" class="FileRef">
+                            <i class="fa-solid fa-file fa-2x"></i>
                         </a>
                     {% endif %}
                 </div>
+
+                {% if messages %}
+                    <ul class="errorlist">
+                        {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
                 <div id="create-event-form">
                     <form method="POST">
@@ -42,28 +60,23 @@
                         {{ event_form }}
                         <br><br>
 
+                        <button type="button" class="show_btn" onclick="show_participants({{ is_creator }})">
+                            <i class="fas fa-users" aria-hidden="true" style='margin-right: 10px; font-size:15px; color: black;'></i>
+                                Show Participants
+                        </button>
+
                         <div id="reminder_form_attribute">
                             <h3 style="color:white;"> Add Reminder: </h3>
                             {{ reminder_form }}
                         </div>
-                        <input type="submit" class="button" name="submit" value="create" />
+
+                        <input type="submit" class="button" name="submit" value="Save" />
                     </form>
                 </div>
             </div>
         </div>
 
-        <script>
-            tippy('#add_alert', {
-                content: 'Add A New Alert',
-            });
-            tippy('#remove_event', {
-                content: 'Delete Event',
-            });
-            tippy('#add_file', {
-                content: 'Add A File',
-            });
-        </script>
-
         {% load static %}
+        <script src="{% static 'meetings/show_meeting.js' %}"></script>
         <script src="{% static 'reminders/reminder_form.js' %}"></script>
     {% endblock %}

@@ -4,8 +4,9 @@ from users.models import User
 from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
-from django.forms import formset_factory
 from events.planner import EventPlanner
+from django.forms import formset_factory
+from reminders.models import ReminderType
 from django.contrib.messages import get_messages
 from events.models import (
     OptionalMeetingDates, PossibleParticipant,
@@ -76,6 +77,7 @@ def valid_meeting_data(valid_event_data, valid_optional_meeting_data, valid_part
     meeting_data.update(valid_event_data)
     meeting_data.update(valid_optional_meeting_data)
     meeting_data.update(valid_participant_data)
+    meeting_data.update({"method": ReminderType.WEBSITE})
     return meeting_data
 
 
@@ -225,8 +227,8 @@ class TestEventPlanner:
         meeting, time_now = self.create_meeting(meeting_start_time_in_minutes)
         expected_time = time_now + timedelta(hours=1)
         res = EventPlanner.get_timeout(meeting)
-        res = res.replace(microsecond=0)
-        expected_time = expected_time.replace(microsecond=0)
+        res = res.replace(microsecond=0, second=0)
+        expected_time = expected_time.replace(microsecond=0, second=0)
         assert expected_time == res
 
     @pytest.mark.parametrize(

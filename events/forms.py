@@ -40,10 +40,6 @@ class EventCreationForm(ModelForm):
 
 class EventUpdateForm(ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        self.user_id = kwargs.pop('user_id')
-        super(EventUpdateForm, self).__init__(*args, **kwargs)
-
     class Meta:
         model = Event
         fields = '__all__'
@@ -60,14 +56,56 @@ class EventUpdateForm(ModelForm):
         }
 
 
+class MeetingUpdateForm(ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'description': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'date_time_start': forms.DateInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'date_time_end': forms.DateInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            )
+        }
+
+
+class ShowMeetingUpdateForm(ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'description': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'date_time_start': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            'date_time_end': forms.DateInput(
+                attrs={"type": "datetime-local", 'readonly': 'readonly'},
+                format="%Y-%m-%dT%H:%M",
+            )
+        }
+
+
 class BaseOptionalMeetingDateFormSet(BaseFormSet):
 
     def __init__(self, *args, **kwargs):
         self.event_id = None
+        self.creation_meeting_time = None
         super(BaseOptionalMeetingDateFormSet, self).__init__(*args, **kwargs)
 
     def set_event_instance(self, event_id):
         self.event_id = event_id
+
+    def set_creation_meeting_time(self, creation_meeting_time):
+        self.creation_meeting_time = creation_meeting_time
 
     def clean(self):
         """checks that no two optional meetings dates with the same dates"""
@@ -77,6 +115,10 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
 
         dates = []
         min_time_to_set_meeting = timezone.now() + timedelta(hours=1)
+
+        if self.creation_meeting_time:
+            min_time_to_set_meeting = self.creation_meeting_time + timedelta(hours=1)
+
         if self.event_id:
             # check min time of 1 hour to a new meeting date
             if self.event_id.date_time_start < min_time_to_set_meeting:
@@ -91,6 +133,10 @@ class BaseOptionalMeetingDateFormSet(BaseFormSet):
                     raise ValidationError("The optional meeting dates should be different")
                 if start_date < min_time_to_set_meeting:  # check min time of 1 hour to a new meeting date
                     raise ValidationError("Meeting can be set only one hour later from now")
+                else:
+                    if self.creation_meeting_time:
+                        if start_date < timezone.now():
+                            raise ValidationError("Meeting can be set only one hour later from now")
                 dates.append((start_date, end_date))
             elif not form.cleaned_data.get('date_time_start') and not form.cleaned_data.get('date_time_end'):
                 pass

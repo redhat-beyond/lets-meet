@@ -15,6 +15,10 @@ class ReminderQuerySet(models.QuerySet):
         """
         return self.order_by('date_time').first()
 
+    def remove_algorithm_reminder(self, event_creator):
+        self.filter(participant_id=event_creator, method__in=(
+            ReminderType.EXPIRATION_VOTING_TIME, ReminderType.RUN_ALGORITHM)).delete()
+
 
 def validate_date(date_time):
     if date_time:

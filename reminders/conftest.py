@@ -35,6 +35,7 @@ def pytest_configure():
 
     pytest.reminder_creation_url = '/event/create/'
     pytest.reminder_update_url = '/event/update/{}'.format(1)
+    pytest.reminder_update_url_event2 = '/event/update/{}'.format(2)
     pytest.reminder_creation_html_path = "events/create_event.html"
 
     pytest.exist_reminder_error = 'reminder already exists'
@@ -55,6 +56,16 @@ def signed_up_user_details():
 @pytest.fixture
 def sign_in(client, signed_up_user_details):
     return client.post('/login/', data=signed_up_user_details)
+
+
+@pytest.fixture
+def signed_up_user3_details():
+    return {'email': 'testUser3@mta.ac.il', 'password': 'PasswordU$er789'}
+
+
+@pytest.fixture
+def sign_in_user_3(client, signed_up_user3_details):
+    return client.post('/login/', data=signed_up_user3_details)
 
 
 @pytest.fixture

@@ -58,8 +58,16 @@
     {% if messages %}
         <script>
             function show_messages() {
+                let title = "{% for message in messages %} {{ message.extra_tags }} {% endfor %}".split(" ")[1];
+                if (title !== "None") {
+                    title = "Meeting Has Been " + title + " Successfully";
+                }
+                else {
+                    title = "Welcome";
+                }
+
                 Swal.fire({
-                    title: 'Meeting Has Been Created Successfully',
+                    title: title,
                     width: '43%',
                     html:  '{% for message in messages %}' +
                                 '{{ message }}<br>' +
@@ -131,11 +139,6 @@
                     <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>
                 </a>
             </span>
-        </div>
-        <div class="table-icon" id="credit">
-            <a href="/admin" style="color: white;" id="admin">
-                <i class="fa fa-user-secret" aria-hidden="true"></i>
-            </a>
         </div>
     </div>
     <table class="table table-fill" style="width: 90%; height: 95%;">

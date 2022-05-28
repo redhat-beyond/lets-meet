@@ -2,8 +2,8 @@ from functools import reduce
 from django.utils import timezone
 from datetime import datetime, timedelta
 from reminders.models import Reminder, ReminderType, NotificationType
-from events.models import OptionalMeetingDates, PossibleParticipant, EventParticipant
 from main.utilities import send_mail_notification, time_format, create_notification
+from events.models import OptionalMeetingDates, PossibleParticipant, EventParticipant, Event
 
 
 class EventPlanner():
@@ -13,8 +13,8 @@ class EventPlanner():
         self.chosen_meeting_date = None
         self.participants_names_who_can_meet = ""
         self.participants_names_who_cant_meet = ""
-        self.event_participants_who_can_meet = []      # type of event participant
-        self.event_participants_who_can_not_meet = []  # type of event participant
+        self.event_participants_who_can_meet = []
+        self.event_participants_who_can_not_meet = []
         self.all_meeting_participants = (
             EventParticipant.objects.get_an_event_participants_without_creator(self.event_id)
         )
@@ -105,6 +105,7 @@ class EventPlanner():
         self.find_meeting()
         if not self.chosen_meeting_date:
             self.send_email_no_suitable_meeting_found(EventParticipant.objects.get_creator_of_event(self.event_id))
+            Event.objects.get(id=self.event_id.id).delete()
         else:
             self.execute_choice()
             self.send_email_about_algorithm_results_to_the_creator()
@@ -160,19 +161,29 @@ class EventPlanner():
 
     @staticmethod
     def get_timeout(meeting_id):
-        def get_max_datetime(datetime1, datetime2):
-            return datetime1 if datetime1.date_time_start < datetime2.date_time_start else datetime2
-
         possible_dates = OptionalMeetingDates.objects.get_all_event_dates(meeting_id)
-        min_possible_date = reduce(get_max_datetime, possible_dates)
+        min_possible_date = EventPlanner.get_min_date(possible_dates)
         difference = min_possible_date.date_time_start.timestamp() - datetime.now().timestamp()
         return (datetime.fromtimestamp(datetime.now().timestamp() +
                 (difference / 2.0)).replace(tzinfo=timezone.get_current_timezone()))
 
     @staticmethod
-    def get_timeout_message(voting_timeout):
+    def get_min_date(possible_dates, is_set=False):
+        def get_mim_datetime(datetime1, datetime2):
+            return datetime1 if datetime1.date_time_start < datetime2.date_time_start else datetime2
+
+        def get_min_date_time_set(set1, set2):
+            return set1 if set1[0] < set2[0] else set2
+
+        if is_set:
+            return reduce(get_min_date_time_set, possible_dates)
+        else:
+            return reduce(get_mim_datetime, possible_dates)
+
+    @staticmethod
+    def get_timeout_message(voting_timeout, meeting_status="created"):
         time = voting_timeout.strftime("%Y-%m-%d %H:%M:%S")
-        return ("The meeting has been created successfully.\n"
+        return (f"The meeting has been {meeting_status} successfully.\n"
                 "A voting email for the meeting was sent to all participants.\n"
                 f"Results about the meeting will be sent to you by email on\n{time}")
 
@@ -187,14 +198,25 @@ class EventPlanner():
 
     @staticmethod
     def send_meeting_invitation_email_to_participants(meeting_id, meeting_creator):
+        email_title, message = EventPlanner.create_invitation_to_meeting_message(meeting_id, meeting_creator)
+        all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
+        for participant in all_meeting_participants:
+            send_mail_notification(email_title, message, participant.user_id.email)
+
+    @staticmethod
+    def create_invitation_to_meeting_message(meeting_id, meeting_creator):
         email_title = "Invitation to meeting"
         description = f"Description: {meeting_id.description}\n" if meeting_id.description != "" else ""
         message = (f"You have been invited to attend a meeting created by {meeting_creator.user_id.username}!\n"
                    f"The meeting topic: {meeting_id.title}\n{description}"
                    f"A notice on the website is waiting for you to vote to set a meeting date.")
-        all_meeting_participants = EventParticipant.objects.get_an_event_participants_without_creator(meeting_id)
-        for participant in all_meeting_participants:
-            send_mail_notification(email_title, message, participant.user_id.email)
+        return email_title, message
+
+    @staticmethod
+    def send_meeting_invitation_to_new_participant(meeting_id, meeting_creator, new_event_participant):
+        email_title, message = EventPlanner.create_invitation_to_meeting_message(meeting_id, meeting_creator)
+        send_mail_notification(email_title, message, new_event_participant.user_id.email)
+        create_notification(message, new_event_participant)
 
     @staticmethod
     def creating_meeting_reminders(meeting_creator, voting_timeout):

@@ -36,12 +36,12 @@ class TestUpdateReminder:
             else:
                 raise ValueError()
 
-    def test_update_reminder_form(self, client, sign_in):
-        response = client.get(pytest.reminder_update_url)
+    def test_update_reminder_form(self, client, sign_in_user_3):
+        response = client.get(pytest.reminder_update_url_event2)
         assert response.status_code == 200
         assert isinstance(response.context['reminder_form'], ReminderUpdateForm)
 
-    def test_renders_update_reminder_template(self, client, sign_in):
-        response = client.get(pytest.reminder_update_url)
+    def test_renders_update_reminder_template(self, client, sign_in_user_3):
+        response = client.get(pytest.reminder_update_url_event2)
         assert response.status_code == 200
         assertTemplateUsed(response, pytest.reminder_creation_html_path)
